@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "SufalPhysicsForum backend server",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
+    "predev": "prisma generate",
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
