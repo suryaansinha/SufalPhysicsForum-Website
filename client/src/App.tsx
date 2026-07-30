@@ -8,6 +8,7 @@ import BatchDetailsPage from './pages/BatchDetailsPage';
 import StudentsPage from './pages/StudentsPage';
 import AttendancePage from './pages/AttendancePage';
 import LiveClassRoom from './pages/LiveClassRoom';
+import FeesPage from './pages/dashboard/FeesPage';
 
 function LoginPage() {
   return (
@@ -82,6 +83,7 @@ export default function App() {
         <Route path="batches/:batchId" element={<BatchDetailsPage />} />
         <Route path="students" element={<StudentsPage />} />
         <Route path="attendance" element={<AttendancePage />} />
+        <Route path="fees" element={<FeesPage />} />
       </Route>
       <Route path="/dashboard/batches/:batchId/live/:liveClassId" element={<LiveClassRoom />} />
     </Routes>

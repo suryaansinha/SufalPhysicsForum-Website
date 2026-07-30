@@ -119,3 +119,29 @@ export interface InstitutePublic {
   youtubeUrl: string | null;
   testimonials: Testimonial[];
 }
+
+export type PaymentMethod = 'CASH' | 'UPI' | 'BANK_TRANSFER' | 'CHEQUE' | 'CARD';
+
+export type PaymentStatus = 'COMPLETED' | 'PENDING' | 'FAILED' | 'REFUNDED';
+
+export interface FeePayment {
+  id: string;
+  studentId: string;
+  batchId: string;
+  amount: number;
+  paymentDate: string;
+  paymentMethod: PaymentMethod;
+  transactionId: string | null;
+  monthFor: string;
+  status: PaymentStatus;
+  remarks: string | null;
+  createdAt: string;
+  updatedAt: string;
+  student: Pick<User, 'id' | 'name' | 'email' | 'phone'>;
+}
+
+export interface FeeStats {
+  totalCollected: number;
+  monthCollected: number;
+  pendingCount: number;
+}
