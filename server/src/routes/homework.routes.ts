@@ -1,0 +1,14 @@
+import { Router } from 'express';
+import { authenticate, authorizeRoles } from '../middlewares/auth.middleware';
+import { upload } from '../middlewares/upload.middleware';
+import { createHomework, listHomework } from '../controllers/homework.controller';
+import { Role } from '../generated/prisma';
+
+const router = Router();
+
+router.use(authenticate);
+
+router.post('/', authorizeRoles(Role.TEACHER, Role.SUPER_ADMIN), upload.single('file'), createHomework);
+router.get('/batch/:batchId', listHomework);
+
+export default router;
