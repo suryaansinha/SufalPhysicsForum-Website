@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  SUPER_ADMIN
+  TEACHER
+  STUDENT
+  PARENT
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+model Institute {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  phone     String?
+  email     String?
+  logoUrl   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users     User[]
+  batches   Batch[]
+  attendance Attendance[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  instituteId  String
+  name         String
+  email        String
+  passwordHash String
+  role         Role     @default(TEACHER)
+  phone        String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  institute    Institute      @relation(fields: [instituteId], references: [id])
+  enrollments  Enrollment[]
+  refreshTokens RefreshToken[]
+  attendances    Attendance[]
+
+  @@unique([email, instituteId])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Batch {
+  id          String   @id @default(cuid())
+  instituteId String
+  name        String
+  gradeLevel  String?
+  grade       String?
+  targetExam  String?
+  subject     String   @default("Physics")
+  timing      String?
+  feeAmount   Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  institute   Institute    @relation(fields: [instituteId], references: [id])
+  enrollments Enrollment[]
+  attendances  Attendance[]
+  liveClasses  LiveClass[]
+  materials    StudyMaterial[]
+  homework     Homework[]
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  studentId String
+  batchId   String
+  enrolledAt DateTime @default(now())
+
+  student User  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  batch   Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, batchId])
+}
+
+model Attendance {
+  id          String           @id @default(cuid())
+  instituteId String
+  batchId     String
+  studentId   String
+  date        DateTime         @db.Date
+  status      AttendanceStatus
+  createdAt   DateTime         @default(now())
+
+  batch    Batch     @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  student  User      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  institute Institute @relation(fields: [instituteId], references: [id])
+
+  @@unique([batchId, studentId, date])
+}
+
+model LiveClass {
+  id            String   @id @default(cuid())
+  batchId       String
+  title         String
+  agenda        String?
+  scheduledFor  DateTime
+  durationMins  Int      @default(60)
+  jitsiRoomName String   @unique
+  status        String   @default("SCHEDULED")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  batch Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([batchId])
+}
+
+model StudyMaterial {
+  id          String   @id @default(cuid())
+  batchId     String
+  title       String
+  description String?
+  fileUrl     String
+  fileType    String?
+  category    String   @default("NOTES")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  batch Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([batchId])
+}
+
+model Homework {
+  id          String   @id @default(cuid())
+  batchId     String
+  title       String
+  description String?
+  dueDate     DateTime
+  fileUrl     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  batch Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([batchId])
+}
