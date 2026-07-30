@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { prisma } from '../lib/prisma';
 import { hashPassword, comparePassword } from '../utils/password';
 import { generateTokenPair, verifyRefreshToken, generateAccessToken } from '../utils/jwt';
-import { Role } from '../generated/prisma';
+import { Role } from '../generated/prisma/client.js';
 
 function generateSlug(name: string): string {
   return name

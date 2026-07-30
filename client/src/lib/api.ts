@@ -1,4 +1,5 @@
 import axios from 'axios';
+import type { InstitutePublic } from '../types';
 
 const api = axios.create({
   baseURL: '/api/v1',
@@ -35,5 +36,15 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const publicApi = axios.create({
+  baseURL: '/api/v1/public',
+  headers: { 'Content-Type': 'application/json' },
+});
+
+export const fetchInstitutePublicProfile = async (slug: string): Promise<InstitutePublic> => {
+  const { data } = await publicApi.get(`/institute/${slug}`);
+  return data.data;
+};
 
 export default api;

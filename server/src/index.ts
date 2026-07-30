@@ -6,6 +6,7 @@ import attendanceRoutes from './routes/attendance.routes';
 import liveClassRoutes from './routes/live-class.routes';
 import materialRoutes from './routes/material.routes';
 import homeworkRoutes from './routes/homework.routes';
+import publicRoutes from './routes/public.routes';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -23,6 +24,7 @@ app.use('/api/v1/attendance', attendanceRoutes);
 app.use('/api/v1/live-classes', liveClassRoutes);
 app.use('/api/v1/materials', materialRoutes);
 app.use('/api/v1/homework', homeworkRoutes);
+app.use('/api/v1/public', publicRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

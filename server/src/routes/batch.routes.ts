@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authenticate, authorizeRoles } from '../middlewares/auth.middleware';
 import { listBatches, createBatch, getBatch } from '../controllers/batch.controller';
-import { Role } from '../generated/prisma';
+import { Role } from '../generated/prisma/client.js';
 
 const router = Router();
 

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { hashPassword } from '../utils/password';
-import { Role } from '../generated/prisma';
+import { Role } from '../generated/prisma/client.js';
 
 export async function listStudents(req: Request, res: Response): Promise<void> {
   try {

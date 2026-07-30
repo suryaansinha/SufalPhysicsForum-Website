@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authenticate, authorizeRoles } from '../middlewares/auth.middleware';
 import { createLiveClass, listLiveClasses, getLiveClass } from '../controllers/live-class.controller';
-import { Role } from '../generated/prisma';
+import { Role } from '../generated/prisma/client.js';
 
 const router = Router();
 

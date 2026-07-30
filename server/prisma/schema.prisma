@@ -22,18 +22,24 @@ enum AttendanceStatus {
 }
 
 model Institute {
-  id        String   @id @default(cuid())
-  name      String
-  slug      String   @unique
-  phone     String?
-  email     String?
-  logoUrl   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String   @id @default(cuid())
+  name              String
+  slug              String   @unique
+  phone             String?
+  email             String?
+  logoUrl           String?
+  aboutDescription  String?  @db.Text
+  experienceText    String?  @db.Text
+  whatsappNumber    String?
+  blogUrl           String?
+  youtubeUrl        String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  users     User[]
-  batches   Batch[]
-  attendance Attendance[]
+  users         User[]
+  batches       Batch[]
+  attendance    Attendance[]
+  testimonials  Testimonial[]
 }
 
 model User {
@@ -161,4 +167,19 @@ model Homework {
   batch Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
 
   @@index([batchId])
+}
+
+model Testimonial {
+  id           String   @id @default(cuid())
+  instituteId  String
+  studentName  String
+  examCleared  String?
+  content      String   @db.Text
+  rating       Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  institute Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+
+  @@index([instituteId])
 }

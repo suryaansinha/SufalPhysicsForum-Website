@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authenticate, authorizeRoles } from '../middlewares/auth.middleware';
 import { listStudents, createStudent, getStudent } from '../controllers/student.controller';
-import { Role } from '../generated/prisma';
+import { Role } from '../generated/prisma/client.js';
 
 const router = Router();
 

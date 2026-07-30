@@ -95,3 +95,27 @@ export interface Homework {
   fileUrl: string | null;
   createdAt: string;
 }
+
+export interface Testimonial {
+  id: string;
+  studentName: string;
+  examCleared: string | null;
+  content: string;
+  rating: number;
+  createdAt: string;
+}
+
+export interface InstitutePublic {
+  id: string;
+  name: string;
+  slug: string;
+  phone: string | null;
+  email: string | null;
+  logoUrl: string | null;
+  aboutDescription: string | null;
+  experienceText: string | null;
+  whatsappNumber: string | null;
+  blogUrl: string | null;
+  youtubeUrl: string | null;
+  testimonials: Testimonial[];
+}

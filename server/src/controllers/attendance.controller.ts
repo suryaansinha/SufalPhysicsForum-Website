@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
-import { AttendanceStatus } from '../generated/prisma';
+import { AttendanceStatus } from '../generated/prisma/client.js';
 
 export async function getAttendance(req: Request, res: Response): Promise<void> {
   try {
