@@ -1,3 +1,4 @@
+import LoginPage from './pages/public/LoginPage';
 import { Routes, Route, Link } from 'react-router-dom';
 import DashboardLayout from './components/DashboardLayout';
 import PublicLayout from './components/PublicLayout';
@@ -10,26 +11,26 @@ import AttendancePage from './pages/AttendancePage';
 import LiveClassRoom from './pages/LiveClassRoom';
 import FeesPage from './pages/dashboard/FeesPage';
 
-function LoginPage() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-gray-600 mt-2">Sign in to access your dashboard</p>
-        </div>
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-          <p className="text-sm text-gray-500 text-center">Login form coming soon...</p>
-        </div>
-        <p className="text-center mt-6">
-          <Link to="/" className="text-sm text-indigo-600 hover:text-indigo-700">
-            ← Back to Home
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
-}
+// function LoginPage() {
+//   return (
+//     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+//       <div className="max-w-md w-full">
+//         <div className="text-center mb-8">
+//           <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
+//           <p className="text-gray-600 mt-2">Sign in to access your dashboard</p>
+//         </div>
+//         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+//           <p className="text-sm text-gray-500 text-center">Login form coming soon...</p>
+//         </div>
+//         <p className="text-center mt-6">
+//           <Link to="/" className="text-sm text-indigo-600 hover:text-indigo-700">
+//             ← Back to Home
+//           </Link>
+//         </p>
+//       </div>
+//     </div>
+//   );
+// }
 
 function DashboardHome() {
   return (
