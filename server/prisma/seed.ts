@@ -1,8 +1,18 @@
 import 'dotenv/config';
-import { PrismaClient, Role } from '../src/generated/prisma/client.js';
-import { hashPassword } from '../src/utils/password.js';
+import { PrismaClient, Role } from '../src/generated/prisma'; // Or whatever your generated path is
+import { hashPassword } from '../src/utils/password'; // Adjust this path if needed
+import { Pool } from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-const prisma = new PrismaClient();
+// 1. Initialize the Postgres connection pool
+const connectionString = process.env.DATABASE_URL;
+const pool = new Pool({ connectionString });
+
+// 2. Wrap it in the Prisma adapter
+const adapter = new PrismaPg(pool);
+
+// 3. Instantiate the client with the adapter
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log('Seeding database...');
