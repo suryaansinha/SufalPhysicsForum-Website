@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { BookOpen, Award, Users, PlayCircle, ArrowRight } from 'lucide-react';
-import heroImage from '../assets/hero.png';
 
 export default function HomePage() {
   return (
@@ -37,11 +36,11 @@ export default function HomePage() {
             </div>
             <div className="relative">
               <div className="aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-100 p-8">
-                <img
-                  src={heroImage}
-                  alt="Students learning physics"
-                  className="w-full h-full object-cover rounded-2xl shadow-2xl"
-                />
+  <img 
+  src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop" 
+  alt="Students learning physics" 
+  className="w-full h-full object-cover rounded-3xl shadow-xl" 
+/>
               </div>
             </div>
           </div>
