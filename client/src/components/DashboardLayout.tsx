@@ -25,7 +25,7 @@ export default function DashboardLayout() {
     <div className="flex h-screen bg-gray-50">
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
         <div className="h-16 flex items-center px-6 border-b border-gray-200">
-          <h1 className="text-lg font-bold text-indigo-600">SufalPhysics</h1>
+          <h1 className="text-lg font-bold text-indigo-600">SufalPhysicsForum</h1>
         </div>
         <nav className="flex-1 py-6 px-4 space-y-1">
           {sidebarLinks.map((link) => (
@@ -34,10 +34,9 @@ export default function DashboardLayout() {
               to={link.to}
               end={link.to === '/dashboard'}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-indigo-50 text-indigo-700'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive
+                  ? 'bg-indigo-50 text-indigo-700'
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 }`
               }
             >

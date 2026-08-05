@@ -32,11 +32,15 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               {institute?.logoUrl ? (
                 <img src={institute.logoUrl} alt={institute.name} className="h-10 w-auto" />
               ) : (
-                <div className="flex items-center space-x-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">S</span>
-                  </div>
-                  <span className="text-xl font-bold text-gray-900">{institute?.name || 'Sufal Physics Forum'}</span>
+                <div className="flex items-center gap-2">
+                  {/* The New Professional Branding */}
+                  <img
+                    src="/logo.PNG"
+                    alt="SufalPhysicsForum Logo"
+                    className="h-12 w-auto object-contain"
+                  />
+                  {/* Optional: Keep the text if the logo is just an icon, or remove this span if the logo includes the text */}
+                  <span className="text-xl font-bold text-gray-900">SufalPhysicsForum</span>
                 </div>
               )}
             </Link>
@@ -44,25 +48,22 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             <div className="hidden md:flex items-center space-x-8">
               <Link
                 to="/"
-                className={`text-sm font-medium transition-colors ${
-                  isActive('/') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
-                }`}
+                className={`text-sm font-medium transition-colors ${isActive('/') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
+                  }`}
               >
                 Home
               </Link>
               <Link
                 to="/about"
-                className={`text-sm font-medium transition-colors ${
-                  isActive('/about') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
-                }`}
+                className={`text-sm font-medium transition-colors ${isActive('/about') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
+                  }`}
               >
                 About
               </Link>
               <Link
                 to="/blog"
-                className={`text-sm font-medium transition-colors ${
-                  isActive('/blog') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
-                }`}
+                className={`text-sm font-medium transition-colors ${isActive('/blog') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
+                  }`}
               >
                 Blog
               </Link>
@@ -70,7 +71,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 to="/login"
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
               >
-                Student Login
+                Login
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </div>
@@ -91,27 +92,24 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               <Link
                 to="/"
                 onClick={() => setIsMenuOpen(false)}
-                className={`block text-sm font-medium ${
-                  isActive('/') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
-                }`}
+                className={`block text-sm font-medium ${isActive('/') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
+                  }`}
               >
                 Home
               </Link>
               <Link
                 to="/about"
                 onClick={() => setIsMenuOpen(false)}
-                className={`block text-sm font-medium ${
-                  isActive('/about') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
-                }`}
+                className={`block text-sm font-medium ${isActive('/about') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
+                  }`}
               >
                 About
               </Link>
               <Link
                 to="/blog"
                 onClick={() => setIsMenuOpen(false)}
-                className={`block text-sm font-medium ${
-                  isActive('/blog') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
-                }`}
+                className={`block text-sm font-medium ${isActive('/blog') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
+                  }`}
               >
                 Blog
               </Link>
@@ -120,7 +118,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 onClick={() => setIsMenuOpen(false)}
                 className="block text-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700"
               >
-                Student Login
+                Login
               </Link>
             </div>
           </div>
@@ -165,7 +163,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 </li>
                 <li>
                   <Link to="/login" className="text-sm text-gray-600 hover:text-gray-900">
-                    Student Login
+                    Login
                   </Link>
                 </li>
               </ul>
@@ -206,7 +204,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
 
           <div className="mt-8 pt-8 border-t border-gray-200">
             <p className="text-sm text-gray-500 text-center">
-              © {new Date().getFullYear()} {institute?.name || 'Sufal Physics Forum'}. All rights reserved.
+              © {new Date().getFullYear()} {institute?.name || 'SufalPhysicsForum'}. All rights reserved.
             </p>
           </div>
         </div>
