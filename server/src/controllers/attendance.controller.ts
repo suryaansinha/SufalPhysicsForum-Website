@@ -2,14 +2,14 @@ import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { AttendanceStatus } from '../generated/prisma/client.js';
 
-export async function getAttendance(req: Request, res: Response): Promise<void> {
+export async function getAttendanceByBatchAndDate(req: Request, res: Response): Promise<void> {
   try {
     const instituteId = req.user!.instituteId;
     const batchId = req.params.batchId as string;
-    const dateStr = req.query.date as string;
+    const dateStr = req.params.date as string;
 
     if (!dateStr) {
-      res.status(400).json({ success: false, message: 'Date query parameter is required (YYYY-MM-DD)' });
+      res.status(400).json({ success: false, message: 'Date path parameter is required (YYYY-MM-DD)' });
       return;
     }
 
@@ -52,7 +52,7 @@ export async function getAttendance(req: Request, res: Response): Promise<void> 
   }
 }
 
-export async function bulkAttendance(req: Request, res: Response): Promise<void> {
+export async function markBulkAttendance(req: Request, res: Response): Promise<void> {
   try {
     const instituteId = req.user!.instituteId;
     const { batchId, date: dateStr, records } = req.body;

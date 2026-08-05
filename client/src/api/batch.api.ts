@@ -16,6 +16,14 @@ export async function fetchBatches(): Promise<Batch[]> {
   return data.data ?? [];
 }
 
+export async function fetchBatch(batchId: string): Promise<Batch> {
+  const { data } = await apiClient.get<ApiResponse<Batch>>(`/batches/${batchId}`);
+  if (!data.data) {
+    throw new Error(data.message || 'Failed to load batch');
+  }
+  return data.data;
+}
+
 export async function createBatch(payload: CreateBatchPayload): Promise<Batch> {
   const { data } = await apiClient.post<ApiResponse<Batch>>('/batches', payload);
   if (!data.data) {

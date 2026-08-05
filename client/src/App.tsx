@@ -8,7 +8,7 @@ import BlogPage from './pages/public/BlogPage';
 import BatchesPage from './pages/BatchesPage';
 import BatchDetailsPage from './pages/BatchDetailsPage';
 import StudentsPage from './pages/StudentsPage';
-import AttendancePage from './pages/AttendancePage';
+import Attendance from './pages/dashboard/Attendance';
 import LiveClassRoom from './pages/LiveClassRoom';
 import FeesPage from './pages/dashboard/FeesPage';
 import DoubtForum from './pages/dashboard/DoubtForum';
@@ -86,7 +86,7 @@ export default function App() {
         <Route path="batches" element={<BatchesPage />} />
         <Route path="batches/:batchId" element={<BatchDetailsPage />} />
         <Route path="students" element={<StudentsPage />} />
-        <Route path="attendance" element={<AttendancePage />} />
+        <Route path="attendance" element={<Attendance />} />
         <Route path="fees" element={<FeesPage />} />
         <Route path="doubt-forum" element={<DoubtForum />} />
       </Route>
