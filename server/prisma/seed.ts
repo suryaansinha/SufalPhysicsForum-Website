@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { PrismaClient, Role } from '../src/generated/prisma'; // Or whatever your generated path is
+import { PrismaClient, Role } from '../src/generated/prisma/client.js';
 import { hashPassword } from '../src/utils/password'; // Adjust this path if needed
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
@@ -46,6 +46,27 @@ async function main() {
   });
 
   console.log(`  Teacher: ${teacher.name} (${teacher.email})`);
+
+  const studentEmail = 'student@sufal.com';
+  const student = await prisma.user.upsert({
+    where: {
+      email_instituteId: {
+        email: studentEmail,
+        instituteId: institute.id,
+      },
+    },
+    update: {},
+    create: {
+      instituteId: institute.id,
+      name: 'Suryaan Sinha',
+      email: studentEmail,
+      passwordHash: await hashPassword('password123'),
+      role: Role.STUDENT,
+      isActive: true,
+    },
+  });
+
+  console.log(`  Student: ${student.name} (${student.email})`);
 
   const batch1 = await prisma.batch.create({
     data: {
