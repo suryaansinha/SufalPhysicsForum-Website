@@ -58,16 +58,14 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               >
                 About
               </Link>
-              {institute?.blogUrl && (
-                <a
-                  href={institute.blogUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  Blog
-                </a>
-              )}
+              <Link
+                to="/blog"
+                className={`text-sm font-medium transition-colors ${
+                  isActive('/blog') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Blog
+              </Link>
               <Link
                 to="/login"
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
@@ -108,16 +106,15 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               >
                 About
               </Link>
-              {institute?.blogUrl && (
-                <a
-                  href={institute.blogUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-sm font-medium text-gray-600 hover:text-gray-900"
-                >
-                  Blog
-                </a>
-              )}
+              <Link
+                to="/blog"
+                onClick={() => setIsMenuOpen(false)}
+                className={`block text-sm font-medium ${
+                  isActive('/blog') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Blog
+              </Link>
               <Link
                 to="/login"
                 onClick={() => setIsMenuOpen(false)}

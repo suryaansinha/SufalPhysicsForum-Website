@@ -4,6 +4,7 @@ import DashboardLayout from './components/DashboardLayout';
 import PublicLayout from './components/PublicLayout';
 import HomePage from './pages/public/HomePage';
 import AboutPage from './pages/public/AboutPage';
+import BlogPage from './pages/public/BlogPage';
 import BatchesPage from './pages/BatchesPage';
 import BatchDetailsPage from './pages/BatchDetailsPage';
 import StudentsPage from './pages/StudentsPage';
@@ -77,6 +78,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
       <Route path="/about" element={<PublicLayout><AboutPage /></PublicLayout>} />
+      <Route path="/blog" element={<PublicLayout><BlogPage /></PublicLayout>} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<DashboardHome />} />
