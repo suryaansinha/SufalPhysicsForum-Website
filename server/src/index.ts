@@ -8,6 +8,7 @@ import materialRoutes from './routes/material.routes';
 import homeworkRoutes from './routes/homework.routes';
 import publicRoutes from './routes/public.routes';
 import feeRoutes from './routes/fee.routes';
+import forumRoutes from './routes/forum.routes';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -27,6 +28,7 @@ app.use('/api/v1/materials', materialRoutes);
 app.use('/api/v1/homework', homeworkRoutes);
 app.use('/api/v1/public', publicRoutes);
 app.use('/api/v1/fees', feeRoutes);
+app.use('/api/v1/forum', forumRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

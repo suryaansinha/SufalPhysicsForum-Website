@@ -59,6 +59,8 @@ model User {
   refreshTokens RefreshToken[]
   attendances    Attendance[]
   feePayments    FeePayment[]
+  forumQuestions ForumQuestion[]
+  forumAnswers   ForumAnswer[]
 
   @@unique([email, instituteId])
 }
@@ -93,6 +95,7 @@ model Batch {
   materials    StudyMaterial[]
   homework     Homework[]
   feePayments  FeePayment[]
+  forumQuestions ForumQuestion[]
 }
 
 model Enrollment {
@@ -205,4 +208,39 @@ model FeePayment {
 
   @@index([batchId])
   @@index([studentId])
+}
+
+model ForumQuestion {
+  id         String   @id @default(cuid())
+  title      String
+  body       String   @db.Text
+  imageUrl   String?
+  isResolved Boolean  @default(false)
+  authorId   String
+  batchId    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  author  User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  batch   Batch         @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  answers ForumAnswer[]
+
+  @@index([batchId])
+  @@index([authorId])
+}
+
+model ForumAnswer {
+  id         String   @id @default(cuid())
+  body       String   @db.Text
+  imageUrl   String?
+  questionId String
+  authorId   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  question ForumQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  author   User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@index([authorId])
 }
