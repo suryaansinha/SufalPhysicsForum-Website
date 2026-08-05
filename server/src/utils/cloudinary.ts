@@ -11,8 +11,25 @@ export interface CloudinaryUploadResult {
   url: string;
 }
 
+function isCloudinaryConfigured(): boolean {
+  return Boolean(
+    process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET
+  );
+}
+
 export function uploadImageToCloudinary(fileBuffer: Buffer, folder: string): Promise<CloudinaryUploadResult> {
   return new Promise((resolve, reject) => {
+    if (!isCloudinaryConfigured()) {
+      reject(
+        new Error(
+          'Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET in .env'
+        )
+      );
+      return;
+    }
+
     const uploadStream = cloudinary.uploader.upload_stream(
       { resource_type: 'image', folder },
       (error, result) => {

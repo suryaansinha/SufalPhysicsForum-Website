@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express, { Request, Response } from 'express';
 import authRoutes from './routes/auth.routes';
 import batchRoutes from './routes/batch.routes';

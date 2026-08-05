@@ -38,8 +38,12 @@ export async function createQuestion(req: Request, res: Response): Promise<void>
     let imageUrl: string | null = bodyImageUrl || null;
 
     if (file) {
-      const uploaded = await uploadImageToCloudinary(file.buffer, `${IMAGE_UPLOAD_FOLDER}/questions`);
-      imageUrl = uploaded.url;
+      try {
+        const uploaded = await uploadImageToCloudinary(file.buffer, `${IMAGE_UPLOAD_FOLDER}/questions`);
+        imageUrl = uploaded.url;
+      } catch (uploadError) {
+        console.error('Question image upload failed; creating question without image:', uploadError);
+      }
     }
 
     const question = await prisma.forumQuestion.create({
@@ -171,8 +175,12 @@ export async function addAnswer(req: Request, res: Response): Promise<void> {
     let imageUrl: string | null = bodyImageUrl || null;
 
     if (file) {
-      const uploaded = await uploadImageToCloudinary(file.buffer, `${IMAGE_UPLOAD_FOLDER}/answers`);
-      imageUrl = uploaded.url;
+      try {
+        const uploaded = await uploadImageToCloudinary(file.buffer, `${IMAGE_UPLOAD_FOLDER}/answers`);
+        imageUrl = uploaded.url;
+      } catch (uploadError) {
+        console.error('Answer image upload failed; creating answer without image:', uploadError);
+      }
     }
 
     const answer = await prisma.forumAnswer.create({
