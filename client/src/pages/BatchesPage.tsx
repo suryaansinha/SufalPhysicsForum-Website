@@ -1,8 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Plus, X } from 'lucide-react';
-import api from '../lib/api';
-import type { Batch, ApiResponse } from '../types';
+import { fetchBatches, createBatch } from '../api/batch.api';
+import type { Batch } from '../types';
+
+function isUnauthorized(err: unknown): boolean {
+  return (err as { response?: { status?: number } })?.response?.status === 401;
+}
 
 export default function BatchesPage() {
   const [batches, setBatches] = useState<Batch[]>([]);
@@ -20,46 +24,50 @@ export default function BatchesPage() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const fetchBatches = useCallback(() => {
+  const loadBatches = useCallback(() => {
     setLoading(true);
-    api
-      .get<ApiResponse<Batch[]>>('/batches')
-      .then((res) => {
-        if (res.data.success) {
-          setBatches(res.data.data || []);
+    fetchBatches()
+      .then(setBatches)
+      .catch((err) => {
+        if (isUnauthorized(err)) {
+          navigate('/login');
+          return;
         }
+        setError('Failed to load batches');
       })
-      .catch(() => setError('Failed to load batches'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
-    fetchBatches();
-  }, [fetchBatches]);
+    loadBatches();
+  }, [loadBatches]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim()) return;
     setSubmitting(true);
     try {
-      const res = await api.post<ApiResponse<Batch>>('/batches', {
+      await createBatch({
         name: form.name,
         gradeLevel: form.gradeLevel || null,
         grade: form.grade || null,
         targetExam: form.targetExam || null,
         subject: form.subject || 'Physics',
         timing: form.timing || null,
-        feeAmount: form.feeAmount || null,
+        feeAmount: form.feeAmount ? parseFloat(form.feeAmount) : null,
       });
-      if (res.data.success) {
-        setShowForm(false);
-        setForm({ name: '', gradeLevel: '', grade: '', targetExam: '', subject: 'Physics', timing: '', feeAmount: '' });
-        setSuccessMsg('Batch created successfully');
-        fetchBatches();
-        setTimeout(() => setSuccessMsg(null), 3000);
+      setShowForm(false);
+      setForm({ name: '', gradeLevel: '', grade: '', targetExam: '', subject: 'Physics', timing: '', feeAmount: '' });
+      setSuccessMsg('Batch created successfully');
+      loadBatches();
+      setTimeout(() => setSuccessMsg(null), 3000);
+    } catch (err) {
+      if (isUnauthorized(err)) {
+        navigate('/login');
+        return;
       }
-    } catch {
       setError('Failed to create batch');
     } finally {
       setSubmitting(false);

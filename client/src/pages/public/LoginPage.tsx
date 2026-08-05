@@ -22,16 +22,21 @@ export default function LoginPage() {
         password,
       });
 
-      const { accessToken, user } = response.data;
-      
-      // Store the token for subsequent protected API calls
-      localStorage.setItem('token', accessToken);
+      const { accessToken, refreshToken, user } = response.data;
+
+      // Store the token for subsequent protected API calls.
+      // The centralized apiClient interceptor reads these keys
+      // to attach the Authorization header automatically.
+      localStorage.setItem('accessToken', accessToken);
+      if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('userName', user.name || '');
+      localStorage.setItem('userEmail', user.email || '');
 
       // Route to dashboard
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to login. Please check your credentials.');
+      setError(err.response?.data?.message || err.response?.data?.error || 'Failed to login. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }
