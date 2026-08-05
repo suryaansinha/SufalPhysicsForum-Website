@@ -18,13 +18,13 @@ async function main() {
   console.log('Seeding database...');
 
   const institute = await prisma.institute.upsert({
-    where: { slug: 'sufal-physics-classes' },
+    where: { slug: 'sufal-physics-forum' },
     update: {},
     create: {
-      name: 'Sufal Physics Classes',
-      slug: 'sufal-physics-classes',
-      phone: '9876543210',
-      email: 'admin@sufal.com',
+      name: 'SufalPhysicsForum',
+      slug: 'sufal-physics-forum',
+      phone: '9716238813',
+      email: 'sufalphysicsforum@gmail.com',
     },
   });
 
