@@ -37,7 +37,7 @@ async function main() {
     update: {},
     create: {
       instituteId: institute.id,
-      name: 'Demo Teacher',
+      name: 'Sufal Kumar',
       email: 'teacher@sufal.com',
       passwordHash,
       role: Role.TEACHER,
