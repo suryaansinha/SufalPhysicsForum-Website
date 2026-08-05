@@ -4,6 +4,7 @@ import { authenticate } from '../middlewares/auth.middleware';
 import { uploadSingleImage } from '../middlewares/upload.middleware';
 import {
   createQuestion,
+  getQuestion,
   getQuestions,
   addAnswer,
   resolveQuestion,
@@ -15,6 +16,7 @@ router.use(authenticate);
 
 router.post('/questions', uploadSingleImage, createQuestion);
 router.get('/questions', getQuestions);
+router.get('/questions/:id', getQuestion);
 router.post('/questions/:id/answers', uploadSingleImage, addAnswer);
 router.patch('/questions/:id/resolve', resolveQuestion);
 

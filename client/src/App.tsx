@@ -11,6 +11,7 @@ import StudentsPage from './pages/StudentsPage';
 import AttendancePage from './pages/AttendancePage';
 import LiveClassRoom from './pages/LiveClassRoom';
 import FeesPage from './pages/dashboard/FeesPage';
+import DoubtForum from './pages/dashboard/DoubtForum';
 
 // function LoginPage() {
 //   return (
@@ -87,6 +88,7 @@ export default function App() {
         <Route path="students" element={<StudentsPage />} />
         <Route path="attendance" element={<AttendancePage />} />
         <Route path="fees" element={<FeesPage />} />
+        <Route path="doubt-forum" element={<DoubtForum />} />
       </Route>
       <Route path="/dashboard/batches/:batchId/live/:liveClassId" element={<LiveClassRoom />} />
     </Routes>

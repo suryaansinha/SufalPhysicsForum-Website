@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, BookOpen, ClipboardCheck, IndianRupee, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, BookOpen, ClipboardCheck, IndianRupee, HelpCircle, LogOut } from 'lucide-react';
 
 const sidebarLinks = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -7,6 +7,7 @@ const sidebarLinks = [
   { to: '/dashboard/students', icon: Users, label: 'Students' },
   { to: '/dashboard/attendance', icon: ClipboardCheck, label: 'Attendance' },
   { to: '/dashboard/fees', icon: IndianRupee, label: 'Fees' },
+  { to: '/dashboard/doubt-forum', icon: HelpCircle, label: 'Doubt Forum' },
 ];
 
 export default function DashboardLayout() {

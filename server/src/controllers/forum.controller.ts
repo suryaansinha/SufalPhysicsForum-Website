@@ -63,6 +63,35 @@ export async function createQuestion(req: Request, res: Response): Promise<void>
   }
 }
 
+export async function getQuestion(req: Request, res: Response): Promise<void> {
+  try {
+    const instituteId = req.user!.instituteId;
+    const questionId = req.params.id as string;
+
+    const question = await prisma.forumQuestion.findFirst({
+      where: { id: questionId, batch: { instituteId } },
+      include: {
+        author: { select: { id: true, name: true } },
+        answers: {
+          orderBy: { createdAt: 'asc' },
+          include: { author: { select: { id: true, name: true } } },
+        },
+        _count: { select: { answers: true } },
+      },
+    });
+
+    if (!question) {
+      res.status(404).json({ success: false, message: 'Question not found' });
+      return;
+    }
+
+    res.json({ success: true, data: question });
+  } catch (error) {
+    console.error('Get forum question error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}
+
 export async function getQuestions(req: Request, res: Response): Promise<void> {
   try {
     const instituteId = req.user!.instituteId;
