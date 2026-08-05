@@ -7,4 +7,24 @@ cloudinary.config({
   secure: true,
 });
 
+export interface CloudinaryUploadResult {
+  url: string;
+}
+
+export function uploadImageToCloudinary(fileBuffer: Buffer, folder: string): Promise<CloudinaryUploadResult> {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { resource_type: 'image', folder },
+      (error, result) => {
+        if (error || !result) {
+          reject(error || new Error('Image upload failed'));
+        } else {
+          resolve({ url: result.secure_url });
+        }
+      }
+    );
+    uploadStream.end(fileBuffer);
+  });
+}
+
 export { cloudinary };

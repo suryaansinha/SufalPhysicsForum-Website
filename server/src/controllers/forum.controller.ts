@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { Role } from '../generated/prisma/client.js';
+import { uploadImageToCloudinary } from '../utils/cloudinary';
 
 const DEFAULT_PAGE_SIZE = 20;
 const MAX_PAGE_SIZE = 50;
+const IMAGE_UPLOAD_FOLDER = 'forum';
 
 function getPagination(query: Request['query']): { page: number; limit: number; skip: number } {
   const page = Math.max(parseInt(query.page as string, 10) || 1, 1);
@@ -16,7 +18,8 @@ export async function createQuestion(req: Request, res: Response): Promise<void>
   try {
     const authorId = req.user!.userId;
     const instituteId = req.user!.instituteId;
-    const { title, body, batchId, imageUrl } = req.body;
+    const { title, body, batchId, imageUrl: bodyImageUrl } = req.body;
+    const file = req.file;
 
     if (!title?.trim() || !body?.trim() || !batchId) {
       res.status(400).json({ success: false, message: 'title, body, and batchId are required' });
@@ -32,12 +35,19 @@ export async function createQuestion(req: Request, res: Response): Promise<void>
       return;
     }
 
+    let imageUrl: string | null = bodyImageUrl || null;
+
+    if (file) {
+      const uploaded = await uploadImageToCloudinary(file.buffer, `${IMAGE_UPLOAD_FOLDER}/questions`);
+      imageUrl = uploaded.url;
+    }
+
     const question = await prisma.forumQuestion.create({
       data: {
         title: title.trim(),
         body: body.trim(),
         batchId,
-        imageUrl: imageUrl || null,
+        imageUrl,
         authorId,
       },
       include: {
@@ -112,7 +122,8 @@ export async function addAnswer(req: Request, res: Response): Promise<void> {
     const authorId = req.user!.userId;
     const instituteId = req.user!.instituteId;
     const questionId = req.params.id as string;
-    const { body, imageUrl } = req.body;
+    const { body, imageUrl: bodyImageUrl } = req.body;
+    const file = req.file;
 
     if (!body?.trim()) {
       res.status(400).json({ success: false, message: 'body is required' });
@@ -128,11 +139,18 @@ export async function addAnswer(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    let imageUrl: string | null = bodyImageUrl || null;
+
+    if (file) {
+      const uploaded = await uploadImageToCloudinary(file.buffer, `${IMAGE_UPLOAD_FOLDER}/answers`);
+      imageUrl = uploaded.url;
+    }
+
     const answer = await prisma.forumAnswer.create({
       data: {
         body: body.trim(),
         questionId,
-        imageUrl: imageUrl || null,
+        imageUrl,
         authorId,
       },
       include: {
