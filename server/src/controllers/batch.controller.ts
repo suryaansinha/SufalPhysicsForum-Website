@@ -94,3 +94,27 @@ export async function getBatch(req: Request, res: Response): Promise<void> {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 }
+
+export async function deleteBatch(req: Request, res: Response): Promise<void> {
+  try {
+    const instituteId = req.user!.instituteId;
+    const id = req.params.id as string;
+
+    const batch = await prisma.batch.findFirst({
+      where: { id, instituteId },
+      select: { id: true },
+    });
+
+    if (!batch) {
+      res.status(404).json({ success: false, message: 'Batch not found' });
+      return;
+    }
+
+    await prisma.batch.delete({ where: { id } });
+
+    res.json({ success: true, data: { id }, message: 'Batch deleted' });
+  } catch (error) {
+    console.error('Delete batch error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}

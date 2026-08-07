@@ -15,6 +15,9 @@ import LiveClassRoom from './pages/LiveClassRoom';
 import FeesPage from './pages/dashboard/FeesPage';
 import DoubtForum from './pages/dashboard/DoubtForum';
 import Settings from './pages/dashboard/Settings';
+import { useEffect, useState } from 'react';
+import { fetchBatches } from './api/batch.api';
+import api from './lib/api';
 
 // function LoginPage() {
 //   return (
@@ -38,6 +41,25 @@ import Settings from './pages/dashboard/Settings';
 // }
 
 function DashboardHome() {
+  const [counts, setCounts] = useState<{ batches: number; students: number } | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([fetchBatches(), api.get('/students')])
+      .then(([batches, studentsRes]) => {
+        if (active) {
+          const studentList = studentsRes.data?.data as unknown[] | undefined;
+          setCounts({ batches: batches.length, students: studentList?.length ?? 0 });
+        }
+      })
+      .catch(() => {
+        if (active) setCounts({ batches: 0, students: 0 });
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <div>
       <h3 className="text-2xl font-bold text-gray-900">Dashboard</h3>
@@ -45,13 +67,13 @@ function DashboardHome() {
       <div className="grid gap-6 mt-8 md:grid-cols-2 xl:grid-cols-3">
         <StatCard
           label="Total Batches"
-          value="--"
+          value={counts ? String(counts.batches) : '--'}
           href="/dashboard/batches"
           color="indigo"
         />
         <StatCard
           label="Total Students"
-          value="--"
+          value={counts ? String(counts.students) : '--'}
           href="/dashboard/students"
           color="emerald"
         />

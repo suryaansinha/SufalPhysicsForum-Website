@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, X } from 'lucide-react';
-import { fetchBatches, createBatch } from '../api/batch.api';
+import { Plus, X, Trash2, Loader2 } from 'lucide-react';
+import { fetchBatches, createBatch, deleteBatch } from '../api/batch.api';
 import type { Batch } from '../types';
 
 function isUnauthorized(err: unknown): boolean {
@@ -23,6 +23,7 @@ export default function BatchesPage() {
     feeAmount: '',
   });
   const [submitting, setSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -71,6 +72,33 @@ export default function BatchesPage() {
       setError('Failed to create batch');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (batch: Batch, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const enrolled = batch.enrollments?.length || 0;
+    const confirmMsg =
+      enrolled > 0
+        ? `Delete "${batch.name}"? This will also remove ${enrolled} enrolled student(s) and all related records. This cannot be undone.`
+        : `Delete "${batch.name}"? This cannot be undone.`;
+    if (!window.confirm(confirmMsg)) return;
+    setDeletingId(batch.id);
+    setError(null);
+    try {
+      await deleteBatch(batch.id);
+      setSuccessMsg(`Batch "${batch.name}" deleted`);
+      loadBatches();
+      setTimeout(() => setSuccessMsg(null), 3000);
+    } catch (err) {
+      if (isUnauthorized(err)) {
+        navigate('/login');
+        return;
+      }
+      setError('Failed to delete batch');
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -227,13 +255,28 @@ export default function BatchesPage() {
             <Link
               key={batch.id}
               to={`/dashboard/batches/${batch.id}`}
-              className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow block"
+              className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow block group"
             >
               <div className="flex items-start justify-between mb-3">
                 <h4 className="text-lg font-semibold text-gray-900">{batch.name}</h4>
-                <span className="text-xs font-medium px-2 py-1 bg-indigo-50 text-indigo-700 rounded-full">
-                  {batch.gradeLevel ? `Class ${batch.gradeLevel}` : 'All'}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium px-2 py-1 bg-indigo-50 text-indigo-700 rounded-full">
+                    {batch.gradeLevel ? `Class ${batch.gradeLevel}` : 'All'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => handleDelete(batch, e)}
+                    disabled={deletingId === batch.id}
+                    aria-label={`Delete ${batch.name}`}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                  >
+                    {deletingId === batch.id ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
               </div>
               <div className="space-y-2 text-sm text-gray-500">
                 {batch.targetExam && (

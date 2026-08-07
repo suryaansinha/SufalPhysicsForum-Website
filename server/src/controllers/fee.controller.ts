@@ -183,3 +183,95 @@ export async function getFeeStats(req: Request, res: Response): Promise<void> {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 }
+
+export async function getMyFees(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+
+    const enrollments = await prisma.enrollment.findMany({
+      where: { studentId: userId },
+      include: {
+        batch: {
+          select: {
+            id: true,
+            name: true,
+            gradeLevel: true,
+            subject: true,
+            timing: true,
+            feeAmount: true,
+          },
+        },
+      },
+      orderBy: { enrolledAt: 'desc' },
+    });
+
+    const payments = await prisma.feePayment.findMany({
+      where: { studentId: userId },
+      orderBy: { paymentDate: 'desc' },
+    });
+
+    res.json({ success: true, data: { enrollments, payments } });
+  } catch (error) {
+    console.error('Get my fees error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}
+
+export async function payFee(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+    const { batchId, amount, paymentMethod, monthFor, transactionId, remarks } =
+      req.body as CreateFeePaymentBody;
+
+    if (!batchId || !amount || !paymentMethod || !monthFor) {
+      res.status(400).json({
+        success: false,
+        message: 'batchId, amount, paymentMethod, and monthFor are required',
+      });
+      return;
+    }
+
+    if (isNaN(amount) || amount <= 0) {
+      res.status(400).json({ success: false, message: 'Amount must be a positive number' });
+      return;
+    }
+
+    const validPaymentMethods = ['CASH', 'UPI', 'BANK_TRANSFER', 'CHEQUE', 'CARD'];
+    if (!validPaymentMethods.includes(paymentMethod.toUpperCase())) {
+      res.status(400).json({
+        success: false,
+        message: `Invalid payment method. Must be one of: ${validPaymentMethods.join(', ')}`,
+      });
+      return;
+    }
+
+    const enrollment = await prisma.enrollment.findUnique({
+      where: { studentId_batchId: { studentId: userId, batchId } },
+      include: { batch: { select: { feeAmount: true } } },
+    });
+
+    if (!enrollment) {
+      res.status(404).json({ success: false, message: 'You are not enrolled in this batch' });
+      return;
+    }
+
+    const feePayment = await prisma.feePayment.create({
+      data: {
+        studentId: userId,
+        batchId,
+        amount,
+        paymentDate: new Date(),
+        paymentMethod: paymentMethod.toUpperCase(),
+        transactionId: transactionId || `TXN${Date.now()}`,
+        monthFor,
+        status: 'COMPLETED',
+        remarks: remarks || null,
+      },
+    });
+
+    res.status(201).json({ success: true, data: feePayment, message: 'Payment successful' });
+  } catch (error) {
+    console.error('Pay fee error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}

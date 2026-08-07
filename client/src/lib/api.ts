@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { InstitutePublic, FeePayment, FeeStats } from '../types';
+import type { InstitutePublic, FeePayment, FeeStats, MyFees } from '../types';
 
 const api = axios.create({
   baseURL: '/api/v1',
@@ -54,6 +54,23 @@ export const fetchFeeStats = async (): Promise<FeeStats> => {
 
 export const fetchFeePaymentsByBatch = async (batchId: string): Promise<FeePayment[]> => {
   const { data } = await api.get(`/fees/batch/${batchId}`);
+  return data.data;
+};
+
+export const fetchMyFees = async (): Promise<MyFees> => {
+  const { data } = await api.get('/fees/my');
+  return data.data;
+};
+
+export const payFee = async (payload: {
+  batchId: string;
+  amount: number;
+  paymentMethod: string;
+  monthFor: string;
+  transactionId?: string;
+  remarks?: string;
+}): Promise<FeePayment> => {
+  const { data } = await api.post('/fees/pay', payload);
   return data.data;
 };
 

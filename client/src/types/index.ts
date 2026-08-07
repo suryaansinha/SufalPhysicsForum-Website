@@ -153,3 +153,12 @@ export interface FeeStats {
   monthCollected: number;
   pendingCount: number;
 }
+
+export interface FeeEnrollment {
+  batch: Pick<Batch, 'id' | 'name' | 'gradeLevel' | 'subject' | 'timing' | 'feeAmount'>;
+}
+
+export interface MyFees {
+  enrollments: FeeEnrollment[];
+  payments: FeePayment[];
+}

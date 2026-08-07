@@ -3,6 +3,8 @@ import { Plus, IndianRupee, Calendar, TrendingUp, X, CheckCircle } from 'lucide-
 import type { FeePayment, FeeStats, Batch, Student } from '../../types';
 import { fetchFeeStats, fetchFeePaymentsByBatch, createFeePayment } from '../../lib/api';
 import api from '../../lib/api';
+import { isTeacherRole, getCurrentUserRole } from '../../lib/auth';
+import PaymentGateway from './PaymentGateway';
 
 const MONTHS = [
   'January 2026', 'February 2026', 'March 2026', 'April 2026',
@@ -12,7 +14,7 @@ const MONTHS = [
 
 const PAYMENT_METHODS = ['CASH', 'UPI', 'BANK_TRANSFER', 'CHEQUE', 'CARD'];
 
-export default function FeesPage() {
+function TeacherFeesView() {
   const [stats, setStats] = useState<FeeStats | null>(null);
   const [batches, setBatches] = useState<Batch[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
@@ -445,4 +447,12 @@ export default function FeesPage() {
       )}
     </div>
   );
+}
+
+export default function FeesPage() {
+  const role = getCurrentUserRole();
+  if (isTeacherRole(role)) {
+    return <TeacherFeesView />;
+  }
+  return <PaymentGateway />;
 }

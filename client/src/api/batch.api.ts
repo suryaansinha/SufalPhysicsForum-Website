@@ -24,6 +24,13 @@ export async function fetchBatch(batchId: string): Promise<Batch> {
   return data.data;
 }
 
+export async function deleteBatch(batchId: string): Promise<void> {
+  const { data } = await apiClient.delete<ApiResponse<{ id: string }>>(`/batches/${batchId}`);
+  if (!data.success) {
+    throw new Error(data.message || 'Failed to delete batch');
+  }
+}
+
 export async function createBatch(payload: CreateBatchPayload): Promise<Batch> {
   const { data } = await apiClient.post<ApiResponse<Batch>>('/batches', payload);
   if (!data.data) {
