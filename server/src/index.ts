@@ -10,6 +10,7 @@ import homeworkRoutes from './routes/homework.routes';
 import publicRoutes from './routes/public.routes';
 import feeRoutes from './routes/fee.routes';
 import forumRoutes from './routes/forum.routes';
+import instituteRoutes from './routes/institute.routes';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -30,6 +31,7 @@ app.use('/api/v1/homework', homeworkRoutes);
 app.use('/api/v1/public', publicRoutes);
 app.use('/api/v1/fees', feeRoutes);
 app.use('/api/v1/forum', forumRoutes);
+app.use('/api/v1/institute', instituteRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

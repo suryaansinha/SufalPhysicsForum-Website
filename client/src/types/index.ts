@@ -2,6 +2,14 @@ export interface Institute {
   id: string;
   name: string;
   slug: string;
+  phone?: string | null;
+  email?: string | null;
+  logoUrl?: string | null;
+  aboutDescription?: string | null;
+  experienceText?: string | null;
+  whatsappNumber?: string | null;
+  blogUrl?: string | null;
+  youtubeUrl?: string | null;
 }
 
 export interface User {
