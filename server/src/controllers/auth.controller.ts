@@ -1,9 +1,13 @@
 import { Request, Response } from 'express';
 import crypto from 'crypto';
+import { OAuth2Client } from 'google-auth-library';
 import { prisma } from '../lib/prisma';
 import { hashPassword, comparePassword } from '../utils/password';
 import { generateTokenPair, verifyRefreshToken, generateAccessToken } from '../utils/jwt';
 import { Role } from '../generated/prisma/client.js';
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 function generateSlug(name: string): string {
   return name
@@ -169,6 +173,93 @@ export async function login(req: Request, res: Response): Promise<void> {
     });
   } catch (error) {
     console.error('Login error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+export async function googleLogin(req: Request, res: Response): Promise<void> {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      res.status(400).json({ message: 'Google credential is required' });
+      return;
+    }
+
+    if (!GOOGLE_CLIENT_ID) {
+      res.status(500).json({ message: 'Google sign-in is not configured on the server' });
+      return;
+    }
+
+    let email: string | undefined;
+
+    try {
+      const ticket = await googleClient.verifyIdToken({
+        idToken: credential,
+        audience: GOOGLE_CLIENT_ID,
+      });
+      email = ticket.getPayload()?.email;
+    } catch {
+      res.status(401).json({ message: 'Invalid Google credential' });
+      return;
+    }
+
+    if (!email) {
+      res.status(401).json({ message: 'Google account has no email address' });
+      return;
+    }
+
+    const user = await prisma.user.findFirst({
+      where: { email },
+      include: { institute: true },
+    });
+
+    if (!user) {
+      res.status(403).json({ message: 'Account not registered by Institute' });
+      return;
+    }
+
+    if (!user.isActive) {
+      res.status(403).json({ message: 'Account is deactivated' });
+      return;
+    }
+
+    const tokenPayload = {
+      userId: user.id,
+      role: user.role,
+      instituteId: user.instituteId,
+    };
+
+    const tokens = generateTokenPair(tokenPayload);
+
+    const hashedToken = crypto.createHash('sha256').update(tokens.refreshToken).digest('hex');
+    await prisma.refreshToken.create({
+      data: {
+        userId: user.id,
+        token: hashedToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      },
+    });
+
+    res.json({
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        phone: user.phone,
+        isActive: user.isActive,
+      },
+      institute: {
+        id: user.institute.id,
+        name: user.institute.name,
+        slug: user.institute.slug,
+      },
+    });
+  } catch (error) {
+    console.error('Google login error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }

@@ -1,14 +1,34 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { GoogleLogin } from '@react-oauth/google';
+import type { CredentialResponse } from '@react-oauth/google';
 import { BookOpen, AlertCircle, Loader2 } from 'lucide-react';
+
+interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: { name?: string; email?: string };
+}
+
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 export default function LoginPage() {
   const [email, setEmail] = useState('teacher@sufal.com'); // Pre-filled for MVP testing
   const [password, setPassword] = useState('Password123!');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
+
+  const storeAuthData = (data: LoginResponse) => {
+    localStorage.setItem('accessToken', data.accessToken);
+    if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    localStorage.setItem('userName', data.user.name || '');
+    localStorage.setItem('userEmail', data.user.email || '');
+    navigate('/dashboard');
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,11 +47,7 @@ export default function LoginPage() {
       // Store the token for subsequent protected API calls.
       // The centralized apiClient interceptor reads these keys
       // to attach the Authorization header automatically.
-      localStorage.setItem('accessToken', accessToken);
-      if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('userName', user.name || '');
-      localStorage.setItem('userEmail', user.email || '');
+      storeAuthData({ accessToken, refreshToken, user });
 
       // Route to dashboard
       navigate('/dashboard');
@@ -39,6 +55,29 @@ export default function LoginPage() {
       setError(err.response?.data?.message || err.response?.data?.error || 'Failed to login. Please check your credentials.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    const credential = credentialResponse.credential;
+    if (!credential) {
+      setError('Google sign-in did not return a credential. Please try again.');
+      return;
+    }
+    setError('');
+    setIsGoogleLoading(true);
+    try {
+      const response = await axios.post('/api/v1/auth/google', { credential });
+      const { accessToken, refreshToken, user } = response.data;
+      storeAuthData({ accessToken, refreshToken, user });
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message ||
+          err.response?.data?.error ||
+          'Google sign-in failed. Please try again.'
+      );
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 
@@ -116,6 +155,38 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
+
+        {googleClientId && (
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">or continue with</span>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              {isGoogleLoading ? (
+                <div className="w-full flex justify-center py-2.5">
+                  <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+                </div>
+              ) : (
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() =>
+                    setError('Google sign-in failed. Please try again.')
+                  }
+                  theme="outline"
+                  shape="rectangular"
+                  text="continue_with"
+                  width="100%"
+                />
+              )}
+            </div>
+          </div>
+        )}
 
         <div className="text-center mt-4">
           <Link to="/" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">

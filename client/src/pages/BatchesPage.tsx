@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, X, Trash2, Loader2 } from 'lucide-react';
 import { fetchBatches, createBatch, deleteBatch } from '../api/batch.api';
+import { isTeacherRole, getCurrentUserRole } from '../lib/auth';
 import type { Batch } from '../types';
 
 function isUnauthorized(err: unknown): boolean {
@@ -26,6 +27,7 @@ export default function BatchesPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const navigate = useNavigate();
+  const canManageBatches = isTeacherRole(getCurrentUserRole());
 
   const loadBatches = useCallback(() => {
     setLoading(true);
@@ -263,19 +265,21 @@ export default function BatchesPage() {
                   <span className="text-xs font-medium px-2 py-1 bg-indigo-50 text-indigo-700 rounded-full">
                     {batch.gradeLevel ? `Class ${batch.gradeLevel}` : 'All'}
                   </span>
-                  <button
-                    type="button"
-                    onClick={(e) => handleDelete(batch, e)}
-                    disabled={deletingId === batch.id}
-                    aria-label={`Delete ${batch.name}`}
-                    className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
-                  >
-                    {deletingId === batch.id ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="w-4 h-4" />
-                    )}
-                  </button>
+                  {canManageBatches && (
+                    <button
+                      type="button"
+                      onClick={(e) => handleDelete(batch, e)}
+                      disabled={deletingId === batch.id}
+                      aria-label={`Delete ${batch.name}`}
+                      className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                    >
+                      {deletingId === batch.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="space-y-2 text-sm text-gray-500">
