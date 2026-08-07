@@ -141,9 +141,8 @@ export default function Settings() {
 
       {toast && (
         <div
-          className={`fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg px-4 py-3 shadow-lg border ${
-            toast.type === 'success' ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'
-          }`}
+          className={`fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg px-4 py-3 shadow-lg border ${toast.type === 'success' ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'
+            }`}
         >
           {toast.type === 'success' ? (
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
@@ -151,9 +150,8 @@ export default function Settings() {
             <AlertCircle className="w-4 h-4 text-red-600" />
           )}
           <span
-            className={`text-sm font-medium ${
-              toast.type === 'success' ? 'text-emerald-700' : 'text-red-700'
-            }`}
+            className={`text-sm font-medium ${toast.type === 'success' ? 'text-emerald-700' : 'text-red-700'
+              }`}
           >
             {toast.message}
           </span>
