@@ -1,5 +1,7 @@
 import LoginPage from './pages/public/LoginPage';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, Navigate } from 'react-router-dom';
+import { isTeacherRole, getCurrentUserRole } from './lib/auth';
+import type { ReactNode } from 'react';
 import DashboardLayout from './components/DashboardLayout';
 import PublicLayout from './components/PublicLayout';
 import HomePage from './pages/public/HomePage';
@@ -75,6 +77,13 @@ function StatCard({ label, value, href, color }: { label: string; value: string;
   );
 }
 
+function RequireTeacherRole({ children }: { children: ReactNode }) {
+  if (isTeacherRole(getCurrentUserRole())) {
+    return <>{children}</>;
+  }
+  return <Navigate to="/dashboard" replace />;
+}
+
 export default function App() {
   return (
     <Routes>
@@ -90,7 +99,14 @@ export default function App() {
         <Route path="attendance" element={<Attendance />} />
         <Route path="fees" element={<FeesPage />} />
         <Route path="doubt-forum" element={<DoubtForum />} />
-        <Route path="settings" element={<Settings />} />
+        <Route
+          path="settings"
+          element={
+            <RequireTeacherRole>
+              <Settings />
+            </RequireTeacherRole>
+          }
+        />
       </Route>
       <Route path="/dashboard/batches/:batchId/live/:liveClassId" element={<LiveClassRoom />} />
     </Routes>

@@ -1,19 +1,29 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Users, BookOpen, ClipboardCheck, IndianRupee, HelpCircle, Settings as SettingsIcon, LogOut } from 'lucide-react';
+import { getCurrentUserRole, isTeacherRole } from '../lib/auth';
 
-const sidebarLinks = [
+interface SidebarLink {
+  to: string;
+  icon: typeof LayoutDashboard;
+  label: string;
+  adminOnly?: boolean;
+}
+
+const sidebarLinks: SidebarLink[] = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/dashboard/batches', icon: BookOpen, label: 'Batches' },
   { to: '/dashboard/students', icon: Users, label: 'Students' },
   { to: '/dashboard/attendance', icon: ClipboardCheck, label: 'Attendance' },
   { to: '/dashboard/fees', icon: IndianRupee, label: 'Fees' },
   { to: '/dashboard/doubt-forum', icon: HelpCircle, label: 'Doubt Forum' },
-  { to: '/dashboard/settings', icon: SettingsIcon, label: 'Settings' },
+  { to: '/dashboard/settings', icon: SettingsIcon, label: 'Settings', adminOnly: true },
 ];
 
 export default function DashboardLayout() {
   const navigate = useNavigate();
   const userName = localStorage.getItem('userName') || 'User';
+  const canManageSettings = isTeacherRole(getCurrentUserRole());
+  const visibleLinks = sidebarLinks.filter((link) => !link.adminOnly || canManageSettings);
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
@@ -29,7 +39,7 @@ export default function DashboardLayout() {
           <h1 className="text-lg font-bold text-indigo-600">SufalPhysicsForum</h1>
         </div>
         <nav className="flex-1 py-6 px-4 space-y-1">
-          {sidebarLinks.map((link) => (
+          {visibleLinks.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}

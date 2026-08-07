@@ -120,7 +120,7 @@ export default function Settings() {
       }
       const updated = await updateInstituteSettings(formData);
       applyInstitute(updated);
-      setToast({ type: 'success', message: 'Institute settings saved successfully.' });
+      window.location.reload();
     } catch (error) {
       const message =
         error instanceof Error ? error.message : 'Failed to save institute settings.';
