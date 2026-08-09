@@ -1,9 +1,20 @@
+import crypto from 'crypto';
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { hashPassword } from '../utils/password';
 import { Prisma, Role } from '../generated/prisma/client.js';
 
-const TEMP_STUDENT_PASSWORD = 'sufal123!';
+const PASSWORD_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+
+function generateTempPassword(): string {
+  const length = 8 + Math.floor(Math.random() * 3);
+  const bytes = crypto.randomBytes(length);
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    password += PASSWORD_CHARS[bytes[i] % PASSWORD_CHARS.length];
+  }
+  return password;
+}
 
 export async function listStudents(req: Request, res: Response): Promise<void> {
   try {
@@ -55,7 +66,8 @@ export async function createStudent(req: Request, res: Response): Promise<void> 
       return;
     }
 
-    const passwordHash = await hashPassword(TEMP_STUDENT_PASSWORD);
+    const tempPassword = generateTempPassword();
+    const passwordHash = await hashPassword(tempPassword);
 
     const student = await prisma.user.create({
       data: {
@@ -102,7 +114,7 @@ export async function createStudent(req: Request, res: Response): Promise<void> 
       },
     });
 
-    res.status(201).json({ success: true, data: created });
+    res.status(201).json({ success: true, data: { student: created, tempPassword } });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
       res.status(409).json({ success: false, message: 'A user with this email already exists in your institute' });

@@ -13,8 +13,13 @@ export async function fetchStudents(): Promise<Student[]> {
   return data.data ?? [];
 }
 
-export async function createStudent(payload: CreateStudentPayload): Promise<Student> {
-  const { data } = await apiClient.post<ApiResponse<Student>>('/students', payload);
+export interface CreateStudentResult {
+  student: Student;
+  tempPassword: string;
+}
+
+export async function createStudent(payload: CreateStudentPayload): Promise<CreateStudentResult> {
+  const { data } = await apiClient.post<ApiResponse<CreateStudentResult>>('/students', payload);
   if (!data.data) {
     throw new Error(data.message || 'Failed to create student');
   }
