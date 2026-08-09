@@ -24,9 +24,9 @@ const PAYMENT_METHODS = [
 ];
 
 const inputClass =
-  'w-full px-3 py-2.5 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100 placeholder-slate-500';
+  'w-full px-3 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 dark:placeholder-slate-500';
 
-const labelClass = 'block text-sm font-medium text-slate-300 mb-1.5';
+const labelClass = 'block text-sm font-medium text-slate-700 mb-1.5 dark:text-slate-300';
 
 export default function PaymentGateway() {
   const [myFees, setMyFees] = useState<MyFees | null>(null);
@@ -120,7 +120,7 @@ export default function PaymentGateway() {
   return (
     <div>
       <div className="mb-6">
-        <h3 className="text-2xl font-bold text-slate-100">Fee Payment</h3>
+        <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Fee Payment</h3>
         <p className="text-sm text-slate-500 mt-1">Pay your monthly fees securely</p>
       </div>
 
@@ -128,8 +128,8 @@ export default function PaymentGateway() {
         <div
           className={`mb-6 flex items-center gap-2 rounded-lg border px-4 py-3 backdrop-blur-xl ${
             message.type === 'success'
-              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-              : 'bg-red-500/10 border-red-500/30 text-red-300'
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+              : 'bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-300'
           }`}
         >
           {message.type === 'success' ? (
@@ -142,16 +142,16 @@ export default function PaymentGateway() {
       )}
 
       {enrollments.length === 0 ? (
-        <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-12 text-center">
-          <BookOpen className="mx-auto h-12 w-12 text-slate-600" />
+        <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 p-12 text-center dark:bg-slate-900/40 dark:border-slate-700/50">
+          <BookOpen className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-600" />
           <p className="text-slate-500 mt-4">You are not enrolled in any batch yet.</p>
         </div>
       ) : (
         <div className="grid gap-6 lg:grid-cols-5">
-          <div className="lg:col-span-3 bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6">
+          <div className="lg:col-span-3 bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 p-6 dark:bg-slate-900/40 dark:border-slate-700/50">
             <div className="flex items-center gap-2 mb-5">
               <CreditCard className="w-5 h-5 text-yellow-400" />
-              <h4 className="text-base font-semibold text-slate-100">Payment Details</h4>
+              <h4 className="text-base font-semibold text-slate-900 dark:text-slate-100">Payment Details</h4>
             </div>
 
             <form onSubmit={handlePay} className="space-y-5">
@@ -225,8 +225,8 @@ export default function PaymentGateway() {
                       onClick={() => setPaymentMethod(method.value)}
                       className={`flex items-center justify-center px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
                         paymentMethod === method.value
-                          ? 'border-yellow-500 bg-yellow-500/10 text-yellow-300 ring-1 ring-yellow-500'
-                          : 'border-slate-700 bg-slate-900/60 text-slate-400 hover:bg-slate-800/60'
+                          ? 'border-yellow-500 bg-yellow-500/10 text-yellow-600 ring-1 ring-yellow-500 dark:text-yellow-300'
+                          : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-200/80 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-400 dark:hover:bg-slate-800/60'
                       }`}
                     >
                       {method.label}
@@ -249,21 +249,21 @@ export default function PaymentGateway() {
             </form>
           </div>
 
-          <div className="lg:col-span-2 bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-700/50">
-              <h4 className="text-base font-semibold text-slate-100">Payment History</h4>
+          <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 overflow-hidden dark:bg-slate-900/40 dark:border-slate-700/50">
+            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700/50">
+              <h4 className="text-base font-semibold text-slate-900 dark:text-slate-100">Payment History</h4>
             </div>
-            <div className="divide-y divide-slate-800 max-h-96 overflow-y-auto">
+            <div className="divide-y divide-slate-200 max-h-96 overflow-y-auto dark:divide-slate-800">
               {(myFees?.payments?.length ?? 0) === 0 ? (
                 <p className="px-6 py-8 text-center text-sm text-slate-500">No payments yet.</p>
               ) : (
                 myFees?.payments.map((payment) => (
                   <div key={payment.id} className="px-6 py-4">
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-medium text-slate-100">
+                      <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
                         ₹{payment.amount}
                       </p>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-500/20 text-green-300">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-500/15 text-green-700 dark:bg-green-500/20 dark:text-green-300">
                         {payment.status}
                       </span>
                     </div>

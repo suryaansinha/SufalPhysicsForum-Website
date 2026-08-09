@@ -16,7 +16,7 @@ interface Credentials {
 }
 
 const inputClass =
-  'w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100';
+  'w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-900 dark:text-slate-100';
 
 const LOGIN_URL = 'https://yourdomain.com/login';
 
@@ -119,15 +119,15 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-slate-900/80 backdrop-blur-xl rounded-xl shadow-2xl border border-slate-700/50 w-full max-w-lg mx-4 p-6">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-2xl border border-slate-200 w-full max-w-lg mx-4 p-6 dark:bg-slate-900/80 dark:border-slate-700/50">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-lg font-semibold text-slate-100">
+          <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
             {credentials ? 'Student Added' : 'Add Student'}
           </h4>
           <button
             type="button"
             onClick={handleClose}
-            className="text-slate-400 hover:text-slate-200"
+            className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -138,32 +138,32 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
           <div className="space-y-5">
             <div className="flex items-start gap-3">
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-500/10 shrink-0">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-100">
+                <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
                   {createdStudent?.name} is now enrolled.
                 </p>
-                <p className="text-sm text-slate-400 mt-0.5">
+                <p className="text-sm text-slate-600 dark:text-slate-400 mt-0.5">
                   Share these temporary credentials with the student via WhatsApp or Email.
                 </p>
               </div>
             </div>
 
-            <div className="space-y-3 bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
+            <div className="space-y-3 bg-slate-100/70 border border-slate-200 rounded-xl p-4 dark:bg-slate-800/50 dark:border-slate-700/50">
               <div>
-                <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Email</p>
-                <p className="text-sm font-semibold text-slate-100 mt-0.5 break-all">
+                <p className="text-xs font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider">Email</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-0.5 break-all">
                   {credentials.email}
                 </p>
               </div>
-              <div className="border-t border-slate-700/50 pt-3">
-                <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Password</p>
+              <div className="border-t border-slate-200 pt-3 dark:border-slate-700/50">
+                <p className="text-xs font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider">Password</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <p className="text-sm font-semibold text-slate-100 font-mono">
+                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 font-mono">
                     {credentials.password}
                   </p>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-300 shrink-0">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-700 dark:text-yellow-300 shrink-0">
                     Temporary Password
                   </span>
                 </div>
@@ -178,7 +178,7 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
               <button
                 type="button"
                 onClick={handleClose}
-                className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/60 rounded-lg hover:bg-slate-700/60 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200/80 dark:text-slate-300 dark:bg-slate-800/60 dark:hover:bg-slate-700/60 transition-colors"
               >
                 Close
               </button>
@@ -199,7 +199,7 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Full Name *</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Name *</label>
               <input
                 type="text"
                 value={form.name}
@@ -210,7 +210,7 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Email Address *</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email Address *</label>
               <input
                 type="email"
                 value={form.email}
@@ -221,7 +221,7 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Phone Number</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Phone Number</label>
               <input
                 type="tel"
                 value={form.phone}
@@ -231,7 +231,7 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Batch</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Batch</label>
               <select
                 value={form.batchId}
                 onChange={(e) => setForm({ ...form, batchId: e.target.value })}
@@ -248,7 +248,7 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
             </div>
 
             {error && (
-              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 text-sm text-red-300">
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 text-sm text-red-600 dark:text-red-300">
                 {error}
               </div>
             )}
@@ -257,7 +257,7 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/60 rounded-lg hover:bg-slate-700/60 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200/80 dark:text-slate-300 dark:bg-slate-800/60 dark:hover:bg-slate-700/60 transition-colors"
               >
                 Cancel
               </button>

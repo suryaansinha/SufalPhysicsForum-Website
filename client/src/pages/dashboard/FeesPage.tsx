@@ -132,7 +132,7 @@ function TeacherFeesView() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-100">Fee Management</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Fee Management</h1>
         <button
           onClick={() => setShowModal(true)}
           disabled={!selectedBatch}
@@ -144,55 +144,55 @@ function TeacherFeesView() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        <div className="bg-slate-900/40 backdrop-blur-xl p-6 rounded-xl border border-slate-700/50">
+        <div className="bg-white/70 backdrop-blur-xl p-6 rounded-xl border border-slate-200 dark:bg-slate-900/40 dark:border-slate-700/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-400">Collected This Month</p>
-              <p className="text-2xl font-bold text-slate-100 mt-1">
+              <p className="text-sm text-slate-600 dark:text-slate-400">Collected This Month</p>
+              <p className="text-2xl font-bold text-slate-900 mt-1 dark:text-slate-100">
                 {formatCurrency(stats?.monthCollected || 0)}
               </p>
             </div>
             <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-green-400" />
+              <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-900/40 backdrop-blur-xl p-6 rounded-xl border border-slate-700/50">
+        <div className="bg-white/70 backdrop-blur-xl p-6 rounded-xl border border-slate-200 dark:bg-slate-900/40 dark:border-slate-700/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-400">Total Collected</p>
-              <p className="text-2xl font-bold text-slate-100 mt-1">
+              <p className="text-sm text-slate-600 dark:text-slate-400">Total Collected</p>
+              <p className="text-2xl font-bold text-slate-900 mt-1 dark:text-slate-100">
                 {formatCurrency(stats?.totalCollected || 0)}
               </p>
             </div>
             <div className="w-12 h-12 bg-blue-600/30 rounded-lg flex items-center justify-center">
-              <IndianRupee className="w-6 h-6 text-blue-300" />
+              <IndianRupee className="w-6 h-6 text-blue-600 dark:text-blue-300" />
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-900/40 backdrop-blur-xl p-6 rounded-xl border border-slate-700/50">
+        <div className="bg-white/70 backdrop-blur-xl p-6 rounded-xl border border-slate-200 dark:bg-slate-900/40 dark:border-slate-700/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-400">Pending Payments</p>
-              <p className="text-2xl font-bold text-slate-100 mt-1">{stats?.pendingCount || 0}</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Pending Payments</p>
+              <p className="text-2xl font-bold text-slate-900 mt-1 dark:text-slate-100">{stats?.pendingCount || 0}</p>
             </div>
             <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-orange-400" />
+              <Calendar className="w-6 h-6 text-orange-600 dark:text-orange-400" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6">
+      <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 p-6 dark:bg-slate-900/40 dark:border-slate-700/50">
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Select Batch</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2 dark:text-slate-300">Select Batch</label>
             <select
               value={selectedBatch}
               onChange={(e) => setSelectedBatch(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-slate-900/60 text-slate-100"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
             >
               <option value="">Choose a batch</option>
               {batches.map((batch) => (
@@ -204,11 +204,11 @@ function TeacherFeesView() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Filter by Month</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2 dark:text-slate-300">Filter by Month</label>
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-slate-900/60 text-slate-100"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
             >
               {MONTHS.map((month) => (
                 <option key={month} value={month}>
@@ -220,35 +220,35 @@ function TeacherFeesView() {
         </div>
       </div>
 
-      <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-700/50">
-          <h2 className="text-lg font-semibold text-slate-100">Payment Records</h2>
+      <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 overflow-hidden dark:bg-slate-900/40 dark:border-slate-700/50">
+        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700/50">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Payment Records</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-800/40">
+            <thead className="bg-slate-100 dark:bg-slate-800/40">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider dark:text-slate-400">
                   Student
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider dark:text-slate-400">
                   Amount
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider dark:text-slate-400">
                   Method
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider dark:text-slate-400">
                   Month
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider dark:text-slate-400">
                   Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider dark:text-slate-400">
                   Status
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
               {filteredPayments.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
@@ -257,37 +257,37 @@ function TeacherFeesView() {
                 </tr>
               ) : (
                 filteredPayments.map((payment) => (
-                  <tr key={payment.id} className="hover:bg-slate-800/40">
+                  <tr key={payment.id} className="hover:bg-slate-100 dark:hover:bg-slate-800/40">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <p className="text-sm font-medium text-slate-100">{payment.student.name}</p>
+                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{payment.student.name}</p>
                         <p className="text-xs text-slate-500">{payment.student.email}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-semibold text-slate-100">
+                      <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                         {formatCurrency(payment.amount)}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-600/30 text-blue-300">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-600/10 text-blue-700 dark:bg-blue-600/30 dark:text-blue-300">
                         {payment.paymentMethod.replace('_', ' ')}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">
                       {payment.monthFor}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">
                       {new Date(payment.paymentDate).toLocaleDateString('en-IN')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {payment.status === 'COMPLETED' ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/20 text-green-300">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/15 text-green-700 dark:bg-green-500/20 dark:text-green-300">
                           <CheckCircle className="w-3 h-3 mr-1" />
                           Completed
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-500/20 text-orange-300">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-500/15 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300">
                           {payment.status}
                         </span>
                       )}
@@ -304,25 +304,25 @@ function TeacherFeesView() {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
             <div className="fixed inset-0 transition-opacity bg-slate-950/75 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-            <div className="relative inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-xl">
+            <div className="relative inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl dark:bg-slate-900/80 dark:border-slate-700/50">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-slate-100">Record Payment</h3>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Record Payment</h3>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="text-slate-400 hover:text-slate-200"
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">
                     Student <span className="text-red-400">*</span>
                   </label>
                   <select
                     value={formData.studentId}
                     onChange={(e) => setFormData({ ...formData, studentId: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-slate-900/60 text-slate-100"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                     required
                   >
                     <option value="">Select student</option>
@@ -335,14 +335,14 @@ function TeacherFeesView() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">
                     Amount (₹) <span className="text-red-400">*</span>
                   </label>
                   <input
                     type="number"
                     value={formData.amount}
                     onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-slate-900/60 text-slate-100"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                     placeholder="0"
                     min="0"
                     step="0.01"
@@ -351,13 +351,13 @@ function TeacherFeesView() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">
                     Payment Method <span className="text-red-400">*</span>
                   </label>
                   <select
                     value={formData.paymentMethod}
                     onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-slate-900/60 text-slate-100"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                     required
                   >
                     {PAYMENT_METHODS.map((method) => (
@@ -369,25 +369,25 @@ function TeacherFeesView() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">
                     Payment Date
                   </label>
                   <input
                     type="date"
                     value={formData.paymentDate}
                     onChange={(e) => setFormData({ ...formData, paymentDate: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-slate-900/60 text-slate-100"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">
                     Month For <span className="text-red-400">*</span>
                   </label>
                   <select
                     value={formData.monthFor}
                     onChange={(e) => setFormData({ ...formData, monthFor: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-slate-900/60 text-slate-100"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                     required
                   >
                     {MONTHS.map((month) => (
@@ -399,26 +399,26 @@ function TeacherFeesView() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">
                     Transaction ID / Cheque No.
                   </label>
                   <input
                     type="text"
                     value={formData.transactionId}
                     onChange={(e) => setFormData({ ...formData, transactionId: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-slate-900/60 text-slate-100"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                     placeholder="Optional"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">
                     Remarks
                   </label>
                   <textarea
                     value={formData.remarks}
                     onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-slate-900/60 text-slate-100"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                     rows={2}
                     placeholder="Optional notes"
                   />
@@ -428,7 +428,7 @@ function TeacherFeesView() {
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/60 rounded-lg hover:bg-slate-700/60 transition-colors"
+                    className="flex-1 px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200/80 transition-colors dark:text-slate-300 dark:bg-slate-800/60 dark:hover:bg-slate-700/60"
                   >
                     Cancel
                   </button>

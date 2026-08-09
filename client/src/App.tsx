@@ -63,8 +63,8 @@ function DashboardHome() {
 
   return (
     <div>
-      <h3 className="text-2xl font-bold text-slate-100">Dashboard</h3>
-      <p className="text-sm text-slate-400 mt-1">Welcome to SufalPhysicsForum</p>
+      <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Dashboard</h3>
+      <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Welcome to SufalPhysicsForum</p>
       <div className="grid gap-6 mt-8 md:grid-cols-2 xl:grid-cols-3">
         <StatCard
           label="Total Batches"
@@ -85,17 +85,17 @@ function DashboardHome() {
 
 function StatCard({ label, value, href, color }: { label: string; value: string; href: string; color: string }) {
   const colorMap: Record<string, string> = {
-    indigo: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30',
-    emerald: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
+    indigo: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/30 dark:text-indigo-300',
+    emerald: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30 dark:text-emerald-300',
   };
 
   return (
     <Link
       to={href}
-      className={`rounded-xl border border-slate-700/50 bg-slate-900/40 backdrop-blur-xl p-6 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 ease-in-out hover:-translate-y-1 ${colorMap[color] || colorMap.indigo}`}
+      className={`rounded-xl border border-slate-200 bg-white/70 backdrop-blur-xl p-6 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 ease-in-out hover:-translate-y-1 dark:border-slate-700/50 dark:bg-slate-900/40 ${colorMap[color] || colorMap.indigo}`}
     >
       <p className="text-sm font-medium opacity-80">{label}</p>
-      <p className="text-3xl font-bold mt-2">{value}</p>
+      <p className="text-3xl font-bold mt-2 text-slate-900 dark:text-slate-100">{value}</p>
     </Link>
   );
 }

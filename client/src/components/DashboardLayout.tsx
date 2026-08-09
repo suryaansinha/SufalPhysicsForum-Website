@@ -18,16 +18,16 @@ export default function DashboardLayout() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden text-slate-900 dark:text-slate-100">
       <Sidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         userName={userName}
         canManageSettings={canManageSettings}
       />
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden bg-slate-100/70 dark:bg-transparent">
         <Header onMenuClick={() => setSidebarOpen(true)} onLogout={handleLogout} />
-        <main className="flex-1 overflow-auto p-4 sm:p-8">
+        <main className="flex-1 overflow-auto p-4 sm:p-8 bg-slate-100/80 dark:bg-transparent">
           <Outlet />
         </main>
       </div>

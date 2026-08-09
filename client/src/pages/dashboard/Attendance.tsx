@@ -21,28 +21,28 @@ const STATUS_OPTIONS: {
     value: 'PRESENT',
     label: 'Present',
     activeClass: 'bg-emerald-500 text-slate-950 shadow-sm shadow-emerald-500/30 border-emerald-500',
-    inactiveClass: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/20',
+    inactiveClass: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/30 hover:bg-emerald-500/20 dark:text-emerald-300',
     dotClass: 'bg-emerald-500',
   },
   {
     value: 'ABSENT',
     label: 'Absent',
     activeClass: 'bg-red-500 text-white shadow-sm shadow-red-500/30 border-red-500',
-    inactiveClass: 'bg-red-500/10 text-red-300 border-red-500/30 hover:bg-red-500/20',
+    inactiveClass: 'bg-red-500/10 text-red-700 border-red-500/30 hover:bg-red-500/20 dark:text-red-300',
     dotClass: 'bg-red-500',
   },
   {
     value: 'LATE',
     label: 'Late',
     activeClass: 'bg-amber-400 text-slate-950 shadow-sm shadow-amber-400/30 border-amber-400',
-    inactiveClass: 'bg-amber-400/10 text-amber-300 border-amber-400/30 hover:bg-amber-400/20',
+    inactiveClass: 'bg-amber-400/10 text-amber-700 border-amber-400/30 hover:bg-amber-400/20 dark:text-amber-300',
     dotClass: 'bg-amber-400',
   },
   {
     value: 'EXCUSED',
     label: 'Excused',
     activeClass: 'bg-blue-500 text-white shadow-sm shadow-blue-500/30 border-blue-500',
-    inactiveClass: 'bg-blue-500/10 text-blue-300 border-blue-500/30 hover:bg-blue-500/20',
+    inactiveClass: 'bg-blue-500/10 text-blue-700 border-blue-500/30 hover:bg-blue-500/20 dark:text-blue-300',
     dotClass: 'bg-blue-500',
   },
 ];
@@ -68,11 +68,11 @@ const StudentRow = memo(function StudentRow({
   return (
     <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3 min-w-0">
-        <div className="w-9 h-9 rounded-full bg-blue-600/30 flex items-center justify-center text-sm font-semibold text-blue-300 shrink-0">
+        <div className="w-9 h-9 rounded-full bg-blue-600/30 flex items-center justify-center text-sm font-semibold text-blue-600 dark:text-blue-300 shrink-0">
           {initials(student.name)}
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-medium text-slate-100 truncate">{student.name}</p>
+          <p className="text-sm font-medium text-slate-900 truncate dark:text-slate-100">{student.name}</p>
           <p className="text-xs text-slate-500 truncate">{student.email}</p>
         </div>
       </div>
@@ -212,7 +212,7 @@ export default function Attendance() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-2xl font-bold text-slate-100">Attendance</h3>
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Attendance</h3>
           <p className="text-sm text-slate-500 mt-1">Mark daily attendance for your batch</p>
         </div>
       </div>
@@ -226,13 +226,13 @@ export default function Attendance() {
           }`}
         >
           {toast.type === 'success' ? (
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           ) : (
-            <AlertCircle className="w-4 h-4 text-red-400" />
+            <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
           )}
           <span
             className={`text-sm font-medium ${
-              toast.type === 'success' ? 'text-emerald-300' : 'text-red-300'
+              toast.type === 'success' ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'
             }`}
           >
             {toast.message}
@@ -240,14 +240,14 @@ export default function Attendance() {
         </div>
       )}
 
-      <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-4 mb-6">
+      <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 p-4 mb-6 dark:bg-slate-900/40 dark:border-slate-700/50">
         <div className="flex flex-col sm:flex-row sm:items-end gap-4">
           <div className="flex-1 min-w-0 sm:max-w-xs">
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">Select Batch</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5 dark:text-slate-300">Select Batch</label>
             <select
               value={selectedBatchId}
               onChange={(e) => setSelectedBatchId(e.target.value)}
-              className="w-full px-3 py-2.5 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100"
+              className="w-full px-3 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
             >
               <option value="">Choose a batch...</option>
               {batches.map((b) => (
@@ -258,12 +258,12 @@ export default function Attendance() {
             </select>
           </div>
           <div className="w-full sm:w-48">
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">Date</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5 dark:text-slate-300">Date</label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2.5 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100"
+              className="w-full px-3 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
             />
           </div>
         </div>
@@ -288,8 +288,8 @@ export default function Attendance() {
               return (
                 <div key={opt.value} className="flex items-center gap-2 text-sm">
                   <span className={`w-3 h-3 rounded-full ${opt.dotClass}`} />
-                  <span className="text-slate-400">
-                    {opt.label}: <span className="font-semibold text-slate-100">{count}</span>
+                  <span className="text-slate-600 dark:text-slate-400">
+                    {opt.label}: <span className="font-semibold text-slate-900 dark:text-slate-100">{count}</span>
                   </span>
                 </div>
               );
@@ -300,8 +300,8 @@ export default function Attendance() {
             </div>
           </div>
 
-          <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 overflow-hidden mb-6">
-            <div className="divide-y divide-slate-800">
+          <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 overflow-hidden mb-6 dark:bg-slate-900/40 dark:border-slate-700/50">
+            <div className="divide-y divide-slate-200 dark:divide-slate-800">
               {students.map((student) => (
                 <StudentRow
                   key={student.id}
@@ -327,15 +327,15 @@ export default function Attendance() {
       )}
 
       {!loading && selectedBatchId && students.length === 0 && (
-        <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-12 text-center">
-          <Users className="mx-auto h-12 w-12 text-slate-600" />
+        <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 p-12 text-center dark:bg-slate-900/40 dark:border-slate-700/50">
+          <Users className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-600" />
           <p className="text-slate-500 mt-4">No students enrolled in this batch.</p>
         </div>
       )}
 
       {!loading && !selectedBatchId && (
-        <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-12 text-center">
-          <CalendarDays className="mx-auto h-12 w-12 text-slate-600" />
+        <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 p-12 text-center dark:bg-slate-900/40 dark:border-slate-700/50">
+          <CalendarDays className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-600" />
           <p className="text-slate-500 mt-4">Select a batch and date to start taking attendance.</p>
         </div>
       )}

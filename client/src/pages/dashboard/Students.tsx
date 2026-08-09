@@ -40,7 +40,7 @@ export default function Students() {
 
   if (error) {
     return (
-      <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-300 text-sm">
+      <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-600 dark:text-red-300 text-sm">
         {error}
       </div>
     );
@@ -50,7 +50,7 @@ export default function Students() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-2xl font-bold text-slate-100">Students</h3>
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Students</h3>
           <p className="text-sm text-slate-500 mt-1">{students.length} student{students.length !== 1 ? 's' : ''} enrolled</p>
         </div>
         {canManageStudents && (
@@ -65,38 +65,38 @@ export default function Students() {
       </div>
 
       {students.length === 0 ? (
-        <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-12 text-center">
+        <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 p-12 text-center dark:bg-slate-900/40 dark:border-slate-700/50">
           <UsersPlaceholder />
           <p className="text-slate-500 mt-4">No students enrolled yet.</p>
         </div>
       ) : (
-        <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 overflow-hidden">
+        <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 overflow-hidden dark:bg-slate-900/40 dark:border-slate-700/50">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-700/50 bg-slate-800/40">
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                <tr className="border-b border-slate-200 bg-slate-100 dark:border-slate-700/50 dark:bg-slate-800/40">
+                  <th className="text-left px-6 py-3 text-xs font-semibold text-slate-600 uppercase tracking-wider dark:text-slate-400">
                     Name
                   </th>
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  <th className="text-left px-6 py-3 text-xs font-semibold text-slate-600 uppercase tracking-wider dark:text-slate-400">
                     Contact
                   </th>
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  <th className="text-left px-6 py-3 text-xs font-semibold text-slate-600 uppercase tracking-wider dark:text-slate-400">
                     Enrolled Batches
                   </th>
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  <th className="text-left px-6 py-3 text-xs font-semibold text-slate-600 uppercase tracking-wider dark:text-slate-400">
                     Status
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {students.map((student) => (
-                  <tr key={student.id} className="hover:bg-slate-800/40 transition-colors">
+                  <tr key={student.id} className="hover:bg-slate-100 transition-colors dark:hover:bg-slate-800/40">
                     <td className="px-6 py-4">
-                      <div className="font-medium text-slate-100">{student.name}</div>
+                      <div className="font-medium text-slate-900 dark:text-slate-100">{student.name}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="space-y-1 text-sm text-slate-400">
+                      <div className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
                         <div className="flex items-center gap-1.5">
                           <Mail className="w-3.5 h-3.5" />
                           {student.email}
@@ -115,13 +115,13 @@ export default function Students() {
                           student.enrollments.map((enrollment) => (
                             <span
                               key={enrollment.batch.id}
-                              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-600/30 text-blue-300"
+                              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-600/10 text-blue-700 dark:bg-blue-600/30 dark:text-blue-300"
                             >
                               {enrollment.batch.name}
                             </span>
                           ))
                         ) : (
-                          <span className="text-sm text-slate-600">No batches</span>
+                          <span className="text-sm text-slate-500 dark:text-slate-600">No batches</span>
                         )}
                       </div>
                     </td>
@@ -129,8 +129,8 @@ export default function Students() {
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           student.isActive
-                            ? 'bg-green-500/20 text-green-300'
-                            : 'bg-red-500/20 text-red-300'
+                            ? 'bg-green-500/15 text-green-700 dark:bg-green-500/20 dark:text-green-300'
+                            : 'bg-red-500/15 text-red-700 dark:bg-red-500/20 dark:text-red-300'
                         }`}
                       >
                         {student.isActive ? 'Active' : 'Inactive'}
@@ -151,7 +151,7 @@ export default function Students() {
 
 function UsersPlaceholder() {
   return (
-    <svg className="mx-auto h-12 w-12 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
     </svg>
   );

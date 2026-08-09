@@ -35,9 +35,9 @@ const EMPTY_FORM: SettingsForm = {
 };
 
 const inputClass =
-  'w-full px-3 py-2.5 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100 placeholder-slate-500';
+  'w-full px-3 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 dark:placeholder-slate-500';
 
-const labelClass = 'block text-sm font-medium text-slate-300 mb-1.5';
+const labelClass = 'block text-sm font-medium text-slate-700 mb-1.5 dark:text-slate-300';
 
 export default function Settings() {
   const [form, setForm] = useState<SettingsForm>(EMPTY_FORM);
@@ -134,7 +134,7 @@ export default function Settings() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-2xl font-bold text-slate-100">Institute Settings</h3>
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Institute Settings</h3>
           <p className="text-sm text-slate-500 mt-1">Manage your institute profile and branding</p>
         </div>
       </div>
@@ -145,12 +145,12 @@ export default function Settings() {
             }`}
         >
           {toast.type === 'success' ? (
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           ) : (
-            <AlertCircle className="w-4 h-4 text-red-400" />
+            <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
           )}
           <span
-            className={`text-sm font-medium ${toast.type === 'success' ? 'text-emerald-300' : 'text-red-300'
+            className={`text-sm font-medium ${toast.type === 'success' ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'
               }`}
           >
             {toast.message}
@@ -164,14 +164,14 @@ export default function Settings() {
         </div>
       ) : (
         <div className="max-w-3xl space-y-6">
-          <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6">
+          <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 p-6 dark:bg-slate-900/40 dark:border-slate-700/50">
             <div className="flex items-center gap-2 mb-5">
               <Building2 className="w-5 h-5 text-yellow-400" />
-              <h4 className="text-base font-semibold text-slate-100">Institute Logo</h4>
+              <h4 className="text-base font-semibold text-slate-900 dark:text-slate-100">Institute Logo</h4>
             </div>
 
             <div className="flex flex-col sm:flex-row items-start gap-6">
-              <div className="relative w-28 h-28 rounded-2xl border-2 border-dashed border-slate-600 bg-slate-900/60 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="relative w-28 h-28 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-100 flex items-center justify-center overflow-hidden shrink-0 dark:border-slate-600 dark:bg-slate-900/60">
                 {logoPreview ? (
                   <img
                     src={logoPreview}
@@ -179,7 +179,7 @@ export default function Settings() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <Building2 className="w-10 h-10 text-slate-600" />
+                  <Building2 className="w-10 h-10 text-slate-400 dark:text-slate-600" />
                 )}
                 {logoFile && (
                   <button
@@ -198,7 +198,7 @@ export default function Settings() {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={saving}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-900/60 border border-slate-600 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-800/60 transition-colors disabled:opacity-50 w-fit"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-200/80 transition-colors disabled:opacity-50 w-fit dark:bg-slate-900/60 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800/60"
                 >
                   <Upload className="w-4 h-4" />
                   {logoFile ? 'Choose different image' : 'Upload logo'}
@@ -217,10 +217,10 @@ export default function Settings() {
             </div>
           </div>
 
-          <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6">
+          <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 p-6 dark:bg-slate-900/40 dark:border-slate-700/50">
             <div className="flex items-center gap-2 mb-5">
               <FileText className="w-5 h-5 text-yellow-400" />
-              <h4 className="text-base font-semibold text-slate-100">Institute Information</h4>
+              <h4 className="text-base font-semibold text-slate-900 dark:text-slate-100">Institute Information</h4>
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2">

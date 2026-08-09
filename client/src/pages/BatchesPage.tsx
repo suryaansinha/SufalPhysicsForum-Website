@@ -116,7 +116,7 @@ export default function BatchesPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-2xl font-bold text-slate-100">Batches</h3>
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Batches</h3>
           <p className="text-sm text-slate-500 mt-1">Manage your class batches</p>
         </div>
         <button
@@ -129,65 +129,65 @@ export default function BatchesPage() {
       </div>
 
       {successMsg && (
-        <div className="mb-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3 text-emerald-300 text-sm">
+        <div className="mb-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3 text-emerald-700 text-sm dark:text-emerald-300">
           {successMsg}
         </div>
       )}
 
       {error && (
-        <div className="mb-4 bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-300 text-sm">
+        <div className="mb-4 bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-600 text-sm dark:text-red-300">
           {error}
         </div>
       )}
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm">
-          <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-xl shadow-xl w-full max-w-lg mx-4 p-6">
+          <div className="bg-white/95 backdrop-blur-xl border border-slate-200 rounded-xl shadow-xl w-full max-w-lg mx-4 p-6 dark:bg-slate-900/80 dark:border-slate-700/50">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-lg font-semibold text-slate-100">Create Batch</h4>
-              <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-200">
+              <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Create Batch</h4>
+              <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">Batch Name *</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Batch Name *</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                   required
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">Grade Level</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Grade Level</label>
                   <input
                     type="text"
                     value={form.gradeLevel}
                     onChange={(e) => setForm({ ...form, gradeLevel: e.target.value })}
                     placeholder="e.g. 11"
-                    className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">Grade</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Grade</label>
                   <input
                     type="text"
                     value={form.grade}
                     onChange={(e) => setForm({ ...form, grade: e.target.value })}
                     placeholder="e.g. A+"
-                    className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">Target Exam</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Target Exam</label>
                 <select
                   value={form.targetExam}
                   onChange={(e) => setForm({ ...form, targetExam: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                 >
                   <option value="">None</option>
                   <option value="JEE">JEE</option>
@@ -197,39 +197,39 @@ export default function BatchesPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">Subject</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Subject</label>
                   <input
                     type="text"
                     value={form.subject}
                     onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">Timing</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Timing</label>
                   <input
                     type="text"
                     value={form.timing}
                     onChange={(e) => setForm({ ...form, timing: e.target.value })}
                     placeholder="e.g. 4:00 PM"
-                    className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">Fee Amount</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Fee Amount</label>
                 <input
                   type="number"
                   value={form.feeAmount}
                   onChange={(e) => setForm({ ...form, feeAmount: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
                 />
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/60 rounded-lg hover:bg-slate-700/60 transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200/80 transition-colors dark:text-slate-300 dark:bg-slate-800/60 dark:hover:bg-slate-700/60"
                 >
                   Cancel
                 </button>
@@ -247,7 +247,7 @@ export default function BatchesPage() {
       )}
 
       {batches.length === 0 ? (
-        <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-12 text-center">
+        <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 p-12 text-center dark:bg-slate-900/40 dark:border-slate-700/50">
           <BookOpenPlaceholder />
           <p className="text-slate-500 mt-4">No batches found. Create your first batch to get started.</p>
         </div>
@@ -257,12 +257,12 @@ export default function BatchesPage() {
             <Link
               key={batch.id}
               to={`/dashboard/batches/${batch.id}`}
-              className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 ease-in-out hover:-translate-y-1 block group"
+              className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 p-6 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 ease-in-out hover:-translate-y-1 block group dark:bg-slate-900/40 dark:border-slate-700/50"
             >
               <div className="flex items-start justify-between mb-3">
-                <h4 className="text-lg font-semibold text-slate-100">{batch.name}</h4>
+                <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{batch.name}</h4>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium px-2 py-1 bg-blue-600/30 text-blue-300 rounded-full">
+                  <span className="text-xs font-medium px-2 py-1 bg-blue-600/10 text-blue-700 rounded-full dark:bg-blue-600/30 dark:text-blue-300">
                     {batch.gradeLevel ? `Class ${batch.gradeLevel}` : 'All'}
                   </span>
                   {canManageBatches && (
@@ -271,7 +271,7 @@ export default function BatchesPage() {
                       onClick={(e) => handleDelete(batch, e)}
                       disabled={deletingId === batch.id}
                       aria-label={`Delete ${batch.name}`}
-                      className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+                      className="p-1.5 rounded-lg text-slate-500 hover:text-red-500 hover:bg-red-500/10 transition-colors disabled:opacity-50 dark:hover:text-red-400"
                     >
                       {deletingId === batch.id ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -282,30 +282,30 @@ export default function BatchesPage() {
                   )}
                 </div>
               </div>
-              <div className="space-y-2 text-sm text-slate-400">
+              <div className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                 {batch.targetExam && (
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-slate-300">Target:</span>
-                    <span className="px-1.5 py-0.5 bg-yellow-500/10 text-yellow-300 rounded text-xs font-medium">
+                    <span className="font-medium text-slate-700 dark:text-slate-300">Target:</span>
+                    <span className="px-1.5 py-0.5 bg-yellow-500/10 text-yellow-600 rounded text-xs font-medium dark:text-yellow-300">
                       {batch.targetExam}
                     </span>
                   </div>
                 )}
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-slate-300">Subject:</span> {batch.subject}
+                  <span className="font-medium text-slate-700 dark:text-slate-300">Subject:</span> {batch.subject}
                 </div>
                 {batch.timing && (
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-slate-300">Timing:</span> {batch.timing}
+                    <span className="font-medium text-slate-700 dark:text-slate-300">Timing:</span> {batch.timing}
                   </div>
                 )}
                 {batch.feeAmount != null && (
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-slate-300">Fee:</span> {batch.feeAmount}
+                    <span className="font-medium text-slate-700 dark:text-slate-300">Fee:</span> {batch.feeAmount}
                   </div>
                 )}
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-slate-300">Students:</span>{' '}
+                  <span className="font-medium text-slate-700 dark:text-slate-300">Students:</span>{' '}
                   {batch.enrollments?.length || 0}
                 </div>
               </div>

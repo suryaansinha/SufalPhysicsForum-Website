@@ -226,7 +226,7 @@ export default function DoubtForum() {
     <div className="max-w-4xl">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h3 className="text-2xl font-bold text-slate-100">Doubt Forum</h3>
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Doubt Forum</h3>
           <p className="text-sm text-slate-500 mt-1">
             Ask questions and clear your doubts with teachers and classmates.
           </p>
@@ -248,7 +248,7 @@ export default function DoubtForum() {
             value={selectedBatchId ?? ''}
             onChange={(e) => setSelectedBatchId(e.target.value || null)}
             disabled={batchesLoading}
-            className="pl-9 pr-8 py-2.5 bg-slate-900/60 border border-slate-700 rounded-xl text-sm font-medium text-slate-200 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none appearance-none disabled:opacity-50"
+            className="pl-9 pr-8 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none appearance-none disabled:opacity-50 dark:bg-slate-900/60 dark:border-slate-700"
           >
             {batches.map((batch) => (
               <option key={batch.id} value={batch.id}>
@@ -260,7 +260,7 @@ export default function DoubtForum() {
           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
         </div>
 
-        <div className="flex items-center gap-1 bg-slate-800/60 rounded-xl p-1">
+        <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1 dark:bg-slate-800/60">
           {(
             [
               { key: 'all', label: 'All' },
@@ -272,7 +272,9 @@ export default function DoubtForum() {
               key={t.key}
               onClick={() => setTab(t.key)}
               className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-                tab === t.key ? 'bg-slate-900/70 text-yellow-300 shadow-sm' : 'text-slate-400 hover:text-slate-100'
+                tab === t.key
+                  ? 'bg-white text-yellow-600 shadow-sm dark:bg-slate-900/70 dark:text-yellow-300'
+                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'
               }`}
             >
               {t.label}
@@ -286,17 +288,17 @@ export default function DoubtForum() {
       </div>
 
       {actionError && (
-        <div className="mb-4 bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-red-300 text-sm">
+        <div className="mb-4 bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-red-600 dark:text-red-300 text-sm">
           {actionError}
         </div>
       )}
       {error && (
         <div className="mb-4 bg-red-500/10 border border-red-500/30 rounded-xl p-4 flex items-center gap-3">
-          <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
-          <span className="text-sm text-red-300 flex-1">{error}</span>
+          <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0" />
+          <span className="text-sm text-red-600 dark:text-red-300 flex-1">{error}</span>
           <button
             onClick={() => loadQuestions(true)}
-            className="text-sm font-medium text-red-300 hover:text-red-100"
+            className="text-sm font-medium text-red-600 dark:text-red-300 hover:text-red-100"
           >
             Retry
           </button>
@@ -307,14 +309,14 @@ export default function DoubtForum() {
         {loading && <FeedSkeleton />}
 
         {!loading && batchesLoading && !selectedBatchId && (
-          <div className="bg-slate-900/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-12 text-center">
-            <Loader2 className="w-8 h-8 mx-auto text-blue-400 animate-spin" />
+          <div className="bg-white/70 backdrop-blur-xl rounded-2xl border border-slate-200 dark:bg-slate-900/40 dark:border-slate-700/50 p-12 text-center">
+            <Loader2 className="w-8 h-8 mx-auto text-blue-600 dark:text-blue-400 animate-spin" />
           </div>
         )}
 
         {!loading && !batchesLoading && batches.length === 0 && (
           <EmptyState
-            icon={<GraduationCap className="w-8 h-8 text-blue-400" />}
+            icon={<GraduationCap className="w-8 h-8 text-blue-600 dark:text-blue-400" />}
             title="No batches found"
             description="Create a batch first so students can start asking doubts."
           />
@@ -322,7 +324,7 @@ export default function DoubtForum() {
 
         {!loading && selectedBatchId && displayedQuestions.length === 0 && !error && (
           <EmptyState
-            icon={<HelpCircle className="w-8 h-8 text-blue-400" />}
+            icon={<HelpCircle className="w-8 h-8 text-blue-600 dark:text-blue-400" />}
             title={tab === 'all' ? 'No doubts yet' : `No ${tab} doubts`}
             description="Be the first to ask a doubt in this batch."
             action={
@@ -363,7 +365,7 @@ export default function DoubtForum() {
           <button
             onClick={() => loadQuestions(false)}
             disabled={loadingMore}
-            className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium text-slate-200 bg-slate-900/40 border border-slate-700/50 rounded-xl hover:bg-slate-800/40 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium text-slate-800 dark:text-slate-200 bg-white/70 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors disabled:opacity-50 dark:bg-slate-900/40 dark:border-slate-700/50 dark:hover:bg-slate-800/40"
           >
             {loadingMore && <Loader2 className="w-4 h-4 animate-spin" />}
             {loadingMore ? 'Loading...' : 'Load More'}
@@ -416,28 +418,28 @@ function QuestionCard({
     (isTeacherRole(currentUser.role) || question.author.id === currentUser.id);
 
   return (
-    <div className="bg-slate-900/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-sm overflow-hidden">
+    <div className="bg-white/70 backdrop-blur-xl rounded-2xl border border-slate-200 dark:bg-slate-900/40 dark:border-slate-700/50 shadow-sm overflow-hidden">
       <button
         onClick={onToggle}
-        className="w-full text-left p-5 hover:bg-slate-800/40 transition-colors"
+        className="w-full text-left p-5 hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-colors"
       >
         <div className="flex items-start gap-4">
           <Avatar name={question.author.name} />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h4 className="text-base font-semibold text-slate-100">{question.title}</h4>
+              <h4 className="text-base font-semibold text-slate-900 dark:text-slate-100">{question.title}</h4>
               {question.isResolved && (
-                <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-2 py-0.5">
+                <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-2 py-0.5">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   Resolved
                 </span>
               )}
             </div>
-            <p className={`mt-1 text-sm text-slate-400 ${expanded ? '' : 'line-clamp-2'}`}>
+            <p className={`mt-1 text-sm text-slate-600 dark:text-slate-400 ${expanded ? '' : 'line-clamp-2'}`}>
               {question.body}
             </p>
             <div className="mt-3 flex items-center gap-4 text-xs text-slate-500">
-              <span className="font-medium text-slate-400">{question.author.name}</span>
+              <span className="font-medium text-slate-600 dark:text-slate-400">{question.author.name}</span>
               <span className="inline-flex items-center gap-1">
                 <CalendarDays className="w-3.5 h-3.5" />
                 {formatDate(question.createdAt)}
@@ -455,9 +457,9 @@ function QuestionCard({
       </button>
 
       {expanded && (
-        <div className="border-t border-slate-800 px-5 py-5 space-y-5">
+        <div className="border-t border-slate-200 px-5 py-5 space-y-5 dark:border-slate-800">
           {question.imageUrl && (
-            <div className="rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 max-h-96">
+            <div className="rounded-xl overflow-hidden bg-slate-100 border border-slate-200 max-h-96 dark:bg-slate-900/60 dark:border-slate-800">
               <img
                 src={question.imageUrl}
                 alt="Question attachment"
@@ -467,7 +469,7 @@ function QuestionCard({
           )}
 
           <div>
-            <h5 className="text-sm font-semibold text-slate-300 mb-3">
+            <h5 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
               Answers{' '}
               <span className="text-slate-500 font-normal">
                 ({question._count?.answers ?? 0})
@@ -476,13 +478,13 @@ function QuestionCard({
 
             {threadLoading && (
               <div className="space-y-3">
-                <div className="h-16 bg-slate-800 rounded-xl animate-pulse" />
-                <div className="h-16 bg-slate-800 rounded-xl animate-pulse" />
+                <div className="h-16 bg-slate-200 rounded-xl animate-pulse dark:bg-slate-800" />
+                <div className="h-16 bg-slate-200 rounded-xl animate-pulse dark:bg-slate-800" />
               </div>
             )}
 
             {!threadLoading && threadError && (
-              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-sm text-red-300 flex items-center gap-2">
+              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-sm text-red-600 dark:text-red-300 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4" />
                 Could not load the answers. Please collapse and reopen the question.
               </div>
@@ -505,7 +507,7 @@ function QuestionCard({
           {canResolve && (
             <div className="flex justify-end">
               {question.isResolved ? (
-                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-400">
+                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-600 dark:text-emerald-400">
                   <CheckCircle2 className="w-4 h-4" />
                   Resolved
                 </span>
@@ -513,7 +515,7 @@ function QuestionCard({
                 <button
                   onClick={() => onResolve(question.id)}
                   disabled={resolving}
-                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-xl hover:bg-emerald-500/20 transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-xl hover:bg-emerald-500/20 transition-colors disabled:opacity-50"
                 >
                   {resolving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                   {resolving ? 'Marking...' : 'Mark as Resolved'}
@@ -531,16 +533,16 @@ function AnswerItem({ answer }: { answer: ForumAnswer }) {
   return (
     <div className="flex items-start gap-3">
       <Avatar name={answer.author.name} size="sm" />
-      <div className="flex-1 bg-slate-800/50 rounded-xl rounded-tl-none px-4 py-3">
+      <div className="flex-1 bg-slate-100 rounded-xl rounded-tl-none px-4 py-3 dark:bg-slate-800/50">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-sm font-semibold text-slate-200">{answer.author.name}</span>
+          <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{answer.author.name}</span>
           <span className="text-xs text-slate-500">
             {formatDate(answer.createdAt)} · {formatTime(answer.createdAt)}
           </span>
         </div>
-        <p className="text-sm text-slate-300 whitespace-pre-wrap">{answer.body}</p>
+        <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{answer.body}</p>
         {answer.imageUrl && (
-          <div className="mt-3 rounded-lg overflow-hidden border border-slate-700 max-h-72">
+          <div className="mt-3 rounded-lg overflow-hidden border border-slate-200 max-h-72 dark:border-slate-700">
             <img
               src={answer.imageUrl}
               alt="Answer attachment"
@@ -609,7 +611,7 @@ function ReplyBox({ submitting, error, onSubmit }: ReplyBoxProps) {
         onChange={(e) => setBody(e.target.value)}
         placeholder="Write your answer..."
         rows={3}
-        className="w-full px-3 py-2.5 border border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none resize-none bg-slate-900/60 text-slate-100 placeholder-slate-500"
+        className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none resize-none bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 dark:placeholder-slate-500"
       />
 
       {previewUrl && (
@@ -617,7 +619,7 @@ function ReplyBox({ submitting, error, onSubmit }: ReplyBoxProps) {
           <img
             src={previewUrl}
             alt="Answer preview"
-            className="h-24 w-32 object-cover rounded-lg border border-slate-700"
+            className="h-24 w-32 object-cover rounded-lg border border-slate-200 dark:border-slate-700"
           />
           <button
             type="button"
@@ -626,7 +628,7 @@ function ReplyBox({ submitting, error, onSubmit }: ReplyBoxProps) {
               if (previewUrl) URL.revokeObjectURL(previewUrl);
               setPreviewUrl(null);
             }}
-            className="absolute -top-2 -right-2 bg-slate-800 rounded-full shadow border border-slate-700 p-0.5 text-slate-400 hover:text-slate-100"
+            className="absolute -top-2 -right-2 bg-slate-800 rounded-full shadow border border-slate-700 p-0.5 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
             aria-label="Remove image"
           >
             <X className="w-3.5 h-3.5" />
@@ -635,11 +637,11 @@ function ReplyBox({ submitting, error, onSubmit }: ReplyBoxProps) {
       )}
 
       {(fileError || error) && (
-        <p className="text-xs text-red-400">{fileError || error}</p>
+        <p className="text-xs text-red-600 dark:text-red-400">{fileError || error}</p>
       )}
 
       <div className="flex items-center justify-between gap-3">
-        <label className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-slate-100 cursor-pointer">
+        <label className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 cursor-pointer dark:text-slate-400 dark:hover:text-slate-100">
           <ImagePlus className="w-4 h-4" />
           {file ? 'Change image' : 'Add image'}
           <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleFile} />
@@ -716,44 +718,44 @@ function CreateQuestionModal({ batchId, onClose, onSubmit }: CreateQuestionModal
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
-      <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700/50">
-          <h4 className="text-lg font-semibold text-slate-100">Ask a Doubt</h4>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-200" aria-label="Close">
+      <div className="bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto dark:bg-slate-900/80 dark:border-slate-700/50">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700/50">
+          <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Ask a Doubt</h4>
+          <button onClick={onClose} className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200" aria-label="Close">
             <X className="w-5 h-5" />
           </button>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Title *</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Title *</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. How does electromagnetic induction work?"
-              className="w-full px-3 py-2.5 border border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100 placeholder-slate-500"
+              className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 dark:placeholder-slate-500"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Question *</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Question *</label>
             <textarea
               value={body}
               onChange={(e) => setBody(e.target.value)}
               placeholder="Write the full question. Upload a photo of your handwritten work if needed."
               rows={4}
-              className="w-full px-3 py-2.5 border border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none resize-none bg-slate-900/60 text-slate-100 placeholder-slate-500"
+              className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none resize-none bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 dark:placeholder-slate-500"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Attachment</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Attachment</label>
             {previewUrl ? (
               <div className="relative inline-block">
                 <img
                   src={previewUrl}
                   alt="Attachment preview"
-                  className="h-28 w-40 object-cover rounded-xl border border-slate-700"
+                  className="h-28 w-40 object-cover rounded-xl border border-slate-200 dark:border-slate-700"
                 />
                 <button
                   type="button"
@@ -762,14 +764,14 @@ function CreateQuestionModal({ batchId, onClose, onSubmit }: CreateQuestionModal
                     if (previewUrl) URL.revokeObjectURL(previewUrl);
                     setPreviewUrl(null);
                   }}
-                  className="absolute -top-2 -right-2 bg-slate-800 rounded-full shadow border border-slate-700 p-0.5 text-slate-400 hover:text-slate-100"
+                  className="absolute -top-2 -right-2 bg-slate-800 rounded-full shadow border border-slate-700 p-0.5 text-slate-300 hover:text-white"
                   aria-label="Remove image"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-slate-700 rounded-xl px-4 py-6 text-slate-400 hover:border-yellow-500/50 hover:text-yellow-300 cursor-pointer transition-colors">
+              <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-slate-300 rounded-xl px-4 py-6 text-slate-600 hover:border-yellow-500/50 hover:text-yellow-600 cursor-pointer transition-colors dark:border-slate-700 dark:text-slate-400 dark:hover:text-yellow-300">
                 <ImagePlus className="w-6 h-6" />
                 <span className="text-sm font-medium">Click to upload an image</span>
                 <span className="text-xs text-slate-500">JPEG, PNG, or WebP · up to 5MB</span>
@@ -781,10 +783,10 @@ function CreateQuestionModal({ batchId, onClose, onSubmit }: CreateQuestionModal
                 />
               </label>
             )}
-            {fileError && <p className="mt-1 text-xs text-red-400">{fileError}</p>}
+            {fileError && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{fileError}</p>}
           </div>
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-sm text-red-300">
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-sm text-red-600 dark:text-red-300">
               {error}
             </div>
           )}
@@ -792,7 +794,7 @@ function CreateQuestionModal({ batchId, onClose, onSubmit }: CreateQuestionModal
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/60 rounded-xl hover:bg-slate-700/60 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-xl hover:bg-slate-200/80 transition-colors dark:text-slate-300 dark:bg-slate-800/60 dark:hover:bg-slate-700/60"
             >
               Cancel
             </button>
@@ -815,14 +817,14 @@ function FeedSkeleton() {
   return (
     <>
       {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="bg-slate-900/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-5 animate-pulse">
+        <div key={i} className="bg-white/70 backdrop-blur-xl rounded-2xl border border-slate-200 dark:bg-slate-900/40 dark:border-slate-700/50 p-5 animate-pulse">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-slate-700 shrink-0" />
+            <div className="w-10 h-10 rounded-full bg-slate-200 shrink-0 dark:bg-slate-700" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 bg-slate-700 rounded w-2/3" />
-              <div className="h-3 bg-slate-800 rounded w-full" />
-              <div className="h-3 bg-slate-800 rounded w-1/2" />
-              <div className="h-3 bg-slate-800 rounded w-24" />
+              <div className="h-4 bg-slate-200 rounded w-2/3 dark:bg-slate-700" />
+              <div className="h-3 bg-slate-200 rounded w-full dark:bg-slate-800" />
+              <div className="h-3 bg-slate-200 rounded w-1/2 dark:bg-slate-800" />
+              <div className="h-3 bg-slate-200 rounded w-24 dark:bg-slate-800" />
             </div>
           </div>
         </div>
@@ -840,9 +842,9 @@ interface EmptyStateProps {
 
 function EmptyState({ icon, title, description, action }: EmptyStateProps) {
   return (
-    <div className="bg-slate-900/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-12 text-center">
+    <div className="bg-white/70 backdrop-blur-xl rounded-2xl border border-slate-200 dark:bg-slate-900/40 dark:border-slate-700/50 p-12 text-center">
       {icon}
-      <h4 className="text-lg font-semibold text-slate-100 mt-4">{title}</h4>
+      <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mt-4">{title}</h4>
       <p className="text-sm text-slate-500 mt-1">{description}</p>
       {action && <div className="mt-5">{action}</div>}
     </div>
@@ -858,7 +860,7 @@ function Avatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' }) {
     .toUpperCase();
   return (
     <div
-      className={`${size === 'sm' ? 'w-8 h-8 text-xs' : 'w-10 h-10 text-sm'} rounded-full bg-blue-600/30 flex items-center justify-center font-semibold text-blue-300 shrink-0`}
+      className={`${size === 'sm' ? 'w-8 h-8 text-xs' : 'w-10 h-10 text-sm'} rounded-full bg-blue-600/30 flex items-center justify-center font-semibold text-blue-600 shrink-0 dark:text-blue-300`}
     >
       {initials}
     </div>
