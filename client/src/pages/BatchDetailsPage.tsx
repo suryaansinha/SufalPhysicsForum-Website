@@ -491,7 +491,7 @@ function HomeworkForm({ ref: fileRef, form, setForm, submitting, onSubmit, onCan
 }) {
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-      <h5 className="text-sm font-semibold text-gray-700 mb-4">Assign Homework</h5>
+      <h5 className="text-sm font-semibold text-gray-700 mb-4">Add Homework</h5>
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Title *" value={form.title} onChange={(v) => setForm({ ...form, title: v })} required />
