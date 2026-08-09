@@ -67,6 +67,15 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               >
                 Blog
               </Link>
+              <a
+                href={institute?.youtubeUrl || 'https://www.youtube.com/@SufalPhysicsForum'}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visit our YouTube Channel"
+                className="text-gray-500 hover:text-red-600 transition-colors duration-200"
+              >
+                <YoutubeIcon className="w-5 h-5" />
+              </a>
               <Link
                 to="/login"
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
@@ -113,6 +122,16 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               >
                 Blog
               </Link>
+              <a
+                href={institute?.youtubeUrl || 'https://www.youtube.com/@SufalPhysicsForum'}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-red-600 transition-colors"
+              >
+                <YoutubeIcon className="w-4 h-4" />
+                YouTube
+              </a>
               <Link
                 to="/login"
                 onClick={() => setIsMenuOpen(false)}
@@ -210,5 +229,24 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         </div>
       </footer>
     </div>
+  );
+}
+
+function YoutubeIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
+      <path d="m10 15 5-3-5-3z" />
+    </svg>
   );
 }
