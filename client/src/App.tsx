@@ -9,7 +9,7 @@ import AboutPage from './pages/public/AboutPage';
 import BlogPage from './pages/public/BlogPage';
 import BatchesPage from './pages/BatchesPage';
 import BatchDetailsPage from './pages/BatchDetailsPage';
-import StudentsPage from './pages/StudentsPage';
+import Students from './pages/dashboard/Students';
 import Attendance from './pages/dashboard/Attendance';
 import LiveClassRoom from './pages/LiveClassRoom';
 import FeesPage from './pages/dashboard/FeesPage';
@@ -117,7 +117,7 @@ export default function App() {
         <Route index element={<DashboardHome />} />
         <Route path="batches" element={<BatchesPage />} />
         <Route path="batches/:batchId" element={<BatchDetailsPage />} />
-        <Route path="students" element={<StudentsPage />} />
+        <Route path="students" element={<Students />} />
         <Route path="attendance" element={<Attendance />} />
         <Route path="fees" element={<FeesPage />} />
         <Route path="doubt-forum" element={<DoubtForum />} />

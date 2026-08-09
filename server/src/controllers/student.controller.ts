@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { hashPassword } from '../utils/password';
-import { Role } from '../generated/prisma/client.js';
+import { Prisma, Role } from '../generated/prisma/client.js';
+
+const TEMP_STUDENT_PASSWORD = 'sufal123!';
 
 export async function listStudents(req: Request, res: Response): Promise<void> {
   try {
@@ -37,10 +39,10 @@ export async function listStudents(req: Request, res: Response): Promise<void> {
 export async function createStudent(req: Request, res: Response): Promise<void> {
   try {
     const instituteId = req.user!.instituteId;
-    const { name, email, password, phone, batchId } = req.body;
+    const { name, email, phone, batchId } = req.body;
 
-    if (!name || !email || !password) {
-      res.status(400).json({ success: false, message: 'Name, email, and password are required' });
+    if (!name || !email) {
+      res.status(400).json({ success: false, message: 'Name and email are required' });
       return;
     }
 
@@ -53,7 +55,7 @@ export async function createStudent(req: Request, res: Response): Promise<void> 
       return;
     }
 
-    const passwordHash = await hashPassword(password);
+    const passwordHash = await hashPassword(TEMP_STUDENT_PASSWORD);
 
     const student = await prisma.user.create({
       data: {
@@ -102,6 +104,10 @@ export async function createStudent(req: Request, res: Response): Promise<void> 
 
     res.status(201).json({ success: true, data: created });
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      res.status(409).json({ success: false, message: 'A user with this email already exists in your institute' });
+      return;
+    }
     console.error('Create student error:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
