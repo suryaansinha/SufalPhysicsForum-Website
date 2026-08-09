@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
+import { Role } from '../generated/prisma/client.js';
 
 export async function listBatches(req: Request, res: Response): Promise<void> {
   try {
@@ -115,6 +116,96 @@ export async function deleteBatch(req: Request, res: Response): Promise<void> {
     res.json({ success: true, data: { id }, message: 'Batch deleted' });
   } catch (error) {
     console.error('Delete batch error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}
+
+export async function getUnenrolledStudents(req: Request, res: Response): Promise<void> {
+  try {
+    const instituteId = req.user!.instituteId;
+    const batchId = req.params.batchId as string;
+
+    const batch = await prisma.batch.findFirst({
+      where: { id: batchId, instituteId },
+      select: { id: true },
+    });
+
+    if (!batch) {
+      res.status(404).json({ success: false, message: 'Batch not found' });
+      return;
+    }
+
+    const students = await prisma.user.findMany({
+      where: {
+        instituteId,
+        role: Role.STUDENT,
+        enrollments: { none: { batchId } },
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        isActive: true,
+        createdAt: true,
+      },
+      orderBy: { name: 'asc' },
+    });
+
+    res.json({ success: true, data: students });
+  } catch (error) {
+    console.error('List unenrolled students error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}
+
+export async function enrollStudents(req: Request, res: Response): Promise<void> {
+  try {
+    const instituteId = req.user!.instituteId;
+    const batchId = req.params.batchId as string;
+    const { studentIds } = req.body as { studentIds?: unknown };
+
+    if (!Array.isArray(studentIds) || studentIds.length === 0) {
+      res.status(400).json({ success: false, message: 'studentIds array is required' });
+      return;
+    }
+
+    const ids = studentIds.filter((id): id is string => typeof id === 'string');
+    if (ids.length === 0) {
+      res.status(400).json({ success: false, message: 'studentIds array is required' });
+      return;
+    }
+
+    const batch = await prisma.batch.findFirst({
+      where: { id: batchId, instituteId },
+      select: { id: true },
+    });
+
+    if (!batch) {
+      res.status(404).json({ success: false, message: 'Batch not found' });
+      return;
+    }
+
+    const validStudents = await prisma.user.findMany({
+      where: { id: { in: ids }, instituteId, role: Role.STUDENT },
+      select: { id: true },
+    });
+
+    if (validStudents.length === 0) {
+      res.status(400).json({ success: false, message: 'No valid students selected' });
+      return;
+    }
+
+    const [result] = await prisma.$transaction([
+      prisma.enrollment.createMany({
+        data: validStudents.map((student) => ({ studentId: student.id, batchId })),
+        skipDuplicates: true,
+      }),
+    ]);
+
+    res.json({ success: true, data: { created: result.count } });
+  } catch (error) {
+    console.error('Enroll students error:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 }

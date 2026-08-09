@@ -2,11 +2,13 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Calendar, Clock, Video, Plus, ExternalLink,
-  FileText, Upload, Download, BookOpenCheck, Loader2, PlayCircle,
+  FileText, Upload, Download, BookOpenCheck, Loader2, PlayCircle, UserPlus,
 } from 'lucide-react';
 import api from '../lib/api';
+import { isTeacherRole, getCurrentUserRole } from '../lib/auth';
 import type { Batch, LiveClass, StudyMaterial, Homework, ApiResponse } from '../types';
 import VideoModal from '../components/VideoModal';
+import EnrollStudentsModal from '../components/modals/EnrollStudentsModal';
 
 type Tab = 'live' | 'materials' | 'homework';
 
@@ -50,6 +52,9 @@ export default function BatchDetailsPage() {
 
   const [videoModalUrl, setVideoModalUrl] = useState<string | null>(null);
   const [videoModalTitle, setVideoModalTitle] = useState('');
+
+  const [showEnrollModal, setShowEnrollModal] = useState(false);
+  const canManageEnrollments = isTeacherRole(getCurrentUserRole());
 
   const [showHwForm, setShowHwForm] = useState(false);
   const [hwForm, setHwForm] = useState<HwForm>({ title: '', description: '', dueDate: '', file: null });
@@ -199,15 +204,28 @@ export default function BatchDetailsPage() {
       </button>
 
       <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 dark:bg-slate-900/40 dark:border-slate-700/50 p-6 mb-6">
-        <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{batch.name}</h3>
-        <div className="flex flex-wrap gap-2 mt-2">
-          {batch.gradeLevel && <span className="text-xs font-medium px-2 py-1 bg-blue-600/10 text-blue-700 dark:bg-blue-600/30 dark:text-blue-300 rounded-full">Class {batch.gradeLevel}</span>}
-          {batch.targetExam && <span className="text-xs font-medium px-2 py-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 rounded-full">{batch.targetExam}</span>}
-          <span className="text-xs font-medium px-2 py-1 bg-slate-200 text-slate-700 dark:bg-slate-800/60 dark:text-slate-300 rounded-full">{batch.subject}</span>
-        </div>
-        <div className="mt-3 text-sm text-slate-600 dark:text-slate-400 space-y-1">
-          {batch.timing && <div className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{batch.timing}</div>}
-          <div>{batch.enrollments?.length || 0} student{(batch.enrollments?.length || 0) !== 1 ? 's' : ''} enrolled</div>
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{batch.name}</h3>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {batch.gradeLevel && <span className="text-xs font-medium px-2 py-1 bg-blue-600/10 text-blue-700 dark:bg-blue-600/30 dark:text-blue-300 rounded-full">Class {batch.gradeLevel}</span>}
+              {batch.targetExam && <span className="text-xs font-medium px-2 py-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 rounded-full">{batch.targetExam}</span>}
+              <span className="text-xs font-medium px-2 py-1 bg-slate-200 text-slate-700 dark:bg-slate-800/60 dark:text-slate-300 rounded-full">{batch.subject}</span>
+            </div>
+            <div className="mt-3 text-sm text-slate-600 dark:text-slate-400 space-y-1">
+              {batch.timing && <div className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{batch.timing}</div>}
+              <div>{batch.enrollments?.length || 0} student{(batch.enrollments?.length || 0) !== 1 ? 's' : ''} enrolled</div>
+            </div>
+          </div>
+          {canManageEnrollments && (
+            <button
+              onClick={() => setShowEnrollModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-slate-950 text-sm font-medium rounded-lg hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20 flex-shrink-0"
+            >
+              <UserPlus className="w-4 h-4" />
+              Enroll Students
+            </button>
+          )}
         </div>
       </div>
 
@@ -342,6 +360,14 @@ export default function BatchDetailsPage() {
           )}
         </div>
       )}
+
+      <EnrollStudentsModal
+        open={showEnrollModal}
+        batchId={batchId!}
+        batchName={batch.name}
+        onClose={() => setShowEnrollModal(false)}
+        onEnrolled={() => fetchData()}
+      />
 
       {videoModalUrl && (
         <VideoModal

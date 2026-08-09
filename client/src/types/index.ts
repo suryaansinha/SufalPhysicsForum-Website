@@ -41,6 +41,15 @@ export interface BatchEnrollment {
   student: Pick<User, 'id' | 'name' | 'email'>;
 }
 
+export interface UnenrolledStudent {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
 export interface StudentEnrollment {
   batch: Pick<Batch, 'id' | 'name' | 'gradeLevel' | 'subject' | 'timing'>;
 }
