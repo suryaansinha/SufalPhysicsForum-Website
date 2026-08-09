@@ -87,12 +87,12 @@ export default function BlogPage() {
   }, []);
 
   return (
-    <div className="bg-white">
+    <div className="bg-transparent">
       <section className="py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Blog</h1>
-            <p className="text-lg text-gray-600">
+            <h1 className="text-4xl font-bold text-slate-100 mb-4">Blog</h1>
+            <p className="text-lg text-slate-400">
               Insights, notes and updates from Sufal Physics Forum.
             </p>
           </div>
@@ -127,9 +127,9 @@ function PostCard({ post }: PostCardProps) {
       href={post.link}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+      className="group flex flex-col bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-sm hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 ease-in-out hover:-translate-y-1 overflow-hidden"
     >
-      <div className="aspect-video w-full overflow-hidden bg-gray-100">
+      <div className="aspect-video w-full overflow-hidden bg-slate-800">
         {featuredImage ? (
           <img
             src={featuredImage}
@@ -138,21 +138,21 @@ function PostCard({ post }: PostCardProps) {
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-blue-600 to-yellow-500 flex items-center justify-center">
             <Newspaper className="w-10 h-10 text-white/70" />
           </div>
         )}
       </div>
       <div className="p-6 flex flex-col flex-1">
-        <p className="flex items-center text-sm text-gray-500 mb-3">
+        <p className="flex items-center text-sm text-slate-500 mb-3">
           <CalendarDays className="w-4 h-4 mr-1.5" />
           {formatDate(post.date)}
         </p>
-        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors mb-3 line-clamp-2">
+        <h3 className="text-lg font-semibold text-slate-100 group-hover:text-yellow-400 transition-colors mb-3 line-clamp-2">
           {title}
         </h3>
-        <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-4">{excerpt}</p>
-        <span className="mt-auto inline-flex items-center text-sm font-medium text-indigo-600">
+        <p className="text-sm text-slate-400 leading-relaxed line-clamp-3 mb-4">{excerpt}</p>
+        <span className="mt-auto inline-flex items-center text-sm font-medium text-yellow-400">
           Read More
           <ExternalLink className="w-4 h-4 ml-1.5" />
         </span>
@@ -167,15 +167,15 @@ function PostGridSkeleton() {
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="rounded-2xl border border-gray-100 shadow-sm overflow-hidden animate-pulse"
+          className="rounded-2xl border border-slate-700/50 bg-slate-900/40 shadow-sm overflow-hidden animate-pulse"
         >
-          <div className="aspect-video bg-gray-200" />
+          <div className="aspect-video bg-slate-800" />
           <div className="p-6 space-y-3">
-            <div className="h-3 w-24 bg-gray-200 rounded" />
-            <div className="h-5 w-3/4 bg-gray-200 rounded" />
-            <div className="h-4 w-full bg-gray-100 rounded" />
-            <div className="h-4 w-5/6 bg-gray-100 rounded" />
-            <div className="h-4 w-24 bg-indigo-100 rounded" />
+            <div className="h-3 w-24 bg-slate-700 rounded" />
+            <div className="h-5 w-3/4 bg-slate-700 rounded" />
+            <div className="h-4 w-full bg-slate-800 rounded" />
+            <div className="h-4 w-5/6 bg-slate-800 rounded" />
+            <div className="h-4 w-24 bg-blue-500/30 rounded" />
           </div>
         </div>
       ))}
@@ -190,16 +190,16 @@ interface ErrorFallbackProps {
 function ErrorFallback({ onRetry }: ErrorFallbackProps) {
   return (
     <div className="max-w-md mx-auto text-center py-16">
-      <div className="w-16 h-16 mx-auto bg-red-50 rounded-2xl flex items-center justify-center mb-6">
-        <AlertCircle className="w-8 h-8 text-red-500" />
+      <div className="w-16 h-16 mx-auto bg-red-500/10 rounded-2xl flex items-center justify-center mb-6">
+        <AlertCircle className="w-8 h-8 text-red-400" />
       </div>
-      <h3 className="text-xl font-bold text-gray-900 mb-2">Couldn&apos;t load the blog</h3>
-      <p className="text-gray-600 mb-6">
+      <h3 className="text-xl font-bold text-slate-100 mb-2">Couldn&apos;t load the blog</h3>
+      <p className="text-slate-400 mb-6">
         We couldn&apos;t reach our blog right now. Please try again in a moment.
       </p>
       <button
         onClick={onRetry}
-        className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors"
+        className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-slate-950 bg-yellow-400 rounded-xl hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20"
       >
         <RefreshCw className="w-4 h-4 mr-2" />
         Try Again
@@ -211,11 +211,11 @@ function ErrorFallback({ onRetry }: ErrorFallbackProps) {
 function EmptyState() {
   return (
     <div className="max-w-md mx-auto text-center py-16">
-      <div className="w-16 h-16 mx-auto bg-indigo-50 rounded-2xl flex items-center justify-center mb-6">
-        <Newspaper className="w-8 h-8 text-indigo-600" />
+      <div className="w-16 h-16 mx-auto bg-blue-600/20 rounded-2xl flex items-center justify-center mb-6">
+        <Newspaper className="w-8 h-8 text-blue-300" />
       </div>
-      <h3 className="text-xl font-bold text-gray-900 mb-2">No posts yet</h3>
-      <p className="text-gray-600">Check back soon for new articles and updates.</p>
+      <h3 className="text-xl font-bold text-slate-100 mb-2">No posts yet</h3>
+      <p className="text-slate-400">Check back soon for new articles and updates.</p>
     </div>
   );
 }

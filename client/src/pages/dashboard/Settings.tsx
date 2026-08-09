@@ -35,9 +35,9 @@ const EMPTY_FORM: SettingsForm = {
 };
 
 const inputClass =
-  'w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white';
+  'w-full px-3 py-2.5 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100 placeholder-slate-500';
 
-const labelClass = 'block text-sm font-medium text-gray-700 mb-1.5';
+const labelClass = 'block text-sm font-medium text-slate-300 mb-1.5';
 
 export default function Settings() {
   const [form, setForm] = useState<SettingsForm>(EMPTY_FORM);
@@ -134,23 +134,23 @@ export default function Settings() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-2xl font-bold text-gray-900">Institute Settings</h3>
-          <p className="text-sm text-gray-500 mt-1">Manage your institute profile and branding</p>
+          <h3 className="text-2xl font-bold text-slate-100">Institute Settings</h3>
+          <p className="text-sm text-slate-500 mt-1">Manage your institute profile and branding</p>
         </div>
       </div>
 
       {toast && (
         <div
-          className={`fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg px-4 py-3 shadow-lg border ${toast.type === 'success' ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'
+          className={`fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg px-4 py-3 shadow-lg border backdrop-blur-xl ${toast.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'
             }`}
         >
           {toast.type === 'success' ? (
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           ) : (
-            <AlertCircle className="w-4 h-4 text-red-600" />
+            <AlertCircle className="w-4 h-4 text-red-400" />
           )}
           <span
-            className={`text-sm font-medium ${toast.type === 'success' ? 'text-emerald-700' : 'text-red-700'
+            className={`text-sm font-medium ${toast.type === 'success' ? 'text-emerald-300' : 'text-red-300'
               }`}
           >
             {toast.message}
@@ -160,18 +160,18 @@ export default function Settings() {
 
       {loading ? (
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+          <Loader2 className="w-8 h-8 animate-spin text-yellow-400" />
         </div>
       ) : (
         <div className="max-w-3xl space-y-6">
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6">
             <div className="flex items-center gap-2 mb-5">
-              <Building2 className="w-5 h-5 text-indigo-600" />
-              <h4 className="text-base font-semibold text-gray-900">Institute Logo</h4>
+              <Building2 className="w-5 h-5 text-yellow-400" />
+              <h4 className="text-base font-semibold text-slate-100">Institute Logo</h4>
             </div>
 
             <div className="flex flex-col sm:flex-row items-start gap-6">
-              <div className="relative w-28 h-28 rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="relative w-28 h-28 rounded-2xl border-2 border-dashed border-slate-600 bg-slate-900/60 flex items-center justify-center overflow-hidden shrink-0">
                 {logoPreview ? (
                   <img
                     src={logoPreview}
@@ -179,14 +179,14 @@ export default function Settings() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <Building2 className="w-10 h-10 text-gray-300" />
+                  <Building2 className="w-10 h-10 text-slate-600" />
                 )}
                 {logoFile && (
                   <button
                     type="button"
                     onClick={handleRemoveLogo}
                     aria-label="Remove selected logo"
-                    className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-gray-900/70 text-white flex items-center justify-center hover:bg-gray-900"
+                    className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-slate-900/80 text-white flex items-center justify-center hover:bg-slate-800"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -198,7 +198,7 @@ export default function Settings() {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={saving}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 w-fit"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-900/60 border border-slate-600 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-800/60 transition-colors disabled:opacity-50 w-fit"
                 >
                   <Upload className="w-4 h-4" />
                   {logoFile ? 'Choose different image' : 'Upload logo'}
@@ -210,17 +210,17 @@ export default function Settings() {
                   className="hidden"
                   onChange={(e) => handleLogoChange(e.target.files?.[0])}
                 />
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-slate-500">
                   PNG, JPEG or WebP. Max 5 MB.
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6">
             <div className="flex items-center gap-2 mb-5">
-              <FileText className="w-5 h-5 text-indigo-600" />
-              <h4 className="text-base font-semibold text-gray-900">Institute Information</h4>
+              <FileText className="w-5 h-5 text-yellow-400" />
+              <h4 className="text-base font-semibold text-slate-100">Institute Information</h4>
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2">
@@ -238,7 +238,7 @@ export default function Settings() {
               <div>
                 <label className={labelClass}>Phone</label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                   <input
                     type="tel"
                     value={form.phone}
@@ -252,7 +252,7 @@ export default function Settings() {
               <div>
                 <label className={labelClass}>Email</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                   <input
                     type="email"
                     value={form.email}
@@ -266,7 +266,7 @@ export default function Settings() {
               <div>
                 <label className={labelClass}>WhatsApp Number</label>
                 <div className="relative">
-                  <MessageCircle className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <MessageCircle className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                   <input
                     type="tel"
                     value={form.whatsappNumber}
@@ -280,7 +280,7 @@ export default function Settings() {
               <div>
                 <label className={labelClass}>YouTube Channel URL</label>
                 <div className="relative">
-                  <PlaySquare className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <PlaySquare className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                   <input
                     type="url"
                     value={form.youtubeUrl}
@@ -308,7 +308,7 @@ export default function Settings() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-6 py-3 bg-yellow-400 text-slate-950 text-sm font-medium rounded-lg hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20 disabled:opacity-50"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               {saving ? 'Saving...' : 'Save Changes'}

@@ -186,40 +186,40 @@ export default function BatchDetailsPage() {
   ];
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" /></div>;
+    return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400" /></div>;
   }
   if (error || !batch) {
-    return <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm">{error || 'Batch not found'}</div>;
+    return <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-300 text-sm">{error || 'Batch not found'}</div>;
   }
 
   return (
     <div>
-      <button onClick={() => navigate('/dashboard/batches')} className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-6">
+      <button onClick={() => navigate('/dashboard/batches')} className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-slate-200 mb-6">
         <ArrowLeft className="w-4 h-4" /> Back to Batches
       </button>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-        <h3 className="text-2xl font-bold text-gray-900">{batch.name}</h3>
+      <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6 mb-6">
+        <h3 className="text-2xl font-bold text-slate-100">{batch.name}</h3>
         <div className="flex flex-wrap gap-2 mt-2">
-          {batch.gradeLevel && <span className="text-xs font-medium px-2 py-1 bg-indigo-50 text-indigo-700 rounded-full">Class {batch.gradeLevel}</span>}
-          {batch.targetExam && <span className="text-xs font-medium px-2 py-1 bg-amber-50 text-amber-700 rounded-full">{batch.targetExam}</span>}
-          <span className="text-xs font-medium px-2 py-1 bg-gray-100 text-gray-600 rounded-full">{batch.subject}</span>
+          {batch.gradeLevel && <span className="text-xs font-medium px-2 py-1 bg-blue-600/30 text-blue-300 rounded-full">Class {batch.gradeLevel}</span>}
+          {batch.targetExam && <span className="text-xs font-medium px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded-full">{batch.targetExam}</span>}
+          <span className="text-xs font-medium px-2 py-1 bg-slate-800/60 text-slate-300 rounded-full">{batch.subject}</span>
         </div>
-        <div className="mt-3 text-sm text-gray-500 space-y-1">
+        <div className="mt-3 text-sm text-slate-400 space-y-1">
           {batch.timing && <div className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{batch.timing}</div>}
           <div>{batch.enrollments?.length || 0} student{(batch.enrollments?.length || 0) !== 1 ? 's' : ''} enrolled</div>
         </div>
       </div>
 
-      <div className="flex border-b border-gray-200 mb-6">
+      <div className="flex border-b border-slate-700/50 mb-6">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
             className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors ${
               activeTab === tab.key
-                ? 'border-indigo-600 text-indigo-700'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+                ? 'border-yellow-400 text-yellow-300'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
             <tab.icon className="w-4 h-4" />
@@ -232,8 +232,8 @@ export default function BatchDetailsPage() {
       {activeTab === 'live' && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-lg font-semibold text-gray-900">Live Classes</h4>
-            <button onClick={() => setShowLiveForm(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+            <h4 className="text-lg font-semibold text-slate-100">Live Classes</h4>
+            <button onClick={() => setShowLiveForm(true)} className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-slate-950 text-sm font-medium rounded-lg hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20">
               <Plus className="w-4 h-4" /> Schedule Class
             </button>
           </div>
@@ -254,8 +254,8 @@ export default function BatchDetailsPage() {
       {activeTab === 'materials' && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-lg font-semibold text-gray-900">Study Materials</h4>
-            <button onClick={() => setShowMatForm(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+            <h4 className="text-lg font-semibold text-slate-100">Study Materials</h4>
+            <button onClick={() => setShowMatForm(true)} className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-slate-950 text-sm font-medium rounded-lg hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20">
               <Upload className="w-4 h-4" /> Upload Material
             </button>
           </div>
@@ -269,29 +269,29 @@ export default function BatchDetailsPage() {
               {materials.map((m) => {
                 const isVideo = m.category === 'YOUTUBE_VIDEO';
                 return (
-                  <div key={m.id} className="bg-white rounded-xl border border-gray-200 p-4 flex items-start gap-3 hover:shadow-sm transition-shadow">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${isVideo ? 'bg-red-50' : 'bg-indigo-50'}`}>
-                      {isVideo ? <PlayCircle className="w-5 h-5 text-red-500" /> : <FileText className="w-5 h-5 text-indigo-600" />}
+                  <div key={m.id} className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-4 flex items-start gap-3 hover:border-slate-600 transition-all duration-300 ease-in-out hover:-translate-y-0.5">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${isVideo ? 'bg-red-500/10' : 'bg-blue-600/30'}`}>
+                      {isVideo ? <PlayCircle className="w-5 h-5 text-red-400" /> : <FileText className="w-5 h-5 text-blue-300" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h5 className="text-sm font-semibold text-gray-900 truncate">{m.title}</h5>
-                      {m.description && <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{m.description}</p>}
+                      <h5 className="text-sm font-semibold text-slate-100 truncate">{m.title}</h5>
+                      {m.description && <p className="text-xs text-slate-400 mt-0.5 line-clamp-2">{m.description}</p>}
                       <div className="flex items-center gap-2 mt-2">
-                        <span className={`text-xs px-1.5 py-0.5 rounded ${isVideo ? 'bg-red-50 text-red-600' : 'bg-gray-100 text-gray-600'}`}>
+                        <span className={`text-xs px-1.5 py-0.5 rounded ${isVideo ? 'bg-red-500/10 text-red-300' : 'bg-slate-800/60 text-slate-300'}`}>
                           {isVideo ? 'Video' : m.category}
                         </span>
-                        <span className="text-xs text-gray-400">{formatDate(m.createdAt)}</span>
+                        <span className="text-xs text-slate-500">{formatDate(m.createdAt)}</span>
                       </div>
                     </div>
                     {isVideo ? (
                       <button
                         onClick={() => { setVideoModalUrl(m.fileUrl); setVideoModalTitle(m.title); }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 text-xs font-medium rounded-lg hover:bg-red-100 transition-colors flex-shrink-0"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 text-red-300 text-xs font-medium rounded-lg hover:bg-red-500/20 transition-colors flex-shrink-0"
                       >
                         <PlayCircle className="w-3.5 h-3.5" /> Play
                       </button>
                     ) : (
-                      <a href={m.fileUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-medium rounded-lg hover:bg-indigo-100 transition-colors flex-shrink-0">
+                      <a href={m.fileUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/30 text-blue-300 text-xs font-medium rounded-lg hover:bg-blue-600/40 transition-colors flex-shrink-0">
                         <Download className="w-3.5 h-3.5" /> View
                       </a>
                     )}
@@ -307,8 +307,8 @@ export default function BatchDetailsPage() {
       {activeTab === 'homework' && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-lg font-semibold text-gray-900">Homework</h4>
-            <button onClick={() => setShowHwForm(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+            <h4 className="text-lg font-semibold text-slate-100">Homework</h4>
+            <button onClick={() => setShowHwForm(true)} className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-slate-950 text-sm font-medium rounded-lg hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20">
               <Plus className="w-4 h-4" /> Add Homework
             </button>
           </div>
@@ -320,18 +320,18 @@ export default function BatchDetailsPage() {
           ) : (
             <div className="space-y-3">
               {homework.map((hw) => (
-                <div key={hw.id} className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-sm transition-shadow">
+                <div key={hw.id} className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-300 ease-in-out hover:-translate-y-0.5">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0 mr-4">
-                      <h5 className="text-base font-semibold text-gray-900">{hw.title}</h5>
-                      {hw.description && <p className="text-sm text-gray-500 mt-1">{hw.description}</p>}
-                      <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
+                      <h5 className="text-base font-semibold text-slate-100">{hw.title}</h5>
+                      {hw.description && <p className="text-sm text-slate-400 mt-1">{hw.description}</p>}
+                      <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
                         <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />Due: {formatDate(hw.dueDate)}</span>
                         <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{formatTime(hw.dueDate)}</span>
                       </div>
                     </div>
                     {hw.fileUrl && (
-                      <a href={hw.fileUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-medium rounded-lg hover:bg-indigo-100 transition-colors flex-shrink-0">
+                      <a href={hw.fileUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/30 text-blue-300 text-xs font-medium rounded-lg hover:bg-blue-600/40 transition-colors flex-shrink-0">
                         <Download className="w-3.5 h-3.5" /> Attachment
                       </a>
                     )}
@@ -358,9 +358,9 @@ export default function BatchDetailsPage() {
 
 function EmptyState({ icon: Icon, text }: { icon: typeof Video; text: string }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-      <Icon className="w-10 h-10 text-gray-300 mx-auto" />
-      <p className="text-gray-500 mt-4">{text}</p>
+    <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-12 text-center">
+      <Icon className="w-10 h-10 text-slate-600 mx-auto" />
+      <p className="text-slate-400 mt-4">{text}</p>
     </div>
   );
 }
@@ -373,23 +373,23 @@ function LiveClassForm({ form, setForm, submitting, onSubmit, onCancel }: {
   onCancel: () => void;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-      <h5 className="text-sm font-semibold text-gray-700 mb-4">Schedule a New Live Class</h5>
+    <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6 mb-6">
+      <h5 className="text-sm font-semibold text-slate-300 mb-4">Schedule a New Live Class</h5>
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Title *" value={form.title} onChange={(v) => setForm({ ...form, title: v })} required />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Date & Time *</label>
-            <input type="datetime-local" value={form.scheduledFor} onChange={(e) => setForm({ ...form, scheduledFor: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" required />
+            <label className="block text-sm font-medium text-slate-300 mb-1">Date & Time *</label>
+            <input type="datetime-local" value={form.scheduledFor} onChange={(e) => setForm({ ...form, scheduledFor: e.target.value })} className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100" required />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Agenda</label>
-          <textarea value={form.agenda} onChange={(e) => setForm({ ...form, agenda: e.target.value })} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none" />
+          <label className="block text-sm font-medium text-slate-300 mb-1">Agenda</label>
+          <textarea value={form.agenda} onChange={(e) => setForm({ ...form, agenda: e.target.value })} rows={2} className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none resize-none bg-slate-900/60 text-slate-100" />
         </div>
         <div className="max-w-[160px]">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Duration (mins)</label>
-          <input type="number" value={form.durationMins} onChange={(e) => setForm({ ...form, durationMins: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" />
+          <label className="block text-sm font-medium text-slate-300 mb-1">Duration (mins)</label>
+          <input type="number" value={form.durationMins} onChange={(e) => setForm({ ...form, durationMins: e.target.value })} className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100" />
         </div>
         <FormActions submitting={submitting} label="Schedule" onCancel={onCancel} />
       </form>
@@ -409,19 +409,19 @@ function MaterialForm({ ref: fileRef, form, setForm, submitting, uploading, onSu
   const isYoutube = form.materialType === 'youtube';
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-      <h5 className="text-sm font-semibold text-gray-700 mb-4">Upload Study Material</h5>
+    <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6 mb-6">
+      <h5 className="text-sm font-semibold text-slate-300 mb-4">Upload Study Material</h5>
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Material Type</label>
+          <label className="block text-sm font-medium text-slate-300 mb-1">Material Type</label>
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => setForm({ ...form, materialType: 'file' })}
               className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg border transition-colors ${
                 !isYoutube
-                  ? 'border-indigo-300 bg-indigo-50 text-indigo-700'
-                  : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50'
+                  ? 'border-yellow-400/50 bg-yellow-500/10 text-yellow-300'
+                  : 'border-slate-700 bg-slate-900/60 text-slate-400 hover:bg-slate-800/60'
               }`}
             >
               File Upload (PDF)
@@ -431,8 +431,8 @@ function MaterialForm({ ref: fileRef, form, setForm, submitting, uploading, onSu
               onClick={() => setForm({ ...form, materialType: 'youtube' })}
               className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg border transition-colors ${
                 isYoutube
-                  ? 'border-indigo-300 bg-indigo-50 text-indigo-700'
-                  : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50'
+                  ? 'border-yellow-400/50 bg-yellow-500/10 text-yellow-300'
+                  : 'border-slate-700 bg-slate-900/60 text-slate-400 hover:bg-slate-800/60'
               }`}
             >
               YouTube Video
@@ -442,8 +442,8 @@ function MaterialForm({ ref: fileRef, form, setForm, submitting, uploading, onSu
         <Field label="Title *" value={form.title} onChange={(v) => setForm({ ...form, title: v })} required />
         {!isYoutube && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-            <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+            <label className="block text-sm font-medium text-slate-300 mb-1">Category</label>
+            <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100">
               <option value="NOTES">Notes</option>
               <option value="ASSIGNMENT">Assignment</option>
               <option value="QUESTION_PAPER">Question Paper</option>
@@ -453,25 +453,25 @@ function MaterialForm({ ref: fileRef, form, setForm, submitting, uploading, onSu
           </div>
         )}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none" />
+          <label className="block text-sm font-medium text-slate-300 mb-1">Description</label>
+          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none resize-none bg-slate-900/60 text-slate-100" />
         </div>
         {isYoutube ? (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">YouTube URL *</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">YouTube URL *</label>
             <input
               type="url"
               value={form.youtubeUrl}
               onChange={(e) => setForm({ ...form, youtubeUrl: e.target.value })}
               placeholder="https://www.youtube.com/watch?v=..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+              className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100"
               required
             />
           </div>
         ) : (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">File * (PDF, DOC, Images)</label>
-            <input ref={fileRef} type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp" onChange={(e) => setForm({ ...form, file: e.target.files?.[0] || null })} className="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" required={!isYoutube} />
+            <label className="block text-sm font-medium text-slate-300 mb-1">File * (PDF, DOC, Images)</label>
+            <input ref={fileRef} type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp" onChange={(e) => setForm({ ...form, file: e.target.files?.[0] || null })} className="w-full text-sm text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/40" required={!isYoutube} />
           </div>
         )}
         {uploading && !isYoutube && <UploadingIndicator />}
@@ -490,23 +490,23 @@ function HomeworkForm({ ref: fileRef, form, setForm, submitting, onSubmit, onCan
   onCancel: () => void;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-      <h5 className="text-sm font-semibold text-gray-700 mb-4">Add Homework</h5>
+    <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6 mb-6">
+      <h5 className="text-sm font-semibold text-slate-300 mb-4">Add Homework</h5>
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Title *" value={form.title} onChange={(v) => setForm({ ...form, title: v })} required />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Due Date *</label>
-            <input type="datetime-local" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" required />
+            <label className="block text-sm font-medium text-slate-300 mb-1">Due Date *</label>
+            <input type="datetime-local" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100" required />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none" />
+          <label className="block text-sm font-medium text-slate-300 mb-1">Description</label>
+          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none resize-none bg-slate-900/60 text-slate-100" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Attachment (optional)</label>
-          <input ref={fileRef} type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp" onChange={(e) => setForm({ ...form, file: e.target.files?.[0] || null })} className="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+          <label className="block text-sm font-medium text-slate-300 mb-1">Attachment (optional)</label>
+          <input ref={fileRef} type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp" onChange={(e) => setForm({ ...form, file: e.target.files?.[0] || null })} className="w-full text-sm text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600/30 file:text-blue-300 hover:file:bg-blue-600/40" />
         </div>
         <FormActions submitting={submitting} label="Assign" onCancel={onCancel} />
       </form>
@@ -520,15 +520,15 @@ function LiveClassCard({ lc, batchId }: { lc: LiveClass; batchId: string }) {
   const isLive = !isPast && new Date(lc.scheduledFor).getTime() - Date.now() < 10 * 60 * 1000 && new Date(lc.scheduledFor).getTime() + lc.durationMins * 60 * 1000 > Date.now();
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-sm transition-shadow">
+    <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-300 ease-in-out hover:-translate-y-0.5">
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0 mr-4">
           <div className="flex items-center gap-2">
-            <h5 className="text-base font-semibold text-gray-900">{lc.title}</h5>
-            {isLive && <span className="text-xs font-bold px-2 py-0.5 bg-red-50 text-red-600 rounded-full animate-pulse">LIVE</span>}
+            <h5 className="text-base font-semibold text-slate-100">{lc.title}</h5>
+            {isLive && <span className="text-xs font-bold px-2 py-0.5 bg-red-500/20 text-red-400 rounded-full animate-pulse">LIVE</span>}
           </div>
-          {lc.agenda && <p className="text-sm text-gray-500 mt-1">{lc.agenda}</p>}
-          <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
+          {lc.agenda && <p className="text-sm text-slate-400 mt-1">{lc.agenda}</p>}
+          <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
             <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{new Date(lc.scheduledFor).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}</span>
             <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{new Date(lc.scheduledFor).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })} ({lc.durationMins} min)</span>
           </div>
@@ -536,7 +536,7 @@ function LiveClassCard({ lc, batchId }: { lc: LiveClass; batchId: string }) {
         <button
           onClick={() => navigate(`/dashboard/batches/${batchId}/live/${lc.id}`)}
           disabled={isPast}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors flex-shrink-0 ${isPast ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-700'}`}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors flex-shrink-0 ${isPast ? 'bg-slate-800/60 text-slate-500 cursor-not-allowed' : 'bg-yellow-400 text-slate-950 hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20'}`}
         >
           {isPast ? 'Ended' : isLive ? (<><ExternalLink className="w-4 h-4" />Join Now</>) : (<><ExternalLink className="w-4 h-4" />Join Class</>)}
         </button>
@@ -548,8 +548,8 @@ function LiveClassCard({ lc, batchId }: { lc: LiveClass; batchId: string }) {
 function Field({ label, value, onChange, required }: { label: string; value: string; onChange: (v: string) => void; required?: boolean }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <input type="text" value={value} onChange={(e) => onChange(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" required={required} />
+      <label className="block text-sm font-medium text-slate-300 mb-1">{label}</label>
+      <input type="text" value={value} onChange={(e) => onChange(e.target.value)} className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100" required={required} />
     </div>
   );
 }
@@ -557,15 +557,15 @@ function Field({ label, value, onChange, required }: { label: string; value: str
 function FormActions({ submitting, label, onCancel }: { submitting: boolean; label: string; onCancel: () => void }) {
   return (
     <div className="flex justify-end gap-3 pt-2">
-      <button type="button" onClick={onCancel} className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Cancel</button>
-      <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50">{submitting ? `${label}...` : label}</button>
+      <button type="button" onClick={onCancel} className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/60 rounded-lg hover:bg-slate-700/60 transition-colors">Cancel</button>
+      <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-slate-950 bg-yellow-400 rounded-lg hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20 disabled:opacity-50">{submitting ? `${label}...` : label}</button>
     </div>
   );
 }
 
 function UploadingIndicator() {
   return (
-    <div className="flex items-center gap-2 text-sm text-indigo-600">
+    <div className="flex items-center gap-2 text-sm text-blue-300">
       <Loader2 className="w-4 h-4 animate-spin" />
       Uploading file...
     </div>

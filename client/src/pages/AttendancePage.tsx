@@ -4,10 +4,10 @@ import api from '../lib/api';
 import type { Batch, Student, ApiResponse, AttendanceRecord, AttendanceStatus } from '../types';
 
 const STATUS_OPTIONS: { value: AttendanceStatus; label: string; className: string }[] = [
-  { value: 'PRESENT', label: 'Present', className: 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' },
-  { value: 'ABSENT', label: 'Absent', className: 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100' },
-  { value: 'LATE', label: 'Late', className: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100' },
-  { value: 'EXCUSED', label: 'Excused', className: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100' },
+  { value: 'PRESENT', label: 'Present', className: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/20' },
+  { value: 'ABSENT', label: 'Absent', className: 'bg-red-500/10 text-red-300 border-red-500/30 hover:bg-red-500/20' },
+  { value: 'LATE', label: 'Late', className: 'bg-amber-400/10 text-amber-300 border-amber-400/30 hover:bg-amber-400/20' },
+  { value: 'EXCUSED', label: 'Excused', className: 'bg-blue-500/10 text-blue-300 border-blue-500/30 hover:bg-blue-500/20' },
 ];
 
 interface StudentStatus {
@@ -25,10 +25,10 @@ const StudentRow = memo(function StudentRow({
   onStatusChange: (studentId: string, status: AttendanceStatus) => void;
 }) {
   return (
-    <div className="flex items-center justify-between py-3 px-4 hover:bg-gray-50 rounded-lg transition-colors">
+    <div className="flex items-center justify-between py-3 px-4 hover:bg-slate-800/40 rounded-lg transition-colors">
       <div className="flex-1 min-w-0 mr-4">
-        <p className="text-sm font-medium text-gray-900 truncate">{record.studentName}</p>
-        <p className="text-xs text-gray-500 truncate">{record.studentEmail}</p>
+        <p className="text-sm font-medium text-slate-100 truncate">{record.studentName}</p>
+        <p className="text-xs text-slate-500 truncate">{record.studentEmail}</p>
       </div>
       <div className="flex items-center gap-1.5 flex-shrink-0">
         {STATUS_OPTIONS.map((opt) => (
@@ -38,8 +38,8 @@ const StudentRow = memo(function StudentRow({
             onClick={() => onStatusChange(record.studentId, opt.value)}
             className={`px-2.5 py-1 text-xs font-medium rounded-md border transition-colors ${
               record.status === opt.value
-                ? `${opt.className} ring-1 ring-offset-1 ring-current`
-                : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
+                ? `${opt.className} ring-1 ring-offset-1 ring-current ring-offset-slate-900`
+                : 'bg-slate-900/60 text-slate-500 border-slate-700 hover:bg-slate-800/60'
             }`}
           >
             {opt.label}
@@ -182,26 +182,26 @@ export default function AttendancePage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-2xl font-bold text-gray-900">Attendance</h3>
-          <p className="text-sm text-gray-500 mt-1">Track student attendance for each batch</p>
+          <h3 className="text-2xl font-bold text-slate-100">Attendance</h3>
+          <p className="text-sm text-slate-500 mt-1">Track student attendance for each batch</p>
         </div>
       </div>
 
       {toast && (
-        <div className="fixed top-4 right-4 z-50 flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-3 shadow-lg">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-          <span className="text-sm font-medium text-emerald-700">{toast}</span>
+        <div className="fixed top-4 right-4 z-50 flex items-center gap-2 bg-emerald-500/10 backdrop-blur-xl border border-emerald-500/30 rounded-lg px-4 py-3 shadow-lg">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <span className="text-sm font-medium text-emerald-300">{toast}</span>
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
+      <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-4 mb-6">
         <div className="flex items-end gap-4">
           <div className="flex-1 max-w-xs">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Select Batch</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Select Batch</label>
             <select
               value={selectedBatchId}
               onChange={(e) => setSelectedBatchId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+              className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100"
             >
               <option value="">Choose a batch...</option>
               {batches.map((b) => (
@@ -212,12 +212,12 @@ export default function AttendancePage() {
             </select>
           </div>
           <div className="max-w-[180px]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Date</label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+              className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100"
             />
           </div>
         </div>
@@ -225,7 +225,7 @@ export default function AttendancePage() {
 
       {loading && (
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400" />
         </div>
       )}
 
@@ -234,16 +234,16 @@ export default function AttendancePage() {
           <div className="flex items-center gap-4 mb-4">
             <div className="flex items-center gap-2 text-sm">
               <span className="w-3 h-3 rounded-full bg-emerald-500" />
-              <span className="text-gray-600">Present: {presentCount}</span>
+              <span className="text-slate-400">Present: {presentCount}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <span className="w-3 h-3 rounded-full bg-red-500" />
-              <span className="text-gray-600">Absent: {absentCount}</span>
+              <span className="text-slate-400">Absent: {absentCount}</span>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
-            <div className="divide-y divide-gray-100">
+          <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 overflow-hidden mb-6">
+            <div className="divide-y divide-slate-800">
               {students.map((student) => (
                 <StudentRow
                   key={student.id}
@@ -263,7 +263,7 @@ export default function AttendancePage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-6 py-2.5 bg-yellow-400 text-slate-950 text-sm font-medium rounded-lg hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
               {saving ? 'Saving...' : 'Save Attendance'}
@@ -273,17 +273,17 @@ export default function AttendancePage() {
       )}
 
       {!loading && selectedBatchId && students.length === 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <p className="text-gray-500">No students enrolled in this batch.</p>
+        <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-12 text-center">
+          <p className="text-slate-500">No students enrolled in this batch.</p>
         </div>
       )}
 
       {!loading && !selectedBatchId && (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <svg className="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-12 text-center">
+          <svg className="mx-auto h-12 w-12 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
           </svg>
-          <p className="text-gray-500 mt-4">Select a batch and date to start taking attendance.</p>
+          <p className="text-slate-500 mt-4">Select a batch and date to start taking attendance.</p>
         </div>
       )}
     </div>

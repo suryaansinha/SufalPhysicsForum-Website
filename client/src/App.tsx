@@ -18,6 +18,7 @@ import Settings from './pages/dashboard/Settings';
 import { useEffect, useState } from 'react';
 import { fetchBatches } from './api/batch.api';
 import api from './lib/api';
+import GlassBackground from './components/GlassBackground';
 
 // function LoginPage() {
 //   return (
@@ -62,8 +63,8 @@ function DashboardHome() {
 
   return (
     <div>
-      <h3 className="text-2xl font-bold text-gray-900">Dashboard</h3>
-      <p className="text-sm text-gray-500 mt-1">Welcome to SufalPhysicsForum</p>
+      <h3 className="text-2xl font-bold text-slate-100">Dashboard</h3>
+      <p className="text-sm text-slate-400 mt-1">Welcome to SufalPhysicsForum</p>
       <div className="grid gap-6 mt-8 md:grid-cols-2 xl:grid-cols-3">
         <StatCard
           label="Total Batches"
@@ -84,14 +85,14 @@ function DashboardHome() {
 
 function StatCard({ label, value, href, color }: { label: string; value: string; href: string; color: string }) {
   const colorMap: Record<string, string> = {
-    indigo: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-    emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    indigo: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30',
+    emerald: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
   };
 
   return (
     <Link
       to={href}
-      className={`rounded-xl border p-6 hover:shadow-md transition-shadow ${colorMap[color] || colorMap.indigo}`}
+      className={`rounded-xl border border-slate-700/50 bg-slate-900/40 backdrop-blur-xl p-6 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 ease-in-out hover:-translate-y-1 ${colorMap[color] || colorMap.indigo}`}
     >
       <p className="text-sm font-medium opacity-80">{label}</p>
       <p className="text-3xl font-bold mt-2">{value}</p>
@@ -108,29 +109,32 @@ function RequireTeacherRole({ children }: { children: ReactNode }) {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
-      <Route path="/about" element={<PublicLayout><AboutPage /></PublicLayout>} />
-      <Route path="/blog" element={<PublicLayout><BlogPage /></PublicLayout>} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/dashboard" element={<DashboardLayout />}>
-        <Route index element={<DashboardHome />} />
-        <Route path="batches" element={<BatchesPage />} />
-        <Route path="batches/:batchId" element={<BatchDetailsPage />} />
-        <Route path="students" element={<Students />} />
-        <Route path="attendance" element={<Attendance />} />
-        <Route path="fees" element={<FeesPage />} />
-        <Route path="doubt-forum" element={<DoubtForum />} />
-        <Route
-          path="settings"
-          element={
-            <RequireTeacherRole>
-              <Settings />
-            </RequireTeacherRole>
-          }
-        />
-      </Route>
-      <Route path="/dashboard/batches/:batchId/live/:liveClassId" element={<LiveClassRoom />} />
-    </Routes>
+    <div className="relative min-h-screen bg-slate-950 text-slate-100">
+      <GlassBackground />
+      <Routes>
+        <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
+        <Route path="/about" element={<PublicLayout><AboutPage /></PublicLayout>} />
+        <Route path="/blog" element={<PublicLayout><BlogPage /></PublicLayout>} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<DashboardHome />} />
+          <Route path="batches" element={<BatchesPage />} />
+          <Route path="batches/:batchId" element={<BatchDetailsPage />} />
+          <Route path="students" element={<Students />} />
+          <Route path="attendance" element={<Attendance />} />
+          <Route path="fees" element={<FeesPage />} />
+          <Route path="doubt-forum" element={<DoubtForum />} />
+          <Route
+            path="settings"
+            element={
+              <RequireTeacherRole>
+                <Settings />
+              </RequireTeacherRole>
+            }
+          />
+        </Route>
+        <Route path="/dashboard/batches/:batchId/live/:liveClassId" element={<LiveClassRoom />} />
+      </Routes>
+    </div>
   );
 }

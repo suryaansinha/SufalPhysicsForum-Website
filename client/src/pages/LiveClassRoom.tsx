@@ -33,10 +33,10 @@ export default function LiveClassRoom() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-900">
+      <div className="flex items-center justify-center h-screen bg-slate-950">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-indigo-400 animate-spin mx-auto" />
-          <p className="text-gray-400 mt-4">Joining class...</p>
+          <Loader2 className="w-8 h-8 text-yellow-400 animate-spin mx-auto" />
+          <p className="text-slate-400 mt-4">Joining class...</p>
         </div>
       </div>
     );
@@ -44,12 +44,12 @@ export default function LiveClassRoom() {
 
   if (error || !liveClass) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
+      <div className="flex items-center justify-center h-screen bg-slate-950">
         <div className="text-center">
-          <p className="text-red-600 mb-4">{error || 'Live class not found'}</p>
+          <p className="text-red-400 mb-4">{error || 'Live class not found'}</p>
           <button
             onClick={() => navigate(`/dashboard/batches`)}
-            className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium"
+            className="inline-flex items-center gap-2 text-yellow-300 hover:text-yellow-200 font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Batches
@@ -60,23 +60,23 @@ export default function LiveClassRoom() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
-      <div className="h-14 bg-gray-900 border-b border-gray-800 flex items-center justify-between px-4 flex-shrink-0">
+    <div className="h-screen flex flex-col bg-slate-950">
+      <div className="h-14 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800 flex items-center justify-between px-4 flex-shrink-0">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate(`/dashboard/batches/${batchId}`)}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-slate-400 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
             <h1 className="text-sm font-semibold text-white">{liveClass.title}</h1>
             {liveClass.agenda && (
-              <p className="text-xs text-gray-400">{liveClass.agenda}</p>
+              <p className="text-xs text-slate-400">{liveClass.agenda}</p>
             )}
           </div>
         </div>
-        <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">
+        <span className="text-xs text-slate-500 bg-slate-800 px-2 py-1 rounded">
           {liveClass.durationMins} min
         </span>
       </div>

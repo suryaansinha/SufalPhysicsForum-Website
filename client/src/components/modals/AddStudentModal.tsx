@@ -16,7 +16,7 @@ interface Credentials {
 }
 
 const inputClass =
-  'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none';
+  'w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-slate-900/60 text-slate-100';
 
 const LOGIN_URL = 'https://yourdomain.com/login';
 
@@ -118,16 +118,16 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="bg-slate-900/80 backdrop-blur-xl rounded-xl shadow-2xl border border-slate-700/50 w-full max-w-lg mx-4 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-lg font-semibold text-gray-900">
+          <h4 className="text-lg font-semibold text-slate-100">
             {credentials ? 'Student Added' : 'Add Student'}
           </h4>
           <button
             type="button"
             onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-slate-400 hover:text-slate-200"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -137,40 +137,40 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
         {credentials ? (
           <div className="space-y-5">
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-100 shrink-0">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-500/10 shrink-0">
+                <CheckCircle2 className="w-5 h-5 text-emerald-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-slate-100">
                   {createdStudent?.name} is now enrolled.
                 </p>
-                <p className="text-sm text-gray-500 mt-0.5">
+                <p className="text-sm text-slate-400 mt-0.5">
                   Share these temporary credentials with the student via WhatsApp or Email.
                 </p>
               </div>
             </div>
 
-            <div className="space-y-3 bg-gray-50 border border-gray-200 rounded-xl p-4">
+            <div className="space-y-3 bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
               <div>
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Email</p>
-                <p className="text-sm font-semibold text-gray-900 mt-0.5 break-all">
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Email</p>
+                <p className="text-sm font-semibold text-slate-100 mt-0.5 break-all">
                   {credentials.email}
                 </p>
               </div>
-              <div className="border-t border-gray-200 pt-3">
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Password</p>
+              <div className="border-t border-slate-700/50 pt-3">
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Password</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <p className="text-sm font-semibold text-gray-900 font-mono">
+                  <p className="text-sm font-semibold text-slate-100 font-mono">
                     {credentials.password}
                   </p>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 shrink-0">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-300 shrink-0">
                     Temporary Password
                   </span>
                 </div>
               </div>
             </div>
 
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-slate-500">
               Students can change their password after logging in.
             </p>
 
@@ -178,14 +178,14 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
               <button
                 type="button"
                 onClick={handleClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/60 rounded-lg hover:bg-slate-700/60 transition-colors"
               >
                 Close
               </button>
               <button
                 type="button"
                 onClick={handleCopy}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-950 bg-yellow-400 rounded-lg hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20"
               >
                 {copied ? (
                   <Check className="w-4 h-4" />
@@ -199,7 +199,7 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Full Name *</label>
               <input
                 type="text"
                 value={form.name}
@@ -210,7 +210,7 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Email Address *</label>
               <input
                 type="email"
                 value={form.email}
@@ -221,7 +221,7 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Phone Number</label>
               <input
                 type="tel"
                 value={form.phone}
@@ -231,7 +231,7 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Batch</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Batch</label>
               <select
                 value={form.batchId}
                 onChange={(e) => setForm({ ...form, batchId: e.target.value })}
@@ -248,7 +248,7 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 text-sm text-red-300">
                 {error}
               </div>
             )}
@@ -257,14 +257,14 @@ export default function AddStudentModal({ open, onClose, onCreated }: AddStudent
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/60 rounded-lg hover:bg-slate-700/60 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-950 bg-yellow-400 rounded-lg hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20 disabled:opacity-50"
               >
                 {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
                 {submitting ? 'Adding...' : 'Add Student'}
