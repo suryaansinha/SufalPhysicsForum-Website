@@ -192,13 +192,16 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
     }
 
     let email: string | undefined;
+    let googleName: string | undefined;
 
     try {
       const ticket = await googleClient.verifyIdToken({
         idToken: credential,
         audience: GOOGLE_CLIENT_ID,
       });
-      email = ticket.getPayload()?.email;
+      const payload = ticket.getPayload();
+      email = payload?.email;
+      googleName = payload?.name;
     } catch {
       res.status(401).json({ message: 'Invalid Google credential' });
       return;
@@ -209,14 +212,37 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const user = await prisma.user.findFirst({
+    let user = await prisma.user.findFirst({
       where: { email },
       include: { institute: true },
     });
 
     if (!user) {
-      res.status(403).json({ message: 'Account not registered by Institute' });
-      return;
+      const institute = await prisma.institute.findFirst({
+        orderBy: { createdAt: 'asc' },
+        select: { id: true, name: true, slug: true },
+      });
+
+      if (!institute) {
+        console.error('Google auto-registration failed: no institute found in the database');
+        res.status(500).json({ message: 'No institute is configured on this platform' });
+        return;
+      }
+
+      const randomPassword = crypto.randomBytes(24).toString('base64url');
+      const passwordHash = await hashPassword(randomPassword);
+
+      user = await prisma.user.create({
+        data: {
+          instituteId: institute.id,
+          name: googleName?.trim() || email.split('@')[0],
+          email,
+          passwordHash,
+          role: Role.STUDENT,
+          isActive: true,
+        },
+        include: { institute: true },
+      });
     }
 
     if (!user.isActive) {
