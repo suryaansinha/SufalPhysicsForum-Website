@@ -3,3 +3,12 @@
 @config "../tailwind.config.js";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@layer utilities {
+  .glow-border {
+    @apply border border-slate-700/50 transition-all duration-300;
+  }
+  .glow-border:hover {
+    @apply border-blue-500/50 shadow-[0_0_20px_rgba(37,99,235,0.2)];
+  }
+}

@@ -83,7 +83,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-slate-900/40 backdrop-blur-xl p-8 rounded-xl shadow-lg border border-slate-700/50">
+      <div className="max-w-md w-full space-y-8 bg-slate-900/40 backdrop-blur-xl p-8 rounded-xl shadow-lg glow-border">
 
         {/* Header Section */}
         <div className="text-center">

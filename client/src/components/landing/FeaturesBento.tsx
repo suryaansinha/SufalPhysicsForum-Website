@@ -6,6 +6,7 @@ interface FeatureCard {
   icon: typeof Video;
   iconClass: string;
   span?: string;
+  hoverClass?: string;
 }
 
 const features: FeatureCard[] = [
@@ -34,6 +35,7 @@ const features: FeatureCard[] = [
     description: 'Track attendance, test scores, and topic-wise mastery as you progress through the syllabus.',
     icon: BarChart3,
     iconClass: 'bg-yellow-500/10 text-yellow-500',
+    hoverClass: 'hover:shadow-[0_0_25px_rgba(234,179,8,0.3)] hover:border-yellow-500/50',
   },
   {
     title: 'Personalized Mentorship',
@@ -55,7 +57,7 @@ export default function FeaturesBento() {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className={`bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl p-6 hover:-translate-y-1 hover:border-slate-700 transition-all ${feature.span ?? ''}`}
+              className={`bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-[0_0_15px_rgba(37,99,235,0.1)] hover:-translate-y-1 transition-all duration-300 ${feature.hoverClass ?? 'hover:shadow-[0_0_25px_rgba(37,99,235,0.3)] hover:border-blue-500/50'} ${feature.span ?? ''}`}
             >
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${feature.iconClass}`}>
                 <feature.icon className="w-6 h-6" />
