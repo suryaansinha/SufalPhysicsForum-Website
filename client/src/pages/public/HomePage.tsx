@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom';
-import { BookOpen, Award, Users, PlayCircle, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import FeaturesBento from '../../components/landing/FeaturesBento';
+import StatsStrip from '../../components/landing/StatsStrip';
+import Testimonials from '../../components/landing/Testimonials';
 
 export default function HomePage() {
   return (
@@ -59,46 +62,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-slate-900/20 backdrop-blur-xl border-y border-slate-700/50 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-100">Why Choose Sufal Physics Forum?</h2>
-            <p className="mt-4 text-lg text-slate-400">Everything you need to ace your physics exams</p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 p-6 rounded-2xl shadow-sm hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 ease-in-out hover:-translate-y-1">
-              <div className="w-12 h-12 bg-blue-600/30 rounded-xl flex items-center justify-center mb-4">
-                <PlayCircle className="w-6 h-6 text-blue-300" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-100 mb-2">Live Classes</h3>
-              <p className="text-slate-400">Interactive online sessions with real-time doubt solving</p>
-            </div>
-            <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 p-6 rounded-2xl shadow-sm hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 ease-in-out hover:-translate-y-1">
-              <div className="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center mb-4">
-                <BookOpen className="w-6 h-6 text-yellow-300" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-100 mb-2">Study Materials</h3>
-              <p className="text-slate-400">Comprehensive notes, videos, and practice resources</p>
-            </div>
-            <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 p-6 rounded-2xl shadow-sm hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 ease-in-out hover:-translate-y-1">
-              <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-4">
-                <Award className="w-6 h-6 text-emerald-300" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-100 mb-2">Proven Results</h3>
-              <p className="text-slate-400">Track record of students clearing JEE, NEET, and boards</p>
-            </div>
-            <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 p-6 rounded-2xl shadow-sm hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 ease-in-out hover:-translate-y-1">
-              <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
-                <Users className="w-6 h-6 text-orange-300" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-100 mb-2">Expert Faculty</h3>
-              <p className="text-slate-400">Learn from experienced educators dedicated to your success</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <FeaturesBento />
+      <StatsStrip />
+      <Testimonials />
 
-      <section className="py-20">
+      <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-slate-100 mb-8">Ready to Start Your Journey?</h2>
           <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
