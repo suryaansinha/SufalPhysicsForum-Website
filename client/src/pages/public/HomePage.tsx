@@ -7,11 +7,15 @@ export default function HomePage() {
       <section className="relative isolate overflow-hidden">
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 h-full w-full bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-70 [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none"
+          className="absolute inset-0 -z-10 h-full w-full bg-[radial-gradient(#475569_1px,transparent_1px)] [background-size:24px_24px] opacity-100 [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none"
         ></div>
         <div
           aria-hidden="true"
-          className="absolute top-0 left-1/2 -translate-x-1/2 -z-20 h-[300px] w-[600px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"
+          className="absolute top-[-10%] left-[20%] -z-20 h-[400px] w-[500px] rounded-full bg-blue-600/30 blur-[150px] pointer-events-none"
+        ></div>
+        <div
+          aria-hidden="true"
+          className="absolute top-[10%] right-[20%] -z-20 h-[300px] w-[400px] rounded-full bg-yellow-500/20 blur-[150px] pointer-events-none"
         ></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
