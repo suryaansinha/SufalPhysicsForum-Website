@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Plus, Mail, Phone } from 'lucide-react';
+import { Plus, Mail, Phone, Trash2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { isTeacherRole } from '../../lib/auth';
-import { fetchStudents } from '../../api/student.api';
+import { fetchStudents, deleteStudent } from '../../api/student.api';
 import type { Student } from '../../types';
 import AddStudentModal from '../../components/modals/AddStudentModal';
+import DeleteStudentModal from '../../components/modals/DeleteStudentModal';
 
 export default function Students() {
   const { user } = useAuth();
@@ -13,6 +14,9 @@ export default function Students() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const loadStudents = useCallback(() => {
     setLoading(true);
@@ -28,6 +32,22 @@ export default function Students() {
 
   const handleCreated = (student: Student) => {
     setStudents((prev) => [student, ...prev]);
+  };
+
+  const handleDelete = async () => {
+    if (!studentToDelete || deleting) return;
+    setDeleting(true);
+    try {
+      await deleteStudent(studentToDelete.id);
+      setStudentToDelete(null);
+      setToast({ type: 'success', message: `${studentToDelete.name} deleted successfully` });
+      loadStudents();
+      setTimeout(() => setToast(null), 3000);
+    } catch (err) {
+      setToast({ type: 'error', message: err instanceof Error ? err.message : 'Failed to delete student' });
+    } finally {
+      setDeleting(false);
+    }
   };
 
   if (loading) {
@@ -87,6 +107,11 @@ export default function Students() {
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-600 uppercase tracking-wider dark:text-slate-400">
                     Status
                   </th>
+                  {canManageStudents && (
+                    <th className="text-left px-6 py-3 text-xs font-semibold text-slate-600 uppercase tracking-wider dark:text-slate-400">
+                      Actions
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -136,6 +161,18 @@ export default function Students() {
                         {student.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </td>
+                    {canManageStudents && (
+                      <td className="px-6 py-4">
+                        <button
+                          type="button"
+                          onClick={() => setStudentToDelete(student)}
+                          aria-label={`Delete ${student.name}`}
+                          className="p-2 rounded-lg text-red-500 hover:text-red-600 hover:bg-red-500/10 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -145,6 +182,37 @@ export default function Students() {
       )}
 
       <AddStudentModal open={showModal} onClose={() => setShowModal(false)} onCreated={handleCreated} />
+
+      <DeleteStudentModal
+        isOpen={studentToDelete !== null}
+        onClose={() => setStudentToDelete(null)}
+        onConfirm={handleDelete}
+        studentName={studentToDelete?.name ?? ''}
+        isLoading={deleting}
+      />
+
+      {toast && (
+        <div
+          className={`fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg px-4 py-3 shadow-lg border backdrop-blur-xl ${
+            toast.type === 'success'
+              ? 'bg-emerald-500/10 border-emerald-500/30'
+              : 'bg-red-500/10 border-red-500/30'
+          }`}
+        >
+          {toast.type === 'success' ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          ) : (
+            <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
+          )}
+          <span
+            className={`text-sm font-medium ${
+              toast.type === 'success' ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'
+            }`}
+          >
+            {toast.message}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

@@ -160,3 +160,32 @@ export async function getStudent(req: Request, res: Response): Promise<void> {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 }
+
+export async function deleteStudent(req: Request, res: Response): Promise<void> {
+  try {
+    const instituteId = req.user!.instituteId;
+    const id = req.params.id as string;
+
+    const student = await prisma.user.findUnique({
+      where: { id },
+      select: { id: true, instituteId: true, role: true },
+    });
+
+    if (!student || student.role !== Role.STUDENT) {
+      res.status(404).json({ success: false, message: 'Student not found' });
+      return;
+    }
+
+    if (student.instituteId !== instituteId) {
+      res.status(403).json({ success: false, message: 'Forbidden' });
+      return;
+    }
+
+    await prisma.user.delete({ where: { id } });
+
+    res.json({ success: true, data: { id }, message: 'Student deleted' });
+  } catch (error) {
+    console.error('Delete student error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}

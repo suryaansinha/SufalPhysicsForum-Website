@@ -25,3 +25,10 @@ export async function createStudent(payload: CreateStudentPayload): Promise<Crea
   }
   return data.data;
 }
+
+export async function deleteStudent(studentId: string): Promise<void> {
+  const { data } = await apiClient.delete<ApiResponse<{ id: string }>>(`/students/${studentId}`);
+  if (!data.success) {
+    throw new Error(data.message || 'Failed to delete student');
+  }
+}
