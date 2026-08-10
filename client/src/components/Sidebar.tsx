@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, BookOpen, ClipboardCheck, IndianRupee, HelpCircle, Settings as SettingsIcon } from 'lucide-react';
+import { LayoutDashboard, Users, BookOpen, ClipboardCheck, CalendarCheck, IndianRupee, HelpCircle, Settings as SettingsIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 interface SidebarLink {
@@ -14,6 +14,7 @@ const sidebarLinks: SidebarLink[] = [
   { to: '/dashboard/batches', icon: BookOpen, label: 'Batches' },
   { to: '/dashboard/students', icon: Users, label: 'Students' },
   { to: '/dashboard/attendance', icon: ClipboardCheck, label: 'Attendance' },
+  { to: '/dashboard/attendance-tracker', icon: CalendarCheck, label: 'Attendance Tracker' },
   { to: '/dashboard/fees', icon: IndianRupee, label: 'Fees' },
   { to: '/dashboard/doubt-forum', icon: HelpCircle, label: 'Doubt Forum' },
   { to: '/dashboard/settings', icon: SettingsIcon, label: 'Settings', adminOnly: true },
