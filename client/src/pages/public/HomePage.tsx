@@ -4,7 +4,15 @@ import { BookOpen, Award, Users, PlayCircle, ArrowRight } from 'lucide-react';
 export default function HomePage() {
   return (
     <div className="bg-transparent">
-      <section className="relative overflow-hidden">
+      <section className="relative isolate overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 h-full w-full bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-70 [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none"
+        ></div>
+        <div
+          aria-hidden="true"
+          className="absolute top-0 left-1/2 -translate-x-1/2 -z-20 h-[300px] w-[600px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"
+        ></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
