@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { Menu, X, ArrowRight, Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
 import type { InstitutePublic } from '../types';
 import { fetchInstitutePublicProfile } from '../lib/api';
 
@@ -190,34 +190,37 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
 
             <div>
               <h4 className="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-4">Contact</h4>
-              <ul className="space-y-2">
-                {institute?.email && (
-                  <li>
-                    <a href={`mailto:${institute.email}`} className="text-sm text-slate-400 hover:text-slate-100">
-                      {institute.email}
-                    </a>
-                  </li>
-                )}
-                {institute?.phone && (
-                  <li>
-                    <a href={`tel:${institute.phone}`} className="text-sm text-slate-400 hover:text-slate-100">
-                      {institute.phone}
-                    </a>
-                  </li>
-                )}
+              <div className="flex flex-col space-y-4 mt-4">
+                <a
+                  href={`mailto:${institute?.email || 'sufalphysics@gmail.com'}`}
+                  className="flex items-center gap-3 text-slate-400 hover:text-yellow-500 transition-colors duration-200"
+                >
+                  <Mail size={18} />
+                  <span>{institute?.email || 'sufalphysics@gmail.com'}</span>
+                </a>
+                <a
+                  href={`tel:${institute?.phone || '+919716238813'}`}
+                  className="flex items-center gap-3 text-slate-400 hover:text-yellow-500 transition-colors duration-200"
+                >
+                  <Phone size={18} />
+                  <span>{institute?.phone || '+91 97162 38813'}</span>
+                </a>
+                <div className="flex items-start gap-3 text-slate-400">
+                  <MapPin size={18} className="shrink-0 mt-1" />
+                  <span>New Delhi, India</span>
+                </div>
                 {institute?.whatsappNumber && (
-                  <li>
-                    <a
-                      href={`https://wa.me/${institute.whatsappNumber.replace(/^[\+\-]/g, '')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-green-400 hover:text-green-300 font-medium"
-                    >
-                      Chat on WhatsApp →
-                    </a>
-                  </li>
+                  <a
+                    href={`https://wa.me/${institute.whatsappNumber.replace(/^[\+\-]/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 text-green-400 hover:text-green-300 font-medium transition-colors duration-200"
+                  >
+                    <MessageCircle size={18} />
+                    <span>Chat on WhatsApp</span>
+                  </a>
                 )}
-              </ul>
+              </div>
             </div>
           </div>
 
