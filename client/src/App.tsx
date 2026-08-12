@@ -11,7 +11,6 @@ import BatchesPage from './pages/BatchesPage';
 import BatchDetailsPage from './pages/BatchDetailsPage';
 import Students from './pages/dashboard/Students';
 import Attendance from './pages/dashboard/Attendance';
-import AttendanceTracker from './pages/dashboard/AttendanceTracker';
 import LiveClassRoom from './pages/LiveClassRoom';
 import FeesPage from './pages/dashboard/FeesPage';
 import DoubtForum from './pages/dashboard/DoubtForum';
@@ -123,7 +122,6 @@ export default function App() {
           <Route path="batches/:batchId" element={<BatchDetailsPage />} />
           <Route path="students" element={<Students />} />
           <Route path="attendance" element={<Attendance />} />
-          <Route path="attendance-tracker" element={<AttendanceTracker />} />
           <Route path="fees" element={<FeesPage />} />
           <Route path="doubt-forum" element={<DoubtForum />} />
           <Route
