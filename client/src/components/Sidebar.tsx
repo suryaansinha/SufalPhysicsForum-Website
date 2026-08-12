@@ -1,19 +1,23 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, BookOpen, ClipboardCheck, IndianRupee, HelpCircle, Settings as SettingsIcon } from 'lucide-react';
+import { LayoutDashboard, Users, BookOpen, ClipboardCheck, CalendarCheck, IndianRupee, HelpCircle, Settings as SettingsIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { getCurrentUserRole } from '../lib/auth';
 
 interface SidebarLink {
   to: string;
   icon: LucideIcon;
   label: string;
   adminOnly?: boolean;
+  teacherOnly?: boolean;
+  studentOnly?: boolean;
 }
 
 const sidebarLinks: SidebarLink[] = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/dashboard/batches', icon: BookOpen, label: 'Batches' },
   { to: '/dashboard/students', icon: Users, label: 'Students' },
-  { to: '/dashboard/attendance', icon: ClipboardCheck, label: 'Attendance' },
+  { to: '/dashboard/attendance', icon: ClipboardCheck, label: 'Attendance', teacherOnly: true },
+  { to: '/dashboard/my-attendance', icon: CalendarCheck, label: 'My Attendance', studentOnly: true },
   { to: '/dashboard/fees', icon: IndianRupee, label: 'Fees' },
   { to: '/dashboard/doubt-forum', icon: HelpCircle, label: 'Doubt Forum' },
   { to: '/dashboard/settings', icon: SettingsIcon, label: 'Settings', adminOnly: true },
@@ -27,7 +31,14 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ open, onClose, userName, canManageSettings }: SidebarProps) {
-  const visibleLinks = sidebarLinks.filter((link) => !link.adminOnly || canManageSettings);
+  const userRole = getCurrentUserRole();
+
+  const visibleLinks = sidebarLinks.filter((link) => {
+    if (link.adminOnly && !canManageSettings) return false;
+    if (link.teacherOnly && userRole === 'STUDENT') return false;
+    if (link.studentOnly && userRole !== 'STUDENT') return false;
+    return true;
+  });
 
   return (
     <>

@@ -1,5 +1,5 @@
 import apiClient from './axios';
-import type { ApiResponse, AttendanceRecord, AttendanceStatus } from '../types';
+import type { ApiResponse, AttendanceRecord, AttendanceStatus, MyAttendanceRecord } from '../types';
 
 export interface AttendanceRecordPayload {
   studentId: string;
@@ -19,6 +19,11 @@ export async function fetchAttendanceByBatchAndDate(
   const { data } = await apiClient.get<ApiResponse<AttendanceRecord[]>>(
     `/attendance/${batchId}/${date}`
   );
+  return data.data ?? [];
+}
+
+export async function fetchMyAttendance(): Promise<MyAttendanceRecord[]> {
+  const { data } = await apiClient.get<ApiResponse<MyAttendanceRecord[]>>('/attendance/my-records');
   return data.data ?? [];
 }
 

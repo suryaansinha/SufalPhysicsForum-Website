@@ -11,6 +11,7 @@ import BatchesPage from './pages/BatchesPage';
 import BatchDetailsPage from './pages/BatchDetailsPage';
 import Students from './pages/dashboard/Students';
 import Attendance from './pages/dashboard/Attendance';
+import MyAttendance from './pages/dashboard/student/MyAttendance';
 import LiveClassRoom from './pages/LiveClassRoom';
 import FeesPage from './pages/dashboard/FeesPage';
 import DoubtForum from './pages/dashboard/DoubtForum';
@@ -107,6 +108,13 @@ function RequireTeacherRole({ children }: { children: ReactNode }) {
   return <Navigate to="/dashboard" replace />;
 }
 
+function RequireStudentRole({ children }: { children: ReactNode }) {
+  if (getCurrentUserRole() === 'STUDENT') {
+    return <>{children}</>;
+  }
+  return <Navigate to="/dashboard" replace />;
+}
+
 export default function App() {
   return (
     <div className="relative min-h-screen bg-slate-950 text-slate-100">
@@ -121,7 +129,22 @@ export default function App() {
           <Route path="batches" element={<BatchesPage />} />
           <Route path="batches/:batchId" element={<BatchDetailsPage />} />
           <Route path="students" element={<Students />} />
-          <Route path="attendance" element={<Attendance />} />
+          <Route
+            path="attendance"
+            element={
+              <RequireTeacherRole>
+                <Attendance />
+              </RequireTeacherRole>
+            }
+          />
+          <Route
+            path="my-attendance"
+            element={
+              <RequireStudentRole>
+                <MyAttendance />
+              </RequireStudentRole>
+            }
+          />
           <Route path="fees" element={<FeesPage />} />
           <Route path="doubt-forum" element={<DoubtForum />} />
           <Route

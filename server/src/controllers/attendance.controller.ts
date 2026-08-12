@@ -52,6 +52,36 @@ export async function getAttendanceByBatchAndDate(req: Request, res: Response): 
   }
 }
 
+export async function getMyAttendanceRecords(req: Request, res: Response): Promise<void> {
+  try {
+    const studentId = req.user!.userId;
+
+    if (!studentId) {
+      res.status(401).json({ success: false, message: 'Authentication required' });
+      return;
+    }
+
+    const records = await prisma.attendance.findMany({
+      where: { studentId },
+      orderBy: { date: 'desc' },
+      select: {
+        id: true,
+        studentId: true,
+        date: true,
+        status: true,
+        batch: {
+          select: { id: true, name: true },
+        },
+      },
+    });
+
+    res.json({ success: true, data: records });
+  } catch (error) {
+    console.error('Get my attendance error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}
+
 export async function markBulkAttendance(req: Request, res: Response): Promise<void> {
   try {
     const instituteId = req.user!.instituteId;

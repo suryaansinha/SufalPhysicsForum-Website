@@ -67,6 +67,14 @@ export interface AttendanceRecord {
   student: Pick<User, 'id' | 'name' | 'email'>;
 }
 
+export interface MyAttendanceRecord {
+  id: string;
+  studentId: string;
+  date: string;
+  status: AttendanceStatus;
+  batch: Pick<Batch, 'id' | 'name'>;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
