@@ -192,11 +192,11 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               <h4 className="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-4">Contact</h4>
               <div className="flex flex-col space-y-4 mt-4">
                 <a
-                  href={`mailto:${institute?.email || 'sufalphysics@gmail.com'}`}
+                  href={`mailto:${institute?.email || 'sufalphysicsforum@gmail.com'}`}
                   className="flex items-center gap-3 text-slate-400 hover:text-yellow-500 transition-colors duration-200"
                 >
                   <Mail size={18} />
-                  <span>{institute?.email || 'sufalphysics@gmail.com'}</span>
+                  <span>{institute?.email || 'sufalphysicsforum@gmail.com'}</span>
                 </a>
                 <a
                   href={`tel:${institute?.phone || '+919716238813'}`}
