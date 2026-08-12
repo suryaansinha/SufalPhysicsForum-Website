@@ -150,11 +150,17 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-lg font-semibold text-slate-100 mb-4">{institute?.name || 'SufalPhysicsForum'}</h3>
-              <p className="text-sm text-slate-400 mb-4">
-                {institute?.aboutDescription?.slice(0, 150) || 'Excellence in Physics Education'}
-                {institute?.aboutDescription && institute.aboutDescription.length > 150 ? '...' : ''}
-              </p>
+              <h3 className="text-lg font-semibold text-slate-100">{institute?.name || 'SufalPhysicsForum'}</h3>
+              <div className="flex flex-col space-y-4 mt-4">
+                <p className="text-sm text-slate-400">
+                  {institute?.aboutDescription?.slice(0, 150) || 'Excellence in Physics Education'}
+                  {institute?.aboutDescription && institute.aboutDescription.length > 150 ? '...' : ''}
+                </p>
+                <div className="flex items-start gap-3 text-sm text-slate-400">
+                  <MapPin size={18} className="shrink-0 mt-0.5" />
+                  <span>New Delhi, India</span>
+                </div>
+              </div>
               {institute?.youtubeUrl && (
                 <a
                   href={institute.youtubeUrl}
@@ -168,20 +174,29 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-4">Quick Links</h4>
-              <ul className="space-y-2">
+              <h4 className="text-sm font-semibold text-slate-200 uppercase tracking-wider">Quick Links</h4>
+              <ul className="mt-4 space-y-4">
                 <li>
-                  <Link to="/" className="text-sm text-slate-400 hover:text-slate-100">
+                  <Link
+                    to="/"
+                    className="text-sm text-slate-400 hover:text-yellow-500 transition-colors duration-200"
+                  >
                     Home
                   </Link>
                 </li>
                 <li>
-                  <Link to="/about" className="text-sm text-slate-400 hover:text-slate-100">
+                  <Link
+                    to="/about"
+                    className="text-sm text-slate-400 hover:text-yellow-500 transition-colors duration-200"
+                  >
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link to="/login" className="text-sm text-slate-400 hover:text-slate-100">
+                  <Link
+                    to="/login"
+                    className="text-sm text-slate-400 hover:text-yellow-500 transition-colors duration-200"
+                  >
                     Login
                   </Link>
                 </li>
@@ -189,31 +204,27 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-4">Contact</h4>
+              <h4 className="text-sm font-semibold text-slate-200 uppercase tracking-wider">Contact</h4>
               <div className="flex flex-col space-y-4 mt-4">
                 <a
                   href={`mailto:${institute?.email || 'sufalphysicsforum@gmail.com'}`}
-                  className="flex items-center gap-3 text-slate-400 hover:text-yellow-500 transition-colors duration-200"
+                  className="flex items-center gap-3 text-sm text-slate-400 hover:text-yellow-500 transition-colors duration-200"
                 >
                   <Mail size={18} />
                   <span>{institute?.email || 'sufalphysicsforum@gmail.com'}</span>
                 </a>
                 <a
                   href={`tel:${institute?.phone || '+919716238813'}`}
-                  className="flex items-center gap-3 text-slate-400 hover:text-yellow-500 transition-colors duration-200"
+                  className="flex items-center gap-3 text-sm text-slate-400 hover:text-yellow-500 transition-colors duration-200"
                 >
                   <Phone size={18} />
                   <span>{institute?.phone || '+91 97162 38813'}</span>
                 </a>
-                <div className="flex items-start gap-3 text-slate-400">
-                  <MapPin size={18} className="shrink-0 mt-1" />
-                  <span>New Delhi, India</span>
-                </div>
                 <a
                   href={`https://wa.me/${(institute?.whatsappNumber || '+919716238813').replace(/^[\+\-]/g, '')}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-green-400 hover:text-green-300 font-medium transition-colors duration-200"
+                  className="flex items-center gap-3 text-sm text-slate-400 hover:text-yellow-500 transition-colors duration-200"
                 >
                   <MessageCircle size={18} />
                   <span>Chat on WhatsApp</span>
