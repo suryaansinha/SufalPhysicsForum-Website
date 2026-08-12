@@ -209,17 +209,15 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                   <MapPin size={18} className="shrink-0 mt-1" />
                   <span>New Delhi, India</span>
                 </div>
-                {institute?.whatsappNumber && (
-                  <a
-                    href={`https://wa.me/${institute.whatsappNumber.replace(/^[\+\-]/g, '')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-green-400 hover:text-green-300 font-medium transition-colors duration-200"
-                  >
-                    <MessageCircle size={18} />
-                    <span>Chat on WhatsApp</span>
-                  </a>
-                )}
+                <a
+                  href={`https://wa.me/${(institute?.whatsappNumber || '+919716238813').replace(/^[\+\-]/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 text-green-400 hover:text-green-300 font-medium transition-colors duration-200"
+                >
+                  <MessageCircle size={18} />
+                  <span>Chat on WhatsApp</span>
+                </a>
               </div>
             </div>
           </div>
