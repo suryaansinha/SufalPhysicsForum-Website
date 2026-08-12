@@ -150,7 +150,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-lg font-semibold text-slate-100 mb-4">{institute?.name || 'Sufal Physics Forum'}</h3>
+              <h3 className="text-lg font-semibold text-slate-100 mb-4">{institute?.name || 'SufalPhysicsForum'}</h3>
               <p className="text-sm text-slate-400 mb-4">
                 {institute?.aboutDescription?.slice(0, 150) || 'Excellence in Physics Education'}
                 {institute?.aboutDescription && institute.aboutDescription.length > 150 ? '...' : ''}
