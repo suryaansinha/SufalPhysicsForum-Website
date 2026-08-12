@@ -1,67 +1,67 @@
-// import { useEffect, useMemo, useState } from 'react';
-// import { CalendarDays, CheckCircle2, AlertCircle, Loader2, Save, Users } from 'lucide-react';
-// import { fetchBatches } from '../../api/batch.api';
-// import { fetchAttendanceRoster, saveBatchAttendance } from '../../api/attendance.api';
-// import type { AttendanceRosterStudent, AttendanceStatus } from '../../types';
+import { useEffect, useMemo, useState } from 'react';
+import { CalendarDays, CheckCircle2, AlertCircle, Loader2, Save, Users } from 'lucide-react';
+import { fetchBatches } from '../../api/batch.api';
+import { fetchAttendanceRoster, saveBatchAttendance } from '../../api/attendance.api';
+import type { AttendanceRosterStudent, AttendanceStatus } from '../../types';
 
-// function todayLocal(): string {
-//   const now = new Date();
-//   const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
-//   return local.toISOString().slice(0, 10);
-// }
+function todayLocal(): string {
+  const now = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
+}
 
-// const PRESENT_ACTIVE = 'bg-emerald-500 text-white border-emerald-500 shadow-sm shadow-emerald-500/30';
-// const PRESENT_INACTIVE =
-//   'bg-emerald-500/10 text-emerald-700 border-emerald-500/30 hover:bg-emerald-500/20 dark:text-emerald-300';
-// const ABSENT_ACTIVE = 'bg-red-500 text-white border-red-500 shadow-sm shadow-red-500/30';
-// const ABSENT_INACTIVE = 'bg-red-500/10 text-red-700 border-red-500/30 hover:bg-red-500/20 dark:text-red-300';
+const PRESENT_ACTIVE = 'bg-emerald-500 text-white border-emerald-500 shadow-sm shadow-emerald-500/30';
+const PRESENT_INACTIVE =
+  'bg-emerald-500/10 text-emerald-700 border-emerald-500/30 hover:bg-emerald-500/20 dark:text-emerald-300';
+const ABSENT_ACTIVE = 'bg-red-500 text-white border-red-500 shadow-sm shadow-red-500/30';
+const ABSENT_INACTIVE = 'bg-red-500/10 text-red-700 border-red-500/30 hover:bg-red-500/20 dark:text-red-300';
 
-// export default function AttendanceTracker() {
-//   const [batches, setBatches] = useState<{ id: string; name: string }[]>([]);
-//   const [selectedBatchId, setSelectedBatchId] = useState('');
-//   const [date, setDate] = useState(todayLocal);
-//   const [roster, setRoster] = useState<AttendanceRosterStudent[]>([]);
-//   const [statuses, setStatuses] = useState<Map<string, AttendanceStatus>>(new Map());
-//   const [loading, setLoading] = useState(false);
-//   const [saving, setSaving] = useState(false);
-//   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+export default function AttendanceTracker() {
+  const [batches, setBatches] = useState<{ id: string; name: string }[]>([]);
+  const [selectedBatchId, setSelectedBatchId] = useState('');
+  const [date, setDate] = useState(todayLocal);
+  const [roster, setRoster] = useState<AttendanceRosterStudent[]>([]);
+  const [statuses, setStatuses] = useState<Map<string, AttendanceStatus>>(new Map());
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-//   useEffect(() => {
-//     fetchBatches()
-//       .then((data) => {
-//         setBatches(data.map((b) => ({ id: b.id, name: b.name })));
-//         if (data.length > 0) {
-//           setSelectedBatchId(data[0].id);
-//         }
-//       })
-//       .catch(() => setToast({ type: 'error', message: 'Failed to load batches' }));
-//   }, []);
+  useEffect(() => {
+    fetchBatches()
+      .then((data) => {
+        setBatches(data.map((b) => ({ id: b.id, name: b.name })));
+        if (data.length > 0) {
+          setSelectedBatchId(data[0].id);
+        }
+      })
+      .catch(() => setToast({ type: 'error', message: 'Failed to load batches' }));
+  }, []);
 
-//   useEffect(() => {
-//     if (!selectedBatchId) return;
-//     let cancelled = false;
-//     setLoading(true);
-//     fetchAttendanceRoster(selectedBatchId, date)
-//       .then((list) => {
-//         if (cancelled) return;
-//         setRoster(list);
-//         setStatuses(new Map(list.map((s) => [s.studentId, s.status])));
-//       })
-//       .catch(() => {
-//         if (!cancelled) setToast({ type: 'error', message: 'Failed to load attendance' });
-//       })
-//       .finally(() => {
-//         if (!cancelled) setLoading(false);
-//       });
-//     return () => {
-//       cancelled = true;
-//     };
-//   }, [selectedBatchId, date]);
+  useEffect(() => {
+    if (!selectedBatchId) return;
+    let cancelled = false;
+    setLoading(true);
+    fetchAttendanceRoster(selectedBatchId, date)
+      .then((list) => {
+        if (cancelled) return;
+        setRoster(list);
+        setStatuses(new Map(list.map((s) => [s.studentId, s.status])));
+      })
+      .catch(() => {
+        if (!cancelled) setToast({ type: 'error', message: 'Failed to load attendance' });
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedBatchId, date]);
 
-//   const selectedBatchName = batches.find((b) => b.id === selectedBatchId)?.name ?? '';
+  const selectedBatchName = batches.find((b) => b.id === selectedBatchId)?.name ?? '';
 
-//   const setStatus = (studentId: string, status: AttendanceStatus) => {
-//     setStatuses((prev) => {
+  const setStatus = (studentId: string, status: AttendanceStatus) => {
+    setStatuses((prev) => {
 //       const next = new Map(prev);
 //       next.set(studentId, status);
 //       return next;
