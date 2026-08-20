@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "SufalPhysicsForum website",
   "scripts": {
-    "build": "cd server && npm install && npm run build",
+    "build": "cd server && npm install --include=dev && npm run build",
     "start": "node server/dist/index.js"
   }
 }
