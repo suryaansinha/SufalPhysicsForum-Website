@@ -16,14 +16,15 @@ import instituteRoutes from './routes/institute.routes';
 const app = express();
 const PORT: number = Number(process.env.PORT) || 5000;
 
+const allowedOrigins: string[] = [
+  'http://localhost:5173',
+  ...(process.env.CLIENT_URL ?? '').split(','),
+].filter((origin): origin is string => origin.trim().length > 0);
+
 app.use(express.json());
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173',
-      'https://sufalphysicsforum.org.in',
-      'https://www.sufalphysicsforum.org.in',
-    ],
+    origin: allowedOrigins,
     credentials: true,
   })
 );
