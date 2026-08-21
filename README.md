@@ -35,7 +35,7 @@ npx prisma db push        # Push schema to database
 npm run dev
 ```
 
-The server runs on `http://localhost:3001`.
+The server runs on `http://localhost:5000`.
 
 ### 3. Set Up the Client
 
