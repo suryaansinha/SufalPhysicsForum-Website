@@ -36,9 +36,13 @@ export default function AboutPage() {
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h1 className="text-4xl font-bold text-slate-100 mb-6">About {institute?.name}</h1>
             <div className="prose prose-lg mx-auto">
-              <p className="text-slate-400 leading-relaxed whitespace-pre-wrap">
-                {institute?.aboutDescription || 'Dedicated to excellence in physics education.'}
-              </p>
+              {institute?.aboutDescription ? (
+                <p className="text-slate-400 leading-relaxed whitespace-pre-wrap">
+                  {institute.aboutDescription}
+                </p>
+              ) : (
+                <p className="text-slate-400 leading-relaxed">No about description available yet.</p>
+              )}
             </div>
           </div>
 
