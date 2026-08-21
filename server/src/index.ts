@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express, { Request, Response } from 'express';
+import cors from 'cors';
 import authRoutes from './routes/auth.routes';
 import batchRoutes from './routes/batch.routes';
 import studentRoutes from './routes/student.routes';
@@ -13,9 +14,19 @@ import forumRoutes from './routes/forum.routes';
 import instituteRoutes from './routes/institute.routes';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT: number = Number(process.env.PORT) || 5000;
 
 app.use(express.json());
+app.use(
+  cors({
+    origin: [
+      'http://localhost:5173',
+      'https://sufalphysicsforum.org.in',
+      'https://www.sufalphysicsforum.org.in',
+    ],
+    credentials: true,
+  })
+);
 
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
