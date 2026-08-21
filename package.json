@@ -3,3 +3,13 @@
     "google-auth-library": "^11.0.0"
   }
 }
+
+{
+  "name": "sufal-physics-forum",
+  "version": "1.0.0",
+  "description": "SufalPhysicsForum website",
+  "scripts": {
+    "build": "cd server && npm install --include=dev && npm run build",
+    "start": "node server/dist/index.js"
+  }
+}
