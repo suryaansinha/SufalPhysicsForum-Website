@@ -29,6 +29,10 @@ app.use(
   })
 );
 
+app.get('/', (_req: Request, res: Response) => {
+  res.json({ status: 'ok', service: 'sufal-physics-forum-api' });
+});
+
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
