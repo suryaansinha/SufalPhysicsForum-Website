@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import path from 'path';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes';
@@ -15,6 +16,7 @@ import instituteRoutes from './routes/institute.routes';
 
 const app = express();
 const PORT: number = Number(process.env.PORT) || 5000;
+const clientDistPath = path.resolve(__dirname, '../../client/dist');
 
 const allowedOrigins: string[] = [
   'http://localhost:5173',
@@ -29,12 +31,10 @@ app.use(
   })
 );
 
-app.get('/', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', service: 'sufal-physics-forum-api' });
-});
+app.use(express.static(clientDistPath));
 
 app.get('/api/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', service: 'sufal-physics-forum-api', timestamp: new Date().toISOString() });
 });
 
 app.use('/api/v1/auth', authRoutes);
@@ -48,6 +48,14 @@ app.use('/api/v1/public', publicRoutes);
 app.use('/api/v1/fees', feeRoutes);
 app.use('/api/v1/forum', forumRoutes);
 app.use('/api/v1/institute', instituteRoutes);
+
+app.get('*', (req: Request, res: Response) => {
+  if (req.path.startsWith('/api')) {
+    res.status(404).json({ error: 'Not found' });
+    return;
+  }
+  res.sendFile(path.join(clientDistPath, 'index.html'));
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
