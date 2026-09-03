@@ -1,7 +1,10 @@
 import 'dotenv/config';
 import path from 'path';
+import { execFile } from 'child_process';
+import { promisify } from 'util';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import { prisma } from './lib/prisma';
 import authRoutes from './routes/auth.routes';
 import batchRoutes from './routes/batch.routes';
 import studentRoutes from './routes/student.routes';
@@ -33,8 +36,23 @@ app.use(
 
 app.use(express.static(clientDistPath));
 
-app.get('/api/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', service: 'sufal-physics-forum-api', timestamp: new Date().toISOString() });
+app.get('/api/health', async (_req: Request, res: Response) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({
+      status: 'ok',
+      service: 'sufal-physics-forum-api',
+      database: 'connected',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    res.status(503).json({
+      status: 'degraded',
+      service: 'sufal-physics-forum-api',
+      database: 'disconnected',
+      timestamp: new Date().toISOString(),
+    });
+  }
 });
 
 app.use('/api/v1/auth', authRoutes);
@@ -57,6 +75,42 @@ app.get('*', (req: Request, res: Response) => {
   res.sendFile(path.join(clientDistPath, 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const execFileAsync = promisify(execFile);
+
+async function applyMigrations(): Promise<void> {
+  if (!process.env.DATABASE_URL) {
+    console.warn('DATABASE_URL is not set; skipping prisma migrate deploy');
+    return;
+  }
+
+  const prismaBin = path.resolve(__dirname, '../node_modules/.bin/prisma');
+  const schemaPath = path.resolve(__dirname, '../prisma/schema.prisma');
+
+  try {
+    const { stdout, stderr } = await execFileAsync(
+      prismaBin,
+      ['migrate', 'deploy', '--schema', schemaPath],
+      {
+        cwd: path.resolve(__dirname, '..'),
+        env: process.env,
+      }
+    );
+    if (stdout) console.log(stdout.trim());
+    if (stderr) console.error(stderr.trim());
+  } catch (error) {
+    console.error('prisma migrate deploy failed:', error);
+  }
+}
+
+async function start(): Promise<void> {
+  await applyMigrations();
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+start().catch((error) => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
 });

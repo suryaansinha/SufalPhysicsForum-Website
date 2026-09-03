@@ -5,6 +5,7 @@ import { prisma } from '../lib/prisma';
 import { hashPassword, comparePassword } from '../utils/password';
 import { generateTokenPair, verifyRefreshToken, generateAccessToken } from '../utils/jwt';
 import { Role } from '../generated/prisma/client.js';
+import { databaseUnavailableMessage } from '../lib/http-error';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
@@ -89,7 +90,9 @@ export async function registerInstitute(req: Request, res: Response): Promise<vo
     });
   } catch (error) {
     console.error('Register error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({
+      message: databaseUnavailableMessage(error) || 'Internal server error',
+    });
   }
 }
 
@@ -173,7 +176,9 @@ export async function login(req: Request, res: Response): Promise<void> {
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({
+      message: databaseUnavailableMessage(error) || 'Internal server error',
+    });
   }
 }
 
@@ -286,7 +291,9 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
     });
   } catch (error) {
     console.error('Google login error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({
+      message: databaseUnavailableMessage(error) || 'Internal server error',
+    });
   }
 }
 

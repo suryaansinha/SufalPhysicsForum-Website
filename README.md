@@ -47,6 +47,26 @@ npm run dev
 
 The client runs on `http://localhost:5173` and proxies `/api` requests to the server.
 
+## Production (GoDaddy / Airo)
+
+Set these environment variables on the Node.js hosting panel:
+
+- `DATABASE_URL` — PostgreSQL connection string (required for login)
+- `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET`
+- `CLIENT_URL` — your public site origin
+- `GOOGLE_CLIENT_ID` — if using Google sign-in
+
+The start process runs `prisma migrate deploy` so tables exist before the first login.
+
+Seed a teacher account after the first deploy (from a machine that can reach the same `DATABASE_URL`):
+
+```bash
+cd server
+npx prisma db seed
+```
+
+Default seed login: `teacher@sufal.com` / `Password123!`
+
 ## API Endpoints
 
 | Method | Path         | Description    |

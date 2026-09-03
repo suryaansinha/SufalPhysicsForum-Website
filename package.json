@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "cd server && npm run dev",
     "build": "cd client && npm install && npm run build && cd .. && mkdir -p server/public && cp -r client/dist/. server/public/ && cd server && npm install --include=dev && npm run build",
+    "postbuild": "cd server && npx prisma migrate deploy || true",
     "start": "node server/dist/index.js"
   }
 }
