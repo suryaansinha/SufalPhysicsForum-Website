@@ -16,7 +16,7 @@ import instituteRoutes from './routes/institute.routes';
 
 const app = express();
 const PORT: number = Number(process.env.PORT) || 5000;
-const clientDistPath = path.resolve(__dirname, '../../client/dist');
+const clientDistPath = path.resolve(__dirname, '../public');
 
 const allowedOrigins: string[] = [
   'http://localhost:5173',
