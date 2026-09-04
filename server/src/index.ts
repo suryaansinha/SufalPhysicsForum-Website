@@ -78,8 +78,8 @@ app.get('*', (req: Request, res: Response) => {
 const execFileAsync = promisify(execFile);
 
 async function applyMigrations(): Promise<void> {
-  if (!process.env.DATABASE_URL) {
-    console.warn('DATABASE_URL is not set; skipping prisma migrate deploy');
+  if (!process.env.DATABASE_URL_V2) {
+    console.warn('DATABASE_URL_V2 is not set; skipping prisma migrate deploy');
     return;
   }
 
