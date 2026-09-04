@@ -5,7 +5,7 @@
   "main": "server/dist/index.js",
   "scripts": {
     "dev": "cd server && npm run dev",
-    "build": "cd client && npm install && npm run build && cd .. && mkdir -p server/public && cp -r client/dist/. server/public/ && cd server && npm install --include=dev && npm run build",
+    "build": "cd client && npm install && npm run build && cd .. && mkdir -p server/public && cp -r client/dist/. server/public/ && cd server && npm install --include=dev && npm run build && (chmod +x node_modules/.prisma/client/*.node node_modules/@prisma/engines/* node_modules/prisma/*.so.node 2>/dev/null || true)",
     "postbuild": "cd server && npx prisma migrate deploy || true",
     "start": "node server/dist/index.js"
   }

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import crypto from 'crypto';
+import { inspect } from 'util';
 import { OAuth2Client } from 'google-auth-library';
 import { prisma } from '../lib/prisma';
 import { hashPassword, comparePassword } from '../utils/password';
@@ -180,13 +181,26 @@ export async function login(req: Request, res: Response): Promise<void> {
       },
     });
   } catch (error) {
-    console.error('Login error:', error);
+    const described = describeDatabaseError(error);
+    console.error('Login error full object:', inspect(error, { depth: 8, colors: false }));
+    if (error instanceof Error) {
+      console.error('Login error stack:', error.stack);
+    }
+    console.error('Login error fs meta:', {
+      code: described.code,
+      path: described.path,
+      syscall: described.syscall,
+      errno: described.errno,
+    });
     const mapped = databaseUnavailableMessage(error);
-    const { code, detail } = describeDatabaseError(error);
     res.status(500).json({
       message: mapped || 'Internal server error',
-      code,
-      detail,
+      code: described.code,
+      detail: described.detail,
+      path: described.path,
+      syscall: described.syscall,
+      errno: described.errno,
+      stack: described.stack,
     });
   }
 }

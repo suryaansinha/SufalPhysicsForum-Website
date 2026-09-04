@@ -68,12 +68,48 @@ function collectCodes(error: unknown, depth = 0): string[] {
   return codes;
 }
 
-export function describeDatabaseError(error: unknown): { code: string; detail: string } {
+function collectFsMeta(error: unknown, depth = 0): { path?: string; syscall?: string; errno?: string; stack?: string } {
+  if (depth > 6 || error == null || typeof error !== 'object') {
+    return {};
+  }
+
+  const record = error as {
+    path?: unknown;
+    syscall?: unknown;
+    errno?: unknown;
+    stack?: unknown;
+    cause?: unknown;
+    meta?: unknown;
+  };
+
+  const nested = {
+    ...collectFsMeta(record.cause, depth + 1),
+    ...collectFsMeta(record.meta, depth + 1),
+  };
+
+  return {
+    path: typeof record.path === 'string' ? record.path : nested.path,
+    syscall: typeof record.syscall === 'string' ? record.syscall : nested.syscall,
+    errno: record.errno != null ? String(record.errno) : nested.errno,
+    stack: typeof record.stack === 'string' ? record.stack : nested.stack,
+  };
+}
+
+export function describeDatabaseError(error: unknown): {
+  code: string;
+  detail: string;
+  path?: string;
+  syscall?: string;
+  errno?: string;
+  stack?: string;
+} {
   const codes = collectCodes(error);
   const messages = collectMessages(error);
+  const fsMeta = collectFsMeta(error);
   return {
     code: codes[0] || 'UNKNOWN',
     detail: messages[0] || 'Unknown database error',
+    ...fsMeta,
   };
 }
 
@@ -114,6 +150,10 @@ export function databaseUnavailableMessage(error: unknown): string | null {
 
   if (detail.includes('tenant or user not found')) {
     return 'Supabase rejected this connection string. Copy the URI from Project Settings > Database.';
+  }
+
+  if (codes.includes('EACCES') || detail.includes('eacces') || detail.includes('permission denied')) {
+    return 'Prisma could not access an engine or cache file (EACCES). The GoDaddy runtime filesystem is read-only outside /public/assets.';
   }
 
   return null;

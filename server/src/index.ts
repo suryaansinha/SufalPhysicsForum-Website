@@ -1,9 +1,16 @@
 import 'dotenv/config';
+import fs from 'fs';
 import path from 'path';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+
+const prismaHome = process.env.PRISMA_HOME || '/tmp/prisma';
+fs.mkdirSync(prismaHome, { recursive: true });
+process.env.PRISMA_HOME = prismaHome;
+process.env.XDG_CACHE_HOME = process.env.XDG_CACHE_HOME || '/tmp';
+
 import { prisma } from './lib/prisma';
 import authRoutes from './routes/auth.routes';
 import batchRoutes from './routes/batch.routes';
