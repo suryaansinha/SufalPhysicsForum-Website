@@ -92,7 +92,10 @@ async function applyMigrations(): Promise<void> {
       ['migrate', 'deploy', '--schema', schemaPath],
       {
         cwd: path.resolve(__dirname, '..'),
-        env: process.env,
+        env: {
+          ...process.env,
+          DATABASE_URL: process.env.DATABASE_URL_V2,
+        },
       }
     );
     if (stdout) console.log(stdout.trim());

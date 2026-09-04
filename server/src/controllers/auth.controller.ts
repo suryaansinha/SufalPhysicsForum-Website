@@ -5,7 +5,7 @@ import { prisma } from '../lib/prisma';
 import { hashPassword, comparePassword } from '../utils/password';
 import { generateTokenPair, verifyRefreshToken, generateAccessToken } from '../utils/jwt';
 import { Role } from '../generated/prisma/client.js';
-import { databaseUnavailableMessage } from '../lib/http-error';
+import { databaseUnavailableMessage, describeDatabaseError } from '../lib/http-error';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
@@ -134,7 +134,12 @@ export async function login(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const isPasswordValid = await comparePassword(password, user.passwordHash);
+    if (!user.institute) {
+      res.status(500).json({ message: 'User is not linked to an institute' });
+      return;
+    }
+
+    const isPasswordValid = await comparePassword(password, user.passwordHash || '');
     if (!isPasswordValid) {
       res.status(401).json({ message: 'Invalid email or password' });
       return;
@@ -176,8 +181,12 @@ export async function login(req: Request, res: Response): Promise<void> {
     });
   } catch (error) {
     console.error('Login error:', error);
+    const mapped = databaseUnavailableMessage(error);
+    const { code, detail } = describeDatabaseError(error);
     res.status(500).json({
-      message: databaseUnavailableMessage(error) || 'Internal server error',
+      message: mapped || 'Internal server error',
+      code,
+      detail,
     });
   }
 }
