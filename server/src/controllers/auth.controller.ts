@@ -6,7 +6,7 @@ import { prisma } from '../lib/prisma';
 import { hashPassword, comparePassword } from '../utils/password';
 import { generateTokenPair, verifyRefreshToken, generateAccessToken } from '../utils/jwt';
 import { Role } from '../generated/prisma/client.js';
-import { databaseUnavailableMessage, describeDatabaseError } from '../lib/http-error';
+import { databaseUnavailableMessage } from '../lib/http-error';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
@@ -181,26 +181,33 @@ export async function login(req: Request, res: Response): Promise<void> {
       },
     });
   } catch (error) {
-    const described = describeDatabaseError(error);
-    console.error('Login error full object:', inspect(error, { depth: 8, colors: false }));
-    if (error instanceof Error) {
-      console.error('Login error stack:', error.stack);
+    console.error('Login error full object:', inspect(error, { depth: null, showHidden: true }));
+    let current: unknown = error;
+    for (let level = 0; current && typeof current === 'object' && level < 12; level += 1) {
+      const rec = current as {
+        cause?: unknown;
+        path?: unknown;
+        syscall?: unknown;
+        errno?: unknown;
+        code?: unknown;
+        message?: unknown;
+        stack?: unknown;
+      };
+      console.error(`Login error nest[${level}]:`, {
+        message: rec.message,
+        code: rec.code,
+        path: rec.path,
+        syscall: rec.syscall,
+        errno: rec.errno,
+        hasCause: rec.cause != null,
+      });
+      if (typeof rec.stack === 'string') {
+        console.error(`Login error nest[${level}] stack:`, rec.stack);
+      }
+      current = rec.cause;
     }
-    console.error('Login error fs meta:', {
-      code: described.code,
-      path: described.path,
-      syscall: described.syscall,
-      errno: described.errno,
-    });
-    const mapped = databaseUnavailableMessage(error);
     res.status(500).json({
-      message: mapped || 'Internal server error',
-      code: described.code,
-      detail: described.detail,
-      path: described.path,
-      syscall: described.syscall,
-      errno: described.errno,
-      stack: described.stack,
+      message: databaseUnavailableMessage(error) || 'Internal server error',
     });
   }
 }

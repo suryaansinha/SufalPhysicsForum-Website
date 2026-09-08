@@ -49,9 +49,13 @@ The client runs on `http://localhost:5173` and proxies `/api` requests to the se
 
 ## Production (GoDaddy / Airo)
 
-Set these environment variables on the Node.js hosting panel:
+Set these as **persistent** environment variables on the Node.js hosting panel
+(the same place as `DATABASE_URL` / `DATABASE_URL_V2`, not inline on the build script).
+Build-only prefixes are not inherited by the separate runtime `start` process.
 
 - `DATABASE_URL_V2` — PostgreSQL connection string (required for login)
+- `PRISMA_HOME=/tmp/prisma-home` — Prisma home/cache (required on read-only hosts)
+- `XDG_CACHE_HOME=/tmp/prisma-cache` — XDG cache used by Prisma engines
 - `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET`
 - `CLIENT_URL` — your public site origin
 - `GOOGLE_CLIENT_ID` — if using Google sign-in
