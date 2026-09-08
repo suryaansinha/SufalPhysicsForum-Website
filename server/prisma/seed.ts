@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { PrismaClient, Role } from '../src/generated/prisma/client.js';
-import { hashPassword } from '../src/utils/password'; // Adjust this path if needed
+import { hashPassword } from '../src/utils/password';
+import { normalizeEmail } from '../src/utils/email';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 
@@ -24,7 +25,7 @@ async function main() {
       name: 'SufalPhysicsForum',
       slug: 'sufal-physics-forum',
       phone: '9716238813',
-      email: 'sufalphysicsforum@gmail.com',
+      email: normalizeEmail('sufalphysicsforum@gmail.com'),
     },
   });
 
@@ -33,12 +34,12 @@ async function main() {
   const passwordHash = await hashPassword('Password123!');
 
   const teacher = await prisma.user.upsert({
-    where: { email_instituteId: { email: 'teacher@sufal.com', instituteId: institute.id } },
+    where: { email_instituteId: { email: normalizeEmail('teacher@sufal.com'), instituteId: institute.id } },
     update: {},
     create: {
       instituteId: institute.id,
       name: 'Sufal Kumar',
-      email: 'teacher@sufal.com',
+      email: normalizeEmail('teacher@sufal.com'),
       passwordHash,
       role: Role.TEACHER,
       phone: '9876543210',
@@ -47,7 +48,7 @@ async function main() {
 
   console.log(`  Teacher: ${teacher.name} (${teacher.email})`);
 
-  const studentEmail = 'student@sufal.com';
+  const studentEmail = normalizeEmail('student@sufal.com');
   const student = await prisma.user.upsert({
     where: {
       email_instituteId: {

@@ -140,8 +140,8 @@ export async function getFeeStats(req: Request, res: Response): Promise<void> {
     const instituteId = req.user!.instituteId;
 
     const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+    const endOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 23, 59, 59, 999));
 
     const [totalCollected, monthCollected, pendingCount] = await Promise.all([
       prisma.feePayment.aggregate({

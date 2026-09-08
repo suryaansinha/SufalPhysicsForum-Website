@@ -7,6 +7,7 @@ import { generateTokenPair, verifyRefreshToken, generateAccessToken } from '../u
 import { Role } from '../generated/prisma/client.js';
 import { databaseUnavailableMessage } from '../lib/http-error';
 import { logFullError } from '../lib/error-log';
+import { normalizeEmail } from '../utils/email';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
@@ -27,6 +28,7 @@ export async function registerInstitute(req: Request, res: Response): Promise<vo
       return;
     }
 
+    const normalizedEmail = normalizeEmail(String(email));
     const slug = generateSlug(instituteName);
 
     const existingInstitute = await prisma.institute.findUnique({ where: { slug } });
@@ -42,7 +44,7 @@ export async function registerInstitute(req: Request, res: Response): Promise<vo
         name: instituteName,
         slug,
         phone: phone || null,
-        email,
+        email: normalizedEmail,
       },
     });
 
@@ -50,7 +52,7 @@ export async function registerInstitute(req: Request, res: Response): Promise<vo
       data: {
         instituteId: institute.id,
         name: teacherName,
-        email,
+        email: normalizedEmail,
         passwordHash,
         role: Role.TEACHER,
         phone: phone || null,
@@ -106,6 +108,7 @@ export async function login(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    const normalizedEmail = normalizeEmail(String(email));
     let user;
 
     if (instituteSlug) {
@@ -115,12 +118,12 @@ export async function login(req: Request, res: Response): Promise<void> {
         return;
       }
       user = await prisma.user.findUnique({
-        where: { email_instituteId: { email, instituteId: institute.id } },
+        where: { email_instituteId: { email: normalizedEmail, instituteId: institute.id } },
         include: { institute: true },
       });
     } else {
       user = await prisma.user.findFirst({
-        where: { email },
+        where: { email: normalizedEmail },
         include: { institute: true },
       });
     }
@@ -223,8 +226,9 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    const normalizedEmail = normalizeEmail(email);
     let user = await prisma.user.findFirst({
-      where: { email },
+      where: { email: normalizedEmail },
       include: { institute: true },
     });
 
@@ -246,8 +250,8 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
       user = await prisma.user.create({
         data: {
           instituteId: institute.id,
-          name: googleName?.trim() || email.split('@')[0],
-          email,
+          name: googleName?.trim() || normalizedEmail.split('@')[0],
+          email: normalizedEmail,
           passwordHash,
           role: Role.STUDENT,
           isActive: true,

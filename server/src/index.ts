@@ -5,9 +5,9 @@ import { execFile } from 'child_process';
 import { promisify } from 'util';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import { prisma } from './lib/prisma';
 import { logFullError } from './lib/error-log';
 import { probeConfiguredDatabaseTcp } from './lib/tcp-diag';
+import { pingDatabase } from './db/raw-queries';
 import authRoutes from './routes/auth.routes';
 import batchRoutes from './routes/batch.routes';
 import studentRoutes from './routes/student.routes';
@@ -61,7 +61,7 @@ app.get('/api/diag/tcp', async (_req: Request, res: Response) => {
 
 app.get('/api/health', async (_req: Request, res: Response) => {
   try {
-    await prisma.$queryRaw`SELECT 1`;
+    await pingDatabase();
     res.json({
       status: 'ok',
       service: 'sufal-physics-forum-api',

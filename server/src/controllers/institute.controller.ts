@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { Prisma } from '../generated/prisma/client.js';
 import { uploadImageToCloudinary } from '../utils/cloudinary';
+import { normalizeEmail } from '../utils/email';
 
 const INSTITUTE_LOGO_FOLDER = 'institute';
 
@@ -75,7 +76,7 @@ export async function updateInstituteSettings(req: Request, res: Response): Prom
       data.phone = phone.trim() || null;
     }
     if (typeof email === 'string') {
-      data.email = email.trim() || null;
+      data.email = email.trim() ? normalizeEmail(email) : null;
     }
     if (typeof experienceText === 'string') {
       data.experienceText = experienceText.trim() || null;
