@@ -6,6 +6,8 @@ import { promisify } from 'util';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { prisma } from './lib/prisma';
+import { logFullError } from './lib/error-log';
+import { probeDatabaseTcp } from './lib/tcp-diag';
 import authRoutes from './routes/auth.routes';
 import batchRoutes from './routes/batch.routes';
 import studentRoutes from './routes/student.routes';
@@ -36,6 +38,25 @@ app.use(
 );
 
 app.use(express.static(clientDistPath));
+
+app.get('/api/diag/tcp', async (_req: Request, res: Response) => {
+  const rawUrl = process.env.DATABASE_URL_V2;
+  if (!rawUrl) {
+    res.status(500).json({ ok: false, message: 'DATABASE_URL_V2 is not set' });
+    return;
+  }
+
+  try {
+    const result = await probeDatabaseTcp(rawUrl);
+    res.status(result.ok ? 200 : 503).json(result);
+  } catch (error) {
+    logFullError(error, 'diag.tcp route');
+    res.status(500).json({
+      ok: false,
+      message: error instanceof Error ? error.message : 'TCP probe failed',
+    });
+  }
+});
 
 app.get('/api/health', async (_req: Request, res: Response) => {
   try {
@@ -107,6 +128,17 @@ async function applyMigrations(): Promise<void> {
 }
 
 async function start(): Promise<void> {
+  if (process.env.DATABASE_URL_V2) {
+    try {
+      const tcp = await probeDatabaseTcp(process.env.DATABASE_URL_V2);
+      console.log('Startup TCP probe:', tcp);
+    } catch (error) {
+      logFullError(error, 'startup tcp probe');
+    }
+  } else {
+    console.warn('DATABASE_URL_V2 is not set; skipping startup TCP probe');
+  }
+
   await applyMigrations();
 
   app.listen(PORT, () => {

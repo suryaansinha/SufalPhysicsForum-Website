@@ -2,6 +2,7 @@ import '../prisma-env';
 import { PrismaClient } from '../generated/prisma/client.js';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
+import { logFullError } from './error-log';
 
 const connectionString =
   process.env.DATABASE_URL_V2 ||
@@ -44,9 +45,47 @@ function buildPoolConfig(rawUrl: string): { connectionString: string; ssl?: { re
 
 const pool = new Pool(buildPoolConfig(connectionString));
 
+pool.on('error', (error) => {
+  logFullError(error, 'pg.Pool idle client');
+});
+
+function logPgError(source: string, error: unknown): never {
+  logFullError(error, source);
+  throw error;
+}
+
+const originalQuery = pool.query.bind(pool) as (...args: unknown[]) => unknown;
+pool.query = ((...args: unknown[]) => {
+  const result = originalQuery(...args);
+  if (result && typeof result === 'object' && 'catch' in result) {
+    return (result as Promise<unknown>).catch((error: unknown) =>
+      logPgError('pg.Pool.query original error before Prisma wrap', error)
+    );
+  }
+  return result;
+}) as typeof pool.query;
+
+const originalConnect = pool.connect.bind(pool) as (...args: unknown[]) => unknown;
+pool.connect = ((...args: unknown[]) => {
+  const result = originalConnect(...args);
+  if (typeof args[0] === 'function') {
+    return result;
+  }
+  return (result as Promise<unknown>).catch((error: unknown) =>
+    logPgError('pg.Pool.connect original error before Prisma wrap', error)
+  );
+}) as typeof pool.connect;
+
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-const adapter = new PrismaPg(pool);
+const adapter = new PrismaPg(pool, {
+  onPoolError: (error) => {
+    logFullError(error, 'prisma-pg onPoolError (original pg error before wrap)');
+  },
+  onConnectionError: (error) => {
+    logFullError(error, 'prisma-pg onConnectionError (original pg error before wrap)');
+  },
+});
 
 export const prisma = globalForPrisma.prisma || new PrismaClient({ adapter });
 

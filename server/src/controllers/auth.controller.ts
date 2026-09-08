@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import crypto from 'crypto';
-import { inspect } from 'util';
 import { OAuth2Client } from 'google-auth-library';
 import { prisma } from '../lib/prisma';
 import { hashPassword, comparePassword } from '../utils/password';
 import { generateTokenPair, verifyRefreshToken, generateAccessToken } from '../utils/jwt';
 import { Role } from '../generated/prisma/client.js';
 import { databaseUnavailableMessage } from '../lib/http-error';
+import { logFullError } from '../lib/error-log';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
@@ -181,31 +181,7 @@ export async function login(req: Request, res: Response): Promise<void> {
       },
     });
   } catch (error) {
-    console.error('Login error full object:', inspect(error, { depth: null, showHidden: true }));
-    let current: unknown = error;
-    for (let level = 0; current && typeof current === 'object' && level < 12; level += 1) {
-      const rec = current as {
-        cause?: unknown;
-        path?: unknown;
-        syscall?: unknown;
-        errno?: unknown;
-        code?: unknown;
-        message?: unknown;
-        stack?: unknown;
-      };
-      console.error(`Login error nest[${level}]:`, {
-        message: rec.message,
-        code: rec.code,
-        path: rec.path,
-        syscall: rec.syscall,
-        errno: rec.errno,
-        hasCause: rec.cause != null,
-      });
-      if (typeof rec.stack === 'string') {
-        console.error(`Login error nest[${level}] stack:`, rec.stack);
-      }
-      current = rec.cause;
-    }
+    logFullError(error, 'auth.login');
     res.status(500).json({
       message: databaseUnavailableMessage(error) || 'Internal server error',
     });
