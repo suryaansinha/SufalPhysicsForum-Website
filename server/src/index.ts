@@ -8,6 +8,7 @@ import cors from 'cors';
 import { logFullError } from './lib/error-log';
 import { probeConfiguredDatabaseTcp } from './lib/tcp-diag';
 import { pingDatabase } from './db/raw-queries';
+import { probeMysqlSelect1 } from './lib/mysql-diag';
 import authRoutes from './routes/auth.routes';
 import batchRoutes from './routes/batch.routes';
 import studentRoutes from './routes/student.routes';
@@ -38,6 +39,30 @@ app.use(
 );
 
 app.use(express.static(clientDistPath));
+
+app.get('/api/diag/mysql', async (_req: Request, res: Response) => {
+  try {
+    const result = await probeMysqlSelect1();
+    console.log('GET /api/diag/mysql', {
+      ok: result.ok,
+      present: result.present,
+      missing: result.missing,
+      host: result.host,
+      port: result.port,
+      database: result.database,
+      user: result.user,
+      error: result.error,
+      code: result.code,
+    });
+    res.status(result.ok ? 200 : 503).json(result);
+  } catch (error) {
+    logFullError(error, 'diag.mysql route');
+    res.status(500).json({
+      ok: false,
+      message: error instanceof Error ? error.message : 'MySQL probe failed',
+    });
+  }
+});
 
 app.get('/api/diag/tcp', async (_req: Request, res: Response) => {
   try {
@@ -129,6 +154,23 @@ async function applyMigrations(): Promise<void> {
 }
 
 async function start(): Promise<void> {
+  try {
+    const mysqlDiag = await probeMysqlSelect1();
+    console.log('Startup MySQL probe:', {
+      ok: mysqlDiag.ok,
+      present: mysqlDiag.present,
+      missing: mysqlDiag.missing,
+      host: mysqlDiag.host,
+      port: mysqlDiag.port,
+      database: mysqlDiag.database,
+      user: mysqlDiag.user,
+      error: mysqlDiag.error,
+      code: mysqlDiag.code,
+    });
+  } catch (error) {
+    logFullError(error, 'startup mysql probe');
+  }
+
   try {
     const tcp = await probeConfiguredDatabaseTcp();
     if (tcp) {

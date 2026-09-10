@@ -36,6 +36,7 @@
     "google-auth-library": "^11.0.2",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.2.0",
+    "mysql2": "^3.24.4",
     "pg": "^8.22.0",
     "prisma": "^7.9.1",
     "typescript": "^5.9.3",
