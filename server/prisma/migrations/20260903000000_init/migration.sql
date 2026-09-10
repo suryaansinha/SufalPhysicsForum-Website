@@ -1,301 +1,260 @@
--- CreateSchema
-CREATE SCHEMA IF NOT EXISTS "public";
+-- CreateTable
+CREATE TABLE `Institute` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `slug` VARCHAR(191) NOT NULL,
+    `phone` VARCHAR(191) NULL,
+    `email` VARCHAR(191) NULL,
+    `logoUrl` VARCHAR(191) NULL,
+    `aboutDescription` TEXT NULL,
+    `experienceText` TEXT NULL,
+    `whatsappNumber` VARCHAR(191) NULL,
+    `blogUrl` VARCHAR(191) NULL,
+    `youtubeUrl` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
--- CreateEnum
-CREATE TYPE "Role" AS ENUM ('SUPER_ADMIN', 'TEACHER', 'STUDENT', 'PARENT');
-
--- CreateEnum
-CREATE TYPE "AttendanceStatus" AS ENUM ('PRESENT', 'ABSENT', 'LATE', 'EXCUSED');
+    UNIQUE INDEX `Institute_slug_key`(`slug`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE "Institute" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "slug" TEXT NOT NULL,
-    "phone" TEXT,
-    "email" TEXT,
-    "logoUrl" TEXT,
-    "aboutDescription" TEXT,
-    "experienceText" TEXT,
-    "whatsappNumber" TEXT,
-    "blogUrl" TEXT,
-    "youtubeUrl" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+CREATE TABLE `User` (
+    `id` VARCHAR(191) NOT NULL,
+    `instituteId` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `passwordHash` VARCHAR(191) NOT NULL,
+    `role` ENUM('SUPER_ADMIN', 'TEACHER', 'STUDENT', 'PARENT') NOT NULL DEFAULT 'TEACHER',
+    `phone` VARCHAR(191) NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
-    CONSTRAINT "Institute_pkey" PRIMARY KEY ("id")
-);
+    UNIQUE INDEX `User_email_instituteId_key`(`email`, `instituteId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE "User" (
-    "id" TEXT NOT NULL,
-    "instituteId" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "passwordHash" TEXT NOT NULL,
-    "role" "Role" NOT NULL DEFAULT 'TEACHER',
-    "phone" TEXT,
-    "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+CREATE TABLE `RefreshToken` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `token` VARCHAR(191) NOT NULL,
+    `expiresAt` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
-);
+    UNIQUE INDEX `RefreshToken_token_key`(`token`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE "RefreshToken" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "token" TEXT NOT NULL,
-    "expiresAt" TIMESTAMP(3) NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE `Batch` (
+    `id` VARCHAR(191) NOT NULL,
+    `instituteId` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `gradeLevel` VARCHAR(191) NULL,
+    `grade` VARCHAR(191) NULL,
+    `targetExam` VARCHAR(191) NULL,
+    `subject` VARCHAR(191) NOT NULL DEFAULT 'Physics',
+    `timing` VARCHAR(191) NULL,
+    `feeAmount` DOUBLE NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
-    CONSTRAINT "RefreshToken_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Batch" (
-    "id" TEXT NOT NULL,
-    "instituteId" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "gradeLevel" TEXT,
-    "grade" TEXT,
-    "targetExam" TEXT,
-    "subject" TEXT NOT NULL DEFAULT 'Physics',
-    "timing" TEXT,
-    "feeAmount" DOUBLE PRECISION,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Batch_pkey" PRIMARY KEY ("id")
-);
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE "Enrollment" (
-    "id" TEXT NOT NULL,
-    "studentId" TEXT NOT NULL,
-    "batchId" TEXT NOT NULL,
-    "enrolledAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE `Enrollment` (
+    `id` VARCHAR(191) NOT NULL,
+    `studentId` VARCHAR(191) NOT NULL,
+    `batchId` VARCHAR(191) NOT NULL,
+    `enrolledAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    CONSTRAINT "Enrollment_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Attendance" (
-    "id" TEXT NOT NULL,
-    "instituteId" TEXT NOT NULL,
-    "batchId" TEXT NOT NULL,
-    "studentId" TEXT NOT NULL,
-    "date" DATE NOT NULL,
-    "status" "AttendanceStatus" NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "Attendance_pkey" PRIMARY KEY ("id")
-);
+    UNIQUE INDEX `Enrollment_studentId_batchId_key`(`studentId`, `batchId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE "LiveClass" (
-    "id" TEXT NOT NULL,
-    "batchId" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "agenda" TEXT,
-    "scheduledFor" TIMESTAMP(3) NOT NULL,
-    "durationMins" INTEGER NOT NULL DEFAULT 60,
-    "jitsiRoomName" TEXT NOT NULL,
-    "status" TEXT NOT NULL DEFAULT 'SCHEDULED',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+CREATE TABLE `Attendance` (
+    `id` VARCHAR(191) NOT NULL,
+    `instituteId` VARCHAR(191) NOT NULL,
+    `batchId` VARCHAR(191) NOT NULL,
+    `studentId` VARCHAR(191) NOT NULL,
+    `date` DATE NOT NULL,
+    `status` ENUM('PRESENT', 'ABSENT', 'LATE', 'EXCUSED') NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    CONSTRAINT "LiveClass_pkey" PRIMARY KEY ("id")
-);
+    UNIQUE INDEX `Attendance_batchId_studentId_date_key`(`batchId`, `studentId`, `date`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE "StudyMaterial" (
-    "id" TEXT NOT NULL,
-    "batchId" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "description" TEXT,
-    "fileUrl" TEXT NOT NULL,
-    "fileType" TEXT,
-    "category" TEXT NOT NULL DEFAULT 'NOTES',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+CREATE TABLE `LiveClass` (
+    `id` VARCHAR(191) NOT NULL,
+    `batchId` VARCHAR(191) NOT NULL,
+    `title` VARCHAR(191) NOT NULL,
+    `agenda` VARCHAR(191) NULL,
+    `scheduledFor` DATETIME(3) NOT NULL,
+    `durationMins` INTEGER NOT NULL DEFAULT 60,
+    `jitsiRoomName` VARCHAR(191) NOT NULL,
+    `status` VARCHAR(191) NOT NULL DEFAULT 'SCHEDULED',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
-    CONSTRAINT "StudyMaterial_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Homework" (
-    "id" TEXT NOT NULL,
-    "batchId" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "description" TEXT,
-    "dueDate" TIMESTAMP(3) NOT NULL,
-    "fileUrl" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Homework_pkey" PRIMARY KEY ("id")
-);
+    UNIQUE INDEX `LiveClass_jitsiRoomName_key`(`jitsiRoomName`),
+    INDEX `LiveClass_batchId_idx`(`batchId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE "Testimonial" (
-    "id" TEXT NOT NULL,
-    "instituteId" TEXT NOT NULL,
-    "studentName" TEXT NOT NULL,
-    "examCleared" TEXT,
-    "content" TEXT NOT NULL,
-    "rating" INTEGER NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+CREATE TABLE `StudyMaterial` (
+    `id` VARCHAR(191) NOT NULL,
+    `batchId` VARCHAR(191) NOT NULL,
+    `title` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `fileUrl` VARCHAR(191) NOT NULL,
+    `fileType` VARCHAR(191) NULL,
+    `category` VARCHAR(191) NOT NULL DEFAULT 'NOTES',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
-    CONSTRAINT "Testimonial_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "FeePayment" (
-    "id" TEXT NOT NULL,
-    "studentId" TEXT NOT NULL,
-    "batchId" TEXT NOT NULL,
-    "amount" DOUBLE PRECISION NOT NULL,
-    "paymentDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "paymentMethod" TEXT NOT NULL,
-    "transactionId" TEXT,
-    "monthFor" TEXT NOT NULL,
-    "status" TEXT NOT NULL DEFAULT 'COMPLETED',
-    "remarks" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "FeePayment_pkey" PRIMARY KEY ("id")
-);
+    INDEX `StudyMaterial_batchId_idx`(`batchId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE "ForumQuestion" (
-    "id" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "body" TEXT NOT NULL,
-    "imageUrl" TEXT,
-    "isResolved" BOOLEAN NOT NULL DEFAULT false,
-    "authorId" TEXT NOT NULL,
-    "batchId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+CREATE TABLE `Homework` (
+    `id` VARCHAR(191) NOT NULL,
+    `batchId` VARCHAR(191) NOT NULL,
+    `title` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `dueDate` DATETIME(3) NOT NULL,
+    `fileUrl` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
-    CONSTRAINT "ForumQuestion_pkey" PRIMARY KEY ("id")
-);
+    INDEX `Homework_batchId_idx`(`batchId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE "ForumAnswer" (
-    "id" TEXT NOT NULL,
-    "body" TEXT NOT NULL,
-    "imageUrl" TEXT,
-    "questionId" TEXT NOT NULL,
-    "authorId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+CREATE TABLE `Testimonial` (
+    `id` VARCHAR(191) NOT NULL,
+    `instituteId` VARCHAR(191) NOT NULL,
+    `studentName` VARCHAR(191) NOT NULL,
+    `examCleared` VARCHAR(191) NULL,
+    `content` TEXT NOT NULL,
+    `rating` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
-    CONSTRAINT "ForumAnswer_pkey" PRIMARY KEY ("id")
-);
+    INDEX `Testimonial_instituteId_idx`(`instituteId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- CreateIndex
-CREATE UNIQUE INDEX "Institute_slug_key" ON "Institute"("slug");
+-- CreateTable
+CREATE TABLE `FeePayment` (
+    `id` VARCHAR(191) NOT NULL,
+    `studentId` VARCHAR(191) NOT NULL,
+    `batchId` VARCHAR(191) NOT NULL,
+    `amount` DOUBLE NOT NULL,
+    `paymentDate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `paymentMethod` VARCHAR(191) NOT NULL,
+    `transactionId` VARCHAR(191) NULL,
+    `monthFor` VARCHAR(191) NOT NULL,
+    `status` VARCHAR(191) NOT NULL DEFAULT 'COMPLETED',
+    `remarks` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
--- CreateIndex
-CREATE UNIQUE INDEX "User_email_instituteId_key" ON "User"("email", "instituteId");
+    INDEX `FeePayment_batchId_idx`(`batchId`),
+    INDEX `FeePayment_studentId_idx`(`studentId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- CreateIndex
-CREATE UNIQUE INDEX "RefreshToken_token_key" ON "RefreshToken"("token");
+-- CreateTable
+CREATE TABLE `ForumQuestion` (
+    `id` VARCHAR(191) NOT NULL,
+    `title` VARCHAR(191) NOT NULL,
+    `body` TEXT NOT NULL,
+    `imageUrl` VARCHAR(191) NULL,
+    `isResolved` BOOLEAN NOT NULL DEFAULT false,
+    `authorId` VARCHAR(191) NOT NULL,
+    `batchId` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
--- CreateIndex
-CREATE UNIQUE INDEX "Enrollment_studentId_batchId_key" ON "Enrollment"("studentId", "batchId");
+    INDEX `ForumQuestion_batchId_idx`(`batchId`),
+    INDEX `ForumQuestion_authorId_idx`(`authorId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- CreateIndex
-CREATE UNIQUE INDEX "Attendance_batchId_studentId_date_key" ON "Attendance"("batchId", "studentId", "date");
+-- CreateTable
+CREATE TABLE `ForumAnswer` (
+    `id` VARCHAR(191) NOT NULL,
+    `body` TEXT NOT NULL,
+    `imageUrl` VARCHAR(191) NULL,
+    `questionId` VARCHAR(191) NOT NULL,
+    `authorId` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
--- CreateIndex
-CREATE UNIQUE INDEX "LiveClass_jitsiRoomName_key" ON "LiveClass"("jitsiRoomName");
-
--- CreateIndex
-CREATE INDEX "LiveClass_batchId_idx" ON "LiveClass"("batchId");
-
--- CreateIndex
-CREATE INDEX "StudyMaterial_batchId_idx" ON "StudyMaterial"("batchId");
-
--- CreateIndex
-CREATE INDEX "Homework_batchId_idx" ON "Homework"("batchId");
-
--- CreateIndex
-CREATE INDEX "Testimonial_instituteId_idx" ON "Testimonial"("instituteId");
-
--- CreateIndex
-CREATE INDEX "FeePayment_batchId_idx" ON "FeePayment"("batchId");
-
--- CreateIndex
-CREATE INDEX "FeePayment_studentId_idx" ON "FeePayment"("studentId");
-
--- CreateIndex
-CREATE INDEX "ForumQuestion_batchId_idx" ON "ForumQuestion"("batchId");
-
--- CreateIndex
-CREATE INDEX "ForumQuestion_authorId_idx" ON "ForumQuestion"("authorId");
-
--- CreateIndex
-CREATE INDEX "ForumAnswer_questionId_idx" ON "ForumAnswer"("questionId");
-
--- CreateIndex
-CREATE INDEX "ForumAnswer_authorId_idx" ON "ForumAnswer"("authorId");
-
--- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_instituteId_fkey" FOREIGN KEY ("instituteId") REFERENCES "Institute"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "RefreshToken" ADD CONSTRAINT "RefreshToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Batch" ADD CONSTRAINT "Batch_instituteId_fkey" FOREIGN KEY ("instituteId") REFERENCES "Institute"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+    INDEX `ForumAnswer_questionId_idx`(`questionId`),
+    INDEX `ForumAnswer_authorId_idx`(`authorId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE "Enrollment" ADD CONSTRAINT "Enrollment_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `User` ADD CONSTRAINT `User_instituteId_fkey` FOREIGN KEY (`instituteId`) REFERENCES `Institute`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Enrollment" ADD CONSTRAINT "Enrollment_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES "Batch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `RefreshToken` ADD CONSTRAINT `RefreshToken_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Attendance" ADD CONSTRAINT "Attendance_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES "Batch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Batch` ADD CONSTRAINT `Batch_instituteId_fkey` FOREIGN KEY (`instituteId`) REFERENCES `Institute`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Attendance" ADD CONSTRAINT "Attendance_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Enrollment` ADD CONSTRAINT `Enrollment_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Attendance" ADD CONSTRAINT "Attendance_instituteId_fkey" FOREIGN KEY ("instituteId") REFERENCES "Institute"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Enrollment` ADD CONSTRAINT `Enrollment_batchId_fkey` FOREIGN KEY (`batchId`) REFERENCES `Batch`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "LiveClass" ADD CONSTRAINT "LiveClass_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES "Batch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Attendance` ADD CONSTRAINT `Attendance_batchId_fkey` FOREIGN KEY (`batchId`) REFERENCES `Batch`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "StudyMaterial" ADD CONSTRAINT "StudyMaterial_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES "Batch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Attendance` ADD CONSTRAINT `Attendance_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Homework" ADD CONSTRAINT "Homework_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES "Batch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Attendance` ADD CONSTRAINT `Attendance_instituteId_fkey` FOREIGN KEY (`instituteId`) REFERENCES `Institute`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Testimonial" ADD CONSTRAINT "Testimonial_instituteId_fkey" FOREIGN KEY ("instituteId") REFERENCES "Institute"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `LiveClass` ADD CONSTRAINT `LiveClass_batchId_fkey` FOREIGN KEY (`batchId`) REFERENCES `Batch`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "FeePayment" ADD CONSTRAINT "FeePayment_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `StudyMaterial` ADD CONSTRAINT `StudyMaterial_batchId_fkey` FOREIGN KEY (`batchId`) REFERENCES `Batch`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "FeePayment" ADD CONSTRAINT "FeePayment_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES "Batch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Homework` ADD CONSTRAINT `Homework_batchId_fkey` FOREIGN KEY (`batchId`) REFERENCES `Batch`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ForumQuestion" ADD CONSTRAINT "ForumQuestion_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Testimonial` ADD CONSTRAINT `Testimonial_instituteId_fkey` FOREIGN KEY (`instituteId`) REFERENCES `Institute`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ForumQuestion" ADD CONSTRAINT "ForumQuestion_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES "Batch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `FeePayment` ADD CONSTRAINT `FeePayment_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ForumAnswer" ADD CONSTRAINT "ForumAnswer_questionId_fkey" FOREIGN KEY ("questionId") REFERENCES "ForumQuestion"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `FeePayment` ADD CONSTRAINT `FeePayment_batchId_fkey` FOREIGN KEY (`batchId`) REFERENCES `Batch`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ForumAnswer" ADD CONSTRAINT "ForumAnswer_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `ForumQuestion` ADD CONSTRAINT `ForumQuestion_authorId_fkey` FOREIGN KEY (`authorId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ForumQuestion` ADD CONSTRAINT `ForumQuestion_batchId_fkey` FOREIGN KEY (`batchId`) REFERENCES `Batch`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ForumAnswer` ADD CONSTRAINT `ForumAnswer_questionId_fkey` FOREIGN KEY (`questionId`) REFERENCES `ForumQuestion`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ForumAnswer` ADD CONSTRAINT `ForumAnswer_authorId_fkey` FOREIGN KEY (`authorId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -7,8 +7,10 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { logFullError } from './lib/error-log';
 import { probeConfiguredDatabaseTcp } from './lib/tcp-diag';
+import { prisma } from './lib/prisma';
 import { pingDatabase } from './db/raw-queries';
 import { probeMysqlSelect1 } from './lib/mysql-diag';
+import { buildMysqlDatabaseUrl } from './lib/mysql-url';
 import authRoutes from './routes/auth.routes';
 import batchRoutes from './routes/batch.routes';
 import studentRoutes from './routes/student.routes';
@@ -70,7 +72,7 @@ app.get('/api/diag/tcp', async (_req: Request, res: Response) => {
     if (!result) {
       res.status(500).json({
         ok: false,
-        message: 'Set MYSQL_HOST (and optional MYSQL_PORT, default 3306) or DATABASE_URL_V2',
+        message: 'Set DB_HOST (and optional DB_PORT, default 3306)',
       });
       return;
     }
@@ -126,8 +128,9 @@ app.get('*', (req: Request, res: Response) => {
 const execFileAsync = promisify(execFile);
 
 async function applyMigrations(): Promise<void> {
-  if (!process.env.DATABASE_URL_V2) {
-    console.warn('DATABASE_URL_V2 is not set; skipping prisma migrate deploy');
+  const databaseUrl = buildMysqlDatabaseUrl();
+  if (!databaseUrl) {
+    console.warn('DB_HOST/DB_USER/DB_PASSWORD/DB_NAME are not set; skipping prisma migrate deploy');
     return;
   }
 
@@ -142,7 +145,7 @@ async function applyMigrations(): Promise<void> {
         cwd: path.resolve(__dirname, '..'),
         env: {
           ...process.env,
-          DATABASE_URL: process.env.DATABASE_URL_V2,
+          DATABASE_URL: databaseUrl,
         },
       }
     );
@@ -171,20 +174,27 @@ async function start(): Promise<void> {
     logFullError(error, 'startup mysql probe');
   }
 
-  try {
-    const tcp = await probeConfiguredDatabaseTcp();
-    if (tcp) {
-      console.log('Startup TCP probe (MySQL):', tcp);
-    } else {
-      console.warn(
-        'MYSQL_HOST / DATABASE_URL_V2 not set; skipping startup TCP probe. Set MYSQL_HOST and MYSQL_PORT=3306 to test GoDaddy MySQL.'
-      );
-    }
-  } catch (error) {
-    logFullError(error, 'startup tcp probe');
-  }
-
   await applyMigrations();
+
+  try {
+    const institute = await prisma.institute.findFirst({
+      select: { id: true, slug: true },
+    });
+    console.log('Startup Prisma+MySQL query probe:', {
+      ok: true,
+      found: Boolean(institute),
+      instituteId: institute?.id,
+      slug: institute?.slug,
+    });
+  } catch (error) {
+    const err = error as Error & { code?: string };
+    console.error('Startup Prisma+MySQL query probe:', {
+      ok: false,
+      error: err.message,
+      code: err.code,
+    });
+    logFullError(error, 'startup prisma mysql query probe');
+  }
 
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

@@ -49,20 +49,21 @@ The client runs on `http://localhost:5173` and proxies `/api` requests to the se
 
 ## Production (GoDaddy / Airo)
 
-Set these as **persistent** environment variables on the Node.js hosting panel
-(the same place as `DATABASE_URL` / `DATABASE_URL_V2`, not inline on the build script).
-Build-only prefixes are not inherited by the separate runtime `start` process.
+GoDaddy injects MySQL credentials when the hosted database is attached:
 
-- `DATABASE_URL_V2` — PostgreSQL connection string (required for login)
+- `DB_HOST` / `DB_PORT` / `DB_USER` / `DB_PASSWORD` / `DB_NAME`
+
+Also set these as persistent runtime env vars (not only on the build command):
+
 - `PRISMA_HOME=/tmp/prisma-home` — Prisma home/cache (required on read-only hosts)
 - `XDG_CACHE_HOME=/tmp/prisma-cache` — XDG cache used by Prisma engines
 - `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET`
 - `CLIENT_URL` — your public site origin
 - `GOOGLE_CLIENT_ID` — if using Google sign-in
 
-The start process runs `prisma migrate deploy` so tables exist before the first login.
+`postbuild` runs `prisma migrate deploy` against the MySQL URL built from `DB_*`.
 
-Seed a teacher account after the first deploy (from a machine that can reach the same `DATABASE_URL_V2`):
+Seed a teacher account after the first deploy (from a host that can reach the same MySQL instance):
 
 ```bash
 cd server

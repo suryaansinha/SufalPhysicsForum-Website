@@ -125,7 +125,7 @@ export function databaseUnavailableMessage(error: unknown): string | null {
     codes.includes('P1002') ||
     codes.includes('P1017')
   ) {
-    return 'Database is unavailable. Set DATABASE_URL_V2 to a reachable PostgreSQL instance and restart the app.';
+    return 'Database is unavailable. Confirm GoDaddy DB_HOST/DB_USER/DB_PASSWORD/DB_NAME are injected and restart the app.';
   }
 
   if (
@@ -145,7 +145,7 @@ export function databaseUnavailableMessage(error: unknown): string | null {
   }
 
   if (codes.includes('28P01') || detail.includes('password authentication failed')) {
-    return 'PostgreSQL rejected the credentials in DATABASE_URL_V2.';
+    return 'MySQL rejected the credentials in DB_USER/DB_PASSWORD.';
   }
 
   if (detail.includes('tenant or user not found')) {

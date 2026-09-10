@@ -30,13 +30,13 @@ export function parseDatabaseTarget(rawUrl: string): { host: string; port: numbe
 }
 
 export function resolveMysqlProbeTarget(): { host: string; port: number } | null {
-  const host = process.env.MYSQL_HOST?.trim();
+  const host = process.env.DB_HOST?.trim() || process.env.MYSQL_HOST?.trim();
   if (host) {
-    const port = process.env.MYSQL_PORT ? Number(process.env.MYSQL_PORT) : 3306;
+    const port = Number(process.env.DB_PORT || process.env.MYSQL_PORT || '3306');
     return { host, port };
   }
 
-  const url = process.env.DATABASE_URL_V2 || process.env.DATABASE_URL;
+  const url = process.env.DATABASE_URL;
   if (!url) {
     return null;
   }

@@ -291,6 +291,7 @@ export type FeePaymentOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   student?: Prisma.UserOrderByWithRelationInput
   batch?: Prisma.BatchOrderByWithRelationInput
+  _relevance?: Prisma.FeePaymentOrderByRelevanceInput
 }
 
 export type FeePaymentWhereUniqueInput = Prisma.AtLeast<{
@@ -462,6 +463,12 @@ export type FeePaymentListRelationFilter = {
 
 export type FeePaymentOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type FeePaymentOrderByRelevanceInput = {
+  fields: Prisma.FeePaymentOrderByRelevanceFieldEnum | Prisma.FeePaymentOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type FeePaymentCountOrderByAggregateInput = {
@@ -866,39 +873,7 @@ export type FeePaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["feePayment"]>
 
-export type FeePaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  studentId?: boolean
-  batchId?: boolean
-  amount?: boolean
-  paymentDate?: boolean
-  paymentMethod?: boolean
-  transactionId?: boolean
-  monthFor?: boolean
-  status?: boolean
-  remarks?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["feePayment"]>
 
-export type FeePaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  studentId?: boolean
-  batchId?: boolean
-  amount?: boolean
-  paymentDate?: boolean
-  paymentMethod?: boolean
-  transactionId?: boolean
-  monthFor?: boolean
-  status?: boolean
-  remarks?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["feePayment"]>
 
 export type FeePaymentSelectScalar = {
   id?: boolean
@@ -917,14 +892,6 @@ export type FeePaymentSelectScalar = {
 
 export type FeePaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "batchId" | "amount" | "paymentDate" | "paymentMethod" | "transactionId" | "monthFor" | "status" | "remarks" | "createdAt" | "updatedAt", ExtArgs["result"]["feePayment"]>
 export type FeePaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}
-export type FeePaymentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}
-export type FeePaymentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
 }
@@ -1066,30 +1033,6 @@ export interface FeePaymentDelegate<ExtArgs extends runtime.Types.Extensions.Int
   createMany<T extends FeePaymentCreateManyArgs>(args?: Prisma.SelectSubset<T, FeePaymentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many FeePayments and returns the data saved in the database.
-   * @param {FeePaymentCreateManyAndReturnArgs} args - Arguments to create many FeePayments.
-   * @example
-   * // Create many FeePayments
-   * const feePayment = await prisma.feePayment.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many FeePayments and only return the `id`
-   * const feePaymentWithIdOnly = await prisma.feePayment.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends FeePaymentCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, FeePaymentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeePaymentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a FeePayment.
    * @param {FeePaymentDeleteArgs} args - Arguments to delete one FeePayment.
    * @example
@@ -1152,36 +1095,6 @@ export interface FeePaymentDelegate<ExtArgs extends runtime.Types.Extensions.Int
    * 
    */
   updateMany<T extends FeePaymentUpdateManyArgs>(args: Prisma.SelectSubset<T, FeePaymentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more FeePayments and returns the data updated in the database.
-   * @param {FeePaymentUpdateManyAndReturnArgs} args - Arguments to update many FeePayments.
-   * @example
-   * // Update many FeePayments
-   * const feePayment = await prisma.feePayment.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more FeePayments and only return the `id`
-   * const feePaymentWithIdOnly = await prisma.feePayment.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends FeePaymentUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, FeePaymentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeePaymentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one FeePayment.
@@ -1623,29 +1536,6 @@ export type FeePaymentCreateManyArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
- * FeePayment createManyAndReturn
- */
-export type FeePaymentCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the FeePayment
-   */
-  select?: Prisma.FeePaymentSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the FeePayment
-   */
-  omit?: Prisma.FeePaymentOmit<ExtArgs> | null
-  /**
-   * The data used to create many FeePayments.
-   */
-  data: Prisma.FeePaymentCreateManyInput | Prisma.FeePaymentCreateManyInput[]
-  skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.FeePaymentIncludeCreateManyAndReturn<ExtArgs> | null
-}
-
-/**
  * FeePayment update
  */
 export type FeePaymentUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1687,36 +1577,6 @@ export type FeePaymentUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many FeePayments to update.
    */
   limit?: number
-}
-
-/**
- * FeePayment updateManyAndReturn
- */
-export type FeePaymentUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the FeePayment
-   */
-  select?: Prisma.FeePaymentSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the FeePayment
-   */
-  omit?: Prisma.FeePaymentOmit<ExtArgs> | null
-  /**
-   * The data used to update FeePayments.
-   */
-  data: Prisma.XOR<Prisma.FeePaymentUpdateManyMutationInput, Prisma.FeePaymentUncheckedUpdateManyInput>
-  /**
-   * Filter which FeePayments to update
-   */
-  where?: Prisma.FeePaymentWhereInput
-  /**
-   * Limit how many FeePayments to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.FeePaymentIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
