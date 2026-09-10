@@ -10,6 +10,7 @@ import { probeConfiguredDatabaseTcp } from './lib/tcp-diag';
 import { prisma } from './lib/prisma';
 import { pingDatabase } from './db/raw-queries';
 import { probeMysqlSelect1 } from './lib/mysql-diag';
+import { probeMariadbPoolGetConnection } from './lib/mysql-pool-diag';
 import { buildMysqlDatabaseUrl } from './lib/mysql-url';
 import authRoutes from './routes/auth.routes';
 import batchRoutes from './routes/batch.routes';
@@ -62,6 +63,20 @@ app.get('/api/diag/mysql', async (_req: Request, res: Response) => {
     res.status(500).json({
       ok: false,
       message: error instanceof Error ? error.message : 'MySQL probe failed',
+    });
+  }
+});
+
+app.get('/api/diag/pool', async (_req: Request, res: Response) => {
+  try {
+    const result = await probeMariadbPoolGetConnection();
+    console.log('GET /api/diag/pool', result);
+    res.status(result.ok ? 200 : 503).json(result);
+  } catch (error) {
+    logFullError(error, 'diag.pool route');
+    res.status(500).json({
+      ok: false,
+      message: error instanceof Error ? error.message : 'Pool probe failed',
     });
   }
 });

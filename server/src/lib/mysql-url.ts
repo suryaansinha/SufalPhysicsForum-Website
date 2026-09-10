@@ -1,3 +1,6 @@
+export const MYSQL_CONNECT_TIMEOUT_MS = 5000;
+export const MYSQL_ACQUIRE_TIMEOUT_MS = 10000;
+
 export type MysqlPoolConfig = {
   host: string;
   port: number;
@@ -5,6 +8,19 @@ export type MysqlPoolConfig = {
   password: string;
   database: string;
   connectionLimit: number;
+  connectTimeout: number;
+  acquireTimeout: number;
+};
+
+export type PublicMysqlPoolConfig = {
+  host: string;
+  port: number;
+  user: string;
+  database: string;
+  connectionLimit: number;
+  connectTimeout: number;
+  acquireTimeout: number;
+  passwordPresent: boolean;
 };
 
 export function getMysqlPoolConfig(): MysqlPoolConfig | null {
@@ -22,6 +38,21 @@ export function getMysqlPoolConfig(): MysqlPoolConfig | null {
     password,
     database,
     connectionLimit: 5,
+    connectTimeout: MYSQL_CONNECT_TIMEOUT_MS,
+    acquireTimeout: MYSQL_ACQUIRE_TIMEOUT_MS,
+  };
+}
+
+export function publicMysqlPoolConfig(config: MysqlPoolConfig): PublicMysqlPoolConfig {
+  return {
+    host: config.host,
+    port: config.port,
+    user: config.user,
+    database: config.database,
+    connectionLimit: config.connectionLimit,
+    connectTimeout: config.connectTimeout,
+    acquireTimeout: config.acquireTimeout,
+    passwordPresent: Boolean(config.password),
   };
 }
 

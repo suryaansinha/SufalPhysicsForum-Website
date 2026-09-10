@@ -1,7 +1,7 @@
 import '../prisma-env';
 import { PrismaClient } from '../generated/prisma/client.js';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
-import { getMysqlPoolConfig } from './mysql-url';
+import { getMysqlPoolConfig, publicMysqlPoolConfig } from './mysql-url';
 import { logFullError } from './error-log';
 
 function createPrismaClient(): PrismaClient {
@@ -12,21 +12,33 @@ function createPrismaClient(): PrismaClient {
     );
   }
 
-  const adapter = new PrismaMariaDb(
-    {
-      host: config.host,
-      port: config.port,
-      user: config.user,
-      password: config.password,
-      database: config.database,
-      connectionLimit: config.connectionLimit,
+  const poolConfig = {
+    host: config.host,
+    port: config.port,
+    user: config.user,
+    password: config.password,
+    database: config.database,
+    connectionLimit: config.connectionLimit,
+    connectTimeout: config.connectTimeout,
+    acquireTimeout: config.acquireTimeout,
+  };
+
+  console.log('PrismaMariaDb createPool driver', 'mariadb.createPool');
+  console.log('PrismaMariaDb createPool config', publicMysqlPoolConfig(config));
+  console.log('PrismaMariaDb timeout split', {
+    connectTimeout: poolConfig.connectTimeout,
+    acquireTimeout: poolConfig.acquireTimeout,
+    connectTimeoutWasExplicit: true,
+    acquireTimeoutWasExplicit: true,
+    mariadbConnectTimeoutDefaultMs: 1000,
+    mariadbAcquireTimeoutDefaultMs: 10000,
+  });
+
+  const adapter = new PrismaMariaDb(poolConfig, {
+    onConnectionError: (error) => {
+      logFullError(error, 'prisma-mariadb onConnectionError');
     },
-    {
-      onConnectionError: (error) => {
-        logFullError(error, 'prisma-mariadb onConnectionError');
-      },
-    }
-  );
+  });
 
   return new PrismaClient({ adapter });
 }
