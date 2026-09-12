@@ -8,6 +8,8 @@ export type MysqlPoolConfig = {
   password: string;
   database: string;
   connectionLimit: number;
+  minimumIdle: number;
+  idleTimeout: number;
   connectTimeout: number;
   acquireTimeout: number;
 };
@@ -18,6 +20,8 @@ export type PublicMysqlPoolConfig = {
   user: string;
   database: string;
   connectionLimit: number;
+  minimumIdle: number;
+  idleTimeout: number;
   connectTimeout: number;
   acquireTimeout: number;
   passwordPresent: boolean;
@@ -37,7 +41,9 @@ export function getMysqlPoolConfig(): MysqlPoolConfig | null {
     user,
     password,
     database,
-    connectionLimit: 5,
+    connectionLimit: 1,
+    minimumIdle: 0,
+    idleTimeout: 1,
     connectTimeout: MYSQL_CONNECT_TIMEOUT_MS,
     acquireTimeout: MYSQL_ACQUIRE_TIMEOUT_MS,
   };
@@ -50,6 +56,8 @@ export function publicMysqlPoolConfig(config: MysqlPoolConfig): PublicMysqlPoolC
     user: config.user,
     database: config.database,
     connectionLimit: config.connectionLimit,
+    minimumIdle: config.minimumIdle,
+    idleTimeout: config.idleTimeout,
     connectTimeout: config.connectTimeout,
     acquireTimeout: config.acquireTimeout,
     passwordPresent: Boolean(config.password),

@@ -19,6 +19,8 @@ function createPrismaClient(): PrismaClient {
     password: config.password,
     database: config.database,
     connectionLimit: config.connectionLimit,
+    minimumIdle: config.minimumIdle,
+    idleTimeout: config.idleTimeout,
     connectTimeout: config.connectTimeout,
     acquireTimeout: config.acquireTimeout,
   };

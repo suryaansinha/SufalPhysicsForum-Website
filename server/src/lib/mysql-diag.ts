@@ -90,7 +90,92 @@ export async function probeMysqlSelect1(): Promise<MysqlDiagResult> {
     };
   } finally {
     if (connection) {
-      await connection.end();
+      try {
+        await connection.end();
+      } catch (error) {
+        console.error('probeMysqlSelect1 connection.end failed', error);
+      }
+    }
+  }
+}
+
+type StatusRow = { Variable_name: string; Value: string };
+
+export type MysqlDbStatusResult = {
+  ok: boolean;
+  host?: string;
+  port?: number;
+  database?: string;
+  user?: string;
+  threadsConnected?: number;
+  maxConnections?: number;
+  error?: string;
+  code?: string;
+  errno?: number;
+  sqlState?: string;
+};
+
+export async function probeMysqlDbStatus(): Promise<MysqlDbStatusResult> {
+  const missing = REQUIRED_KEYS.filter((key) => !process.env[key]);
+  const host = process.env.DB_HOST;
+  const port = Number(process.env.DB_PORT || '3306');
+  const user = process.env.DB_USER;
+  const password = process.env.DB_PASSWORD;
+  const database = process.env.DB_NAME;
+
+  if (missing.length > 0) {
+    return {
+      ok: false,
+      error: `Missing required env vars: ${missing.join(', ')}`,
+    };
+  }
+
+  let connection: mysql.Connection | undefined;
+  try {
+    connection = await mysql.createConnection({
+      host,
+      port,
+      user,
+      password,
+      database,
+    });
+    const [threadRows] = await connection.query<mysql.RowDataPacket[]>(
+      "SHOW STATUS LIKE 'Threads_connected'"
+    );
+    const [maxRows] = await connection.query<mysql.RowDataPacket[]>(
+      "SHOW VARIABLES LIKE 'max_connections'"
+    );
+    const threadsConnected = Number((threadRows[0] as StatusRow | undefined)?.Value);
+    const maxConnections = Number((maxRows[0] as StatusRow | undefined)?.Value);
+    return {
+      ok: true,
+      host,
+      port,
+      database,
+      user,
+      threadsConnected: Number.isFinite(threadsConnected) ? threadsConnected : undefined,
+      maxConnections: Number.isFinite(maxConnections) ? maxConnections : undefined,
+    };
+  } catch (error) {
+    const err = error as Error & { code?: string; errno?: number; sqlState?: string };
+    return {
+      ok: false,
+      host,
+      port,
+      database,
+      user,
+      error: err.message,
+      code: err.code,
+      errno: err.errno,
+      sqlState: err.sqlState,
+    };
+  } finally {
+    if (connection) {
+      try {
+        await connection.end();
+      } catch (error) {
+        console.error('probeMysqlDbStatus connection.end failed', error);
+      }
     }
   }
 }

@@ -54,6 +54,8 @@ export async function probeMariadbPoolGetConnection(): Promise<MysqlPoolDiagResu
     password: config.password,
     database: config.database,
     connectionLimit: config.connectionLimit,
+    minimumIdle: config.minimumIdle,
+    idleTimeout: config.idleTimeout,
     connectTimeout: config.connectTimeout,
     acquireTimeout: config.acquireTimeout,
   };
@@ -140,8 +142,16 @@ export async function probeMariadbPoolGetConnection(): Promise<MysqlPoolDiagResu
     };
   } finally {
     if (conn) {
-      await conn.release();
+      try {
+        await conn.release();
+      } catch (error) {
+        console.error('diag.pool conn.release failed', error);
+      }
     }
-    await pool.end();
+    try {
+      await pool.end();
+    } catch (error) {
+      console.error('diag.pool pool.end failed', error);
+    }
   }
 }
