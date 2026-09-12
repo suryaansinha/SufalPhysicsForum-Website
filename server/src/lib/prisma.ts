@@ -1,7 +1,7 @@
 import '../prisma-env';
 import { PrismaClient } from '../generated/prisma/client.js';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
-import { getMysqlPoolConfig, publicMysqlPoolConfig } from './mysql-url';
+import { getMysqlPoolConfig, logMariadbConfigComparison, publicMysqlPoolConfig } from './mysql-url';
 import { logFullError } from './error-log';
 
 function createPrismaClient(): PrismaClient {
@@ -26,6 +26,7 @@ function createPrismaClient(): PrismaClient {
   };
 
   console.log('PrismaMariaDb createPool driver', 'mariadb.createPool');
+  logMariadbConfigComparison('PrismaMariaDb');
   console.log('PrismaMariaDb createPool config', publicMysqlPoolConfig(config));
   console.log('PrismaMariaDb timeout split', {
     connectTimeout: poolConfig.connectTimeout,

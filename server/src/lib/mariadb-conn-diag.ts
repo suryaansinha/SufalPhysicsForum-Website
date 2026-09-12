@@ -1,6 +1,7 @@
 import mariadb from 'mariadb';
 import { logFullError } from './error-log';
-import { MYSQL_CONNECT_TIMEOUT_MS } from './mysql-url';
+import { jsonSafe } from './json-safe';
+import { logMariadbConfigComparison, MYSQL_CONNECT_TIMEOUT_MS } from './mysql-url';
 
 export type MariadbConnDiagResult = {
   ok: boolean;
@@ -50,7 +51,8 @@ export async function probeMariadbCreateConnection(): Promise<MariadbConnDiagRes
     passwordPresent: true,
   };
 
-  console.log('GET /api/diag/mariadb-conn createConnection config', config);
+  logMariadbConfigComparison('GET /api/diag/mariadb-raw');
+  console.log('GET /api/diag/mariadb-raw createConnection config', config);
 
   let conn: mariadb.Connection | undefined;
   try {
@@ -78,7 +80,7 @@ export async function probeMariadbCreateConnection(): Promise<MariadbConnDiagRes
       connectMs,
       queryMs,
       config,
-      result: rows,
+      result: jsonSafe(rows),
     };
   } catch (error) {
     logFullError(error, 'diag.mariadb-conn createConnection');

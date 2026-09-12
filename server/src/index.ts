@@ -6,11 +6,12 @@ import { promisify } from 'util';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { logFullError } from './lib/error-log';
+import { jsonSafe } from './lib/json-safe';
 import { probeConfiguredDatabaseTcp } from './lib/tcp-diag';
 import { prisma } from './lib/prisma';
 import { probeMysqlDbStatus, probeMysqlSelect1 } from './lib/mysql-diag';
 import { probeMariadbCreateConnection } from './lib/mariadb-conn-diag';
-import { probeMariadbPoolGetConnection } from './lib/mysql-pool-diag';
+import { probeMariadbBarePoolGetConnection, probeMariadbPoolGetConnection } from './lib/mysql-pool-diag';
 import { buildMysqlDatabaseUrl } from './lib/mysql-url';
 import authRoutes from './routes/auth.routes';
 import batchRoutes from './routes/batch.routes';
@@ -70,8 +71,9 @@ app.get('/api/diag/mysql', async (_req: Request, res: Response) => {
 async function handleMariadbConnDiag(_req: Request, res: Response): Promise<void> {
   try {
     const result = await probeMariadbCreateConnection();
-    console.log('GET /api/diag/mariadb-raw', result);
-    res.status(result.ok ? 200 : 503).json(result);
+    const payload = jsonSafe(result);
+    console.log('GET /api/diag/mariadb-raw', payload);
+    res.status(result.ok ? 200 : 503).json(payload);
   } catch (error) {
     logFullError(error, 'diag.mariadb-raw route');
     res.status(500).json({
@@ -86,7 +88,7 @@ app.get('/api/diag/mariadb-conn', handleMariadbConnDiag);
 
 app.get('/api/diag/pool', async (_req: Request, res: Response) => {
   try {
-    const result = await probeMariadbPoolGetConnection();
+    const result = jsonSafe(await probeMariadbPoolGetConnection());
     console.log('GET /api/diag/pool', result);
     res.status(result.ok ? 200 : 503).json(result);
   } catch (error) {
@@ -94,6 +96,20 @@ app.get('/api/diag/pool', async (_req: Request, res: Response) => {
     res.status(500).json({
       ok: false,
       message: error instanceof Error ? error.message : 'Pool probe failed',
+    });
+  }
+});
+
+app.get('/api/diag/pool-bare', async (_req: Request, res: Response) => {
+  try {
+    const result = jsonSafe(await probeMariadbBarePoolGetConnection());
+    console.log('GET /api/diag/pool-bare', result);
+    res.status(result.ok ? 200 : 503).json(result);
+  } catch (error) {
+    logFullError(error, 'diag.pool-bare route');
+    res.status(500).json({
+      ok: false,
+      message: error instanceof Error ? error.message : 'Bare pool probe failed',
     });
   }
 });
