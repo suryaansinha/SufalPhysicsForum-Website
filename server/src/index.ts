@@ -10,6 +10,7 @@ import { probeConfiguredDatabaseTcp } from './lib/tcp-diag';
 import { prisma } from './lib/prisma';
 import { pingDatabase } from './db/raw-queries';
 import { probeMysqlDbStatus, probeMysqlSelect1 } from './lib/mysql-diag';
+import { probeMariadbCreateConnection } from './lib/mariadb-conn-diag';
 import { probeMariadbPoolGetConnection } from './lib/mysql-pool-diag';
 import { buildMysqlDatabaseUrl } from './lib/mysql-url';
 import authRoutes from './routes/auth.routes';
@@ -63,6 +64,20 @@ app.get('/api/diag/mysql', async (_req: Request, res: Response) => {
     res.status(500).json({
       ok: false,
       message: error instanceof Error ? error.message : 'MySQL probe failed',
+    });
+  }
+});
+
+app.get('/api/diag/mariadb-conn', async (_req: Request, res: Response) => {
+  try {
+    const result = await probeMariadbCreateConnection();
+    console.log('GET /api/diag/mariadb-conn', result);
+    res.status(result.ok ? 200 : 503).json(result);
+  } catch (error) {
+    logFullError(error, 'diag.mariadb-conn route');
+    res.status(500).json({
+      ok: false,
+      message: error instanceof Error ? error.message : 'mariadb createConnection probe failed',
     });
   }
 });
