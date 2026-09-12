@@ -8,7 +8,6 @@ import cors from 'cors';
 import { logFullError } from './lib/error-log';
 import { probeConfiguredDatabaseTcp } from './lib/tcp-diag';
 import { prisma } from './lib/prisma';
-import { pingDatabase } from './db/raw-queries';
 import { probeMysqlDbStatus, probeMysqlSelect1 } from './lib/mysql-diag';
 import { probeMariadbCreateConnection } from './lib/mariadb-conn-diag';
 import { probeMariadbPoolGetConnection } from './lib/mysql-pool-diag';
@@ -68,19 +67,22 @@ app.get('/api/diag/mysql', async (_req: Request, res: Response) => {
   }
 });
 
-app.get('/api/diag/mariadb-conn', async (_req: Request, res: Response) => {
+async function handleMariadbConnDiag(_req: Request, res: Response): Promise<void> {
   try {
     const result = await probeMariadbCreateConnection();
-    console.log('GET /api/diag/mariadb-conn', result);
+    console.log('GET /api/diag/mariadb-raw', result);
     res.status(result.ok ? 200 : 503).json(result);
   } catch (error) {
-    logFullError(error, 'diag.mariadb-conn route');
+    logFullError(error, 'diag.mariadb-raw route');
     res.status(500).json({
       ok: false,
       message: error instanceof Error ? error.message : 'mariadb createConnection probe failed',
     });
   }
-});
+}
+
+app.get('/api/diag/mariadb-raw', handleMariadbConnDiag);
+app.get('/api/diag/mariadb-conn', handleMariadbConnDiag);
 
 app.get('/api/diag/pool', async (_req: Request, res: Response) => {
   try {
@@ -130,23 +132,12 @@ app.get('/api/diag/tcp', async (_req: Request, res: Response) => {
   }
 });
 
-app.get('/api/health', async (_req: Request, res: Response) => {
-  try {
-    await pingDatabase();
-    res.json({
-      status: 'ok',
-      service: 'sufal-physics-forum-api',
-      database: 'connected',
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    res.status(503).json({
-      status: 'degraded',
-      service: 'sufal-physics-forum-api',
-      database: 'disconnected',
-      timestamp: new Date().toISOString(),
-    });
-  }
+app.get('/api/health', (_req: Request, res: Response) => {
+  res.json({
+    status: 'ok',
+    service: 'sufal-physics-forum-api',
+    timestamp: new Date().toISOString(),
+  });
 });
 
 app.use('/api/v1/auth', authRoutes);
@@ -200,7 +191,7 @@ async function applyMigrations(): Promise<void> {
   }
 }
 
-async function start(): Promise<void> {
+async function runStartupProbes(): Promise<void> {
   try {
     const mysqlDiag = await probeMysqlSelect1();
     console.log('Startup MySQL probe:', {
@@ -239,13 +230,11 @@ async function start(): Promise<void> {
     });
     logFullError(error, 'startup prisma mysql query probe');
   }
-
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
 }
 
-start().catch((error) => {
-  console.error('Failed to start server:', error);
-  process.exit(1);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  runStartupProbes().catch((error) => {
+    console.error('Startup probes failed:', error);
+  });
 });
