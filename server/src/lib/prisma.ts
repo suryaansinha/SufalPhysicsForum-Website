@@ -1,8 +1,7 @@
 import '../prisma-env';
 import { PrismaClient } from '../generated/prisma/client.js';
-import { PrismaMariaDb } from '@prisma/adapter-mariadb';
-import { getMysqlPoolConfig, logMariadbConfigComparison, publicMysqlPoolConfig } from './mysql-url';
-import { logFullError } from './error-log';
+import { PrismaMysql2 } from './prisma-mysql2-adapter';
+import { getMysqlPoolConfig, publicMysqlPoolConfig } from './mysql-url';
 
 function createPrismaClient(): PrismaClient {
   const config = getMysqlPoolConfig();
@@ -19,30 +18,19 @@ function createPrismaClient(): PrismaClient {
     password: config.password,
     database: config.database,
     connectionLimit: config.connectionLimit,
-    minimumIdle: config.minimumIdle,
-    idleTimeout: config.idleTimeout,
     connectTimeout: config.connectTimeout,
-    acquireTimeout: config.acquireTimeout,
+    waitForConnections: true,
+    enableKeepAlive: true,
   };
 
-  console.log('PrismaMariaDb createPool driver', 'mariadb.createPool');
-  logMariadbConfigComparison('PrismaMariaDb');
-  console.log('PrismaMariaDb createPool config', publicMysqlPoolConfig(config));
-  console.log('PrismaMariaDb timeout split', {
-    connectTimeout: poolConfig.connectTimeout,
-    acquireTimeout: poolConfig.acquireTimeout,
-    connectTimeoutWasExplicit: true,
-    acquireTimeoutWasExplicit: true,
-    mariadbConnectTimeoutDefaultMs: 1000,
-    mariadbAcquireTimeoutDefaultMs: 10000,
+  console.log('PrismaMysql2 createPool driver', 'mysql2.createPool');
+  console.log('PrismaMysql2 createPool config', {
+    ...publicMysqlPoolConfig(config),
+    waitForConnections: true,
+    enableKeepAlive: true,
   });
 
-  const adapter = new PrismaMariaDb(poolConfig, {
-    onConnectionError: (error) => {
-      logFullError(error, 'prisma-mariadb onConnectionError');
-    },
-  });
-
+  const adapter = new PrismaMysql2(poolConfig, config.database);
   return new PrismaClient({ adapter });
 }
 
