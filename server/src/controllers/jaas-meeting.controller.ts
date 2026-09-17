@@ -30,22 +30,37 @@ function getJaasConfiguration(): { appId: string; keyId: string; privateKey: str
   }
 }
 
-export async function createJaasToken(req: Request, res: Response): Promise<void> {
-  const { liveClassId } = req.body as { liveClassId?: unknown };
+type LiveClassAccess = Awaited<ReturnType<typeof getLiveClassAccess>>;
+type JaasTokenDependencies = {
+  getConfiguration: () => { appId: string; keyId: string; privateKey: string } | null;
+  getAccess: (userId: string, liveClassId: string) => Promise<LiveClassAccess>;
+  now: () => number;
+};
 
-  if (typeof liveClassId !== 'string' || liveClassId.trim().length === 0) {
-    res.status(400).json({ success: false, message: 'liveClassId is required' });
-    return;
-  }
+const defaultDependencies: JaasTokenDependencies = {
+  getConfiguration: getJaasConfiguration,
+  getAccess: getLiveClassAccess,
+  now: () => Date.now(),
+};
 
-  const jaas = getJaasConfiguration();
-  if (!jaas) {
-    res.status(503).json({ success: false, message: 'Meeting service configuration error' });
-    return;
-  }
+/** Factory exported for deterministic handler tests without a database or real credentials. */
+export function createJaasTokenHandler(dependencies: JaasTokenDependencies = defaultDependencies) {
+  return async function createJaasToken(req: Request, res: Response): Promise<void> {
+    const { liveClassId } = req.body as { liveClassId?: unknown };
 
-  try {
-    const access = await getLiveClassAccess(req.user!.userId, liveClassId.trim());
+    if (typeof liveClassId !== 'string' || liveClassId.trim().length === 0) {
+      res.status(400).json({ success: false, message: 'liveClassId is required' });
+      return;
+    }
+
+    const jaas = dependencies.getConfiguration();
+    if (!jaas) {
+      res.status(503).json({ success: false, message: 'Meeting service configuration error' });
+      return;
+    }
+
+    try {
+    const access = await dependencies.getAccess(req.user!.userId, liveClassId.trim());
     if (access.status === 'unauthenticated') {
       res.status(401).json({ success: false, message: 'Authentication required' });
       return;
@@ -63,7 +78,7 @@ export async function createJaasToken(req: Request, res: Response): Promise<void
 
     const { user, liveClass } = access;
 
-    const iat = Math.floor(Date.now() / 1000);
+    const iat = Math.floor(dependencies.now() / 1000);
     const isTeacher = user.role === Role.TEACHER;
     const payload: Record<string, unknown> = {
       aud: 'jitsi',
@@ -110,7 +125,10 @@ export async function createJaasToken(req: Request, res: Response): Promise<void
     }
 
     res.json({ success: true, token, room: liveClass.jitsiRoomName, expiresAt: iat + TOKEN_LIFETIME_SECONDS });
-  } catch {
-    res.status(500).json({ success: false, message: 'Unable to create meeting token' });
-  }
+    } catch {
+      res.status(500).json({ success: false, message: 'Unable to create meeting token' });
+    }
+  };
 }
+
+export const createJaasToken = createJaasTokenHandler();
