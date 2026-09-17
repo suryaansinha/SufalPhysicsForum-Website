@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { createPrivateKey } from 'crypto';
 import jwt from 'jsonwebtoken';
 import { Role } from '../generated/prisma/client.js';
-import { prisma } from '../lib/prisma';
+import { getLiveClassAccess } from '../utils/live-class-access';
 
 const TOKEN_LIFETIME_SECONDS = 3 * 60 * 60;
 
@@ -45,38 +45,23 @@ export async function createJaasToken(req: Request, res: Response): Promise<void
   }
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.user!.userId },
-      select: { id: true, name: true, email: true, role: true, instituteId: true, isActive: true },
-    });
-
-    if (!user || !user.isActive) {
+    const access = await getLiveClassAccess(req.user!.userId, liveClassId.trim());
+    if (access.status === 'unauthenticated') {
       res.status(401).json({ success: false, message: 'Authentication required' });
       return;
     }
 
-    const liveClass = await prisma.liveClass.findUnique({
-      where: { id: liveClassId.trim() },
-      select: {
-        jitsiRoomName: true,
-        batch: {
-          select: {
-            instituteId: true,
-            enrollments: { where: { studentId: user.id }, select: { studentId: true } },
-          },
-        },
-      },
-    });
-
-    const isTeacherOrAdmin = user.role === Role.TEACHER || user.role === Role.SUPER_ADMIN;
-    const canJoin =
-      liveClass?.batch.instituteId === user.instituteId &&
-      (isTeacherOrAdmin || (user.role === Role.STUDENT && liveClass.batch.enrollments.length > 0));
-
-    if (!liveClass || !canJoin) {
+    if (access.status === 'not-found') {
       res.status(404).json({ success: false, message: 'Live class not found' });
       return;
     }
+
+    if (access.status === 'forbidden') {
+      res.status(403).json({ success: false, message: 'You are not enrolled in this live class' });
+      return;
+    }
+
+    const { user, liveClass } = access;
 
     const iat = Math.floor(Date.now() / 1000);
     const isTeacher = user.role === Role.TEACHER;
