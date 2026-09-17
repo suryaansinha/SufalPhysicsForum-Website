@@ -24,6 +24,7 @@ import publicRoutes from './routes/public.routes';
 import feeRoutes from './routes/fee.routes';
 import forumRoutes from './routes/forum.routes';
 import instituteRoutes from './routes/institute.routes';
+import jaasMeetingRoutes from './routes/jaas-meeting.routes';
 
 const app = express();
 const PORT: number = Number(process.env.PORT) || 5000;
@@ -167,6 +168,7 @@ app.use('/api/v1/public', publicRoutes);
 app.use('/api/v1/fees', feeRoutes);
 app.use('/api/v1/forum', forumRoutes);
 app.use('/api/v1/institute', instituteRoutes);
+app.use('/api/v1/meetings', jaasMeetingRoutes);
 
 app.get('*', (req: Request, res: Response) => {
   if (req.path.startsWith('/api')) {
