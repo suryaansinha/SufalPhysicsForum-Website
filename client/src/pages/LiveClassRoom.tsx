@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { JitsiMeeting } from '@jitsi/react-sdk';
+import { JaaSMeeting } from '@jitsi/react-sdk';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import api from '../lib/api';
 import type { LiveClass, ApiResponse } from '../types';
@@ -9,27 +9,59 @@ export default function LiveClassRoom() {
   const { batchId, liveClassId } = useParams<{ batchId: string; liveClassId: string }>();
   const navigate = useNavigate();
   const [liveClass, setLiveClass] = useState<LiveClass | null>(null);
+  const [jaasToken, setJaasToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!liveClassId) return;
+    setLiveClass(null);
+    setJaasToken(null);
+    setError(null);
+    setLoading(true);
 
-    api
-      .get<ApiResponse<LiveClass>>(`/live-classes/${liveClassId}`)
-      .then((res) => {
-        if (res.data.success && res.data.data) {
-          setLiveClass(res.data.data);
-        } else {
-          setError('Live class not found');
+    if (!liveClassId) {
+      setError('Live class not found');
+      setLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadLiveClassAndToken() {
+      try {
+        const liveClassResponse = await api.get<ApiResponse<LiveClass>>(`/live-classes/${liveClassId}`);
+
+        if (!liveClassResponse.data.success || !liveClassResponse.data.data) {
+          if (!cancelled) setError('Live class not found');
+          return;
         }
-      })
-      .catch(() => setError('Failed to load live class'))
-      .finally(() => setLoading(false));
-  }, [liveClassId]);
 
-  const userName = localStorage.getItem('userName') || 'User';
-  const userEmail = localStorage.getItem('userEmail') || '';
+        const loadedLiveClass = liveClassResponse.data.data;
+        if (!cancelled) setLiveClass(loadedLiveClass);
+
+        const tokenResponse = await api.post<{ success: boolean; token?: string }>('/meetings/jaas-token', {
+          liveClassId: loadedLiveClass.id,
+        });
+
+        if (!tokenResponse.data.success || !tokenResponse.data.token) {
+          if (!cancelled) setError('Failed to join live class');
+          return;
+        }
+
+        if (!cancelled) setJaasToken(tokenResponse.data.token);
+      } catch {
+        if (!cancelled) setError('Failed to load live class');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadLiveClassAndToken();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [liveClassId]);
 
   if (loading) {
     return (
@@ -42,7 +74,7 @@ export default function LiveClassRoom() {
     );
   }
 
-  if (error || !liveClass) {
+  if (error || !liveClass || !jaasToken) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-950">
         <div className="text-center">
@@ -82,9 +114,10 @@ export default function LiveClassRoom() {
       </div>
 
       <div className="flex-1">
-        <JitsiMeeting
-          domain="meet.jit.si"
+        <JaaSMeeting
+          appId="vpaas-magic-cookie-b8f09e7827fb477c8fe12086fe39caea"
           roomName={liveClass.jitsiRoomName}
+          jwt={jaasToken}
           configOverwrite={{
             prejoinPageEnabled: false,
             startWithAudioMuted: false,
@@ -105,10 +138,6 @@ export default function LiveClassRoom() {
               'tileview',
               'settings',
             ],
-          }}
-          userInfo={{
-            displayName: userName,
-            email: userEmail,
           }}
           getIFrameRef={(iframeRef) => {
             iframeRef.style.height = '100%';
