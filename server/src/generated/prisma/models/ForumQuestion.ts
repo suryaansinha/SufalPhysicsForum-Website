@@ -28,7 +28,7 @@ export type ForumQuestionMinAggregateOutputType = {
   id: string | null
   title: string | null
   body: string | null
-  imageUrl: string | null
+  status: $Enums.DoubtStatus | null
   isResolved: boolean | null
   authorId: string | null
   batchId: string | null
@@ -40,7 +40,7 @@ export type ForumQuestionMaxAggregateOutputType = {
   id: string | null
   title: string | null
   body: string | null
-  imageUrl: string | null
+  status: $Enums.DoubtStatus | null
   isResolved: boolean | null
   authorId: string | null
   batchId: string | null
@@ -52,7 +52,7 @@ export type ForumQuestionCountAggregateOutputType = {
   id: number
   title: number
   body: number
-  imageUrl: number
+  status: number
   isResolved: number
   authorId: number
   batchId: number
@@ -66,7 +66,7 @@ export type ForumQuestionMinAggregateInputType = {
   id?: true
   title?: true
   body?: true
-  imageUrl?: true
+  status?: true
   isResolved?: true
   authorId?: true
   batchId?: true
@@ -78,7 +78,7 @@ export type ForumQuestionMaxAggregateInputType = {
   id?: true
   title?: true
   body?: true
-  imageUrl?: true
+  status?: true
   isResolved?: true
   authorId?: true
   batchId?: true
@@ -90,7 +90,7 @@ export type ForumQuestionCountAggregateInputType = {
   id?: true
   title?: true
   body?: true
-  imageUrl?: true
+  status?: true
   isResolved?: true
   authorId?: true
   batchId?: true
@@ -175,7 +175,7 @@ export type ForumQuestionGroupByOutputType = {
   id: string
   title: string
   body: string
-  imageUrl: string | null
+  status: $Enums.DoubtStatus
   isResolved: boolean
   authorId: string
   batchId: string
@@ -208,7 +208,7 @@ export type ForumQuestionWhereInput = {
   id?: Prisma.StringFilter<"ForumQuestion"> | string
   title?: Prisma.StringFilter<"ForumQuestion"> | string
   body?: Prisma.StringFilter<"ForumQuestion"> | string
-  imageUrl?: Prisma.StringNullableFilter<"ForumQuestion"> | string | null
+  status?: Prisma.EnumDoubtStatusFilter<"ForumQuestion"> | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFilter<"ForumQuestion"> | boolean
   authorId?: Prisma.StringFilter<"ForumQuestion"> | string
   batchId?: Prisma.StringFilter<"ForumQuestion"> | string
@@ -217,13 +217,14 @@ export type ForumQuestionWhereInput = {
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   batch?: Prisma.XOR<Prisma.BatchScalarRelationFilter, Prisma.BatchWhereInput>
   answers?: Prisma.ForumAnswerListRelationFilter
+  images?: Prisma.ForumQuestionImageListRelationFilter
 }
 
 export type ForumQuestionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
-  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   isResolved?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   batchId?: Prisma.SortOrder
@@ -232,6 +233,7 @@ export type ForumQuestionOrderByWithRelationInput = {
   author?: Prisma.UserOrderByWithRelationInput
   batch?: Prisma.BatchOrderByWithRelationInput
   answers?: Prisma.ForumAnswerOrderByRelationAggregateInput
+  images?: Prisma.ForumQuestionImageOrderByRelationAggregateInput
   _relevance?: Prisma.ForumQuestionOrderByRelevanceInput
 }
 
@@ -242,7 +244,7 @@ export type ForumQuestionWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ForumQuestionWhereInput | Prisma.ForumQuestionWhereInput[]
   title?: Prisma.StringFilter<"ForumQuestion"> | string
   body?: Prisma.StringFilter<"ForumQuestion"> | string
-  imageUrl?: Prisma.StringNullableFilter<"ForumQuestion"> | string | null
+  status?: Prisma.EnumDoubtStatusFilter<"ForumQuestion"> | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFilter<"ForumQuestion"> | boolean
   authorId?: Prisma.StringFilter<"ForumQuestion"> | string
   batchId?: Prisma.StringFilter<"ForumQuestion"> | string
@@ -251,13 +253,14 @@ export type ForumQuestionWhereUniqueInput = Prisma.AtLeast<{
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   batch?: Prisma.XOR<Prisma.BatchScalarRelationFilter, Prisma.BatchWhereInput>
   answers?: Prisma.ForumAnswerListRelationFilter
+  images?: Prisma.ForumQuestionImageListRelationFilter
 }, "id">
 
 export type ForumQuestionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
-  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   isResolved?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   batchId?: Prisma.SortOrder
@@ -275,7 +278,7 @@ export type ForumQuestionScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ForumQuestion"> | string
   title?: Prisma.StringWithAggregatesFilter<"ForumQuestion"> | string
   body?: Prisma.StringWithAggregatesFilter<"ForumQuestion"> | string
-  imageUrl?: Prisma.StringNullableWithAggregatesFilter<"ForumQuestion"> | string | null
+  status?: Prisma.EnumDoubtStatusWithAggregatesFilter<"ForumQuestion"> | $Enums.DoubtStatus
   isResolved?: Prisma.BoolWithAggregatesFilter<"ForumQuestion"> | boolean
   authorId?: Prisma.StringWithAggregatesFilter<"ForumQuestion"> | string
   batchId?: Prisma.StringWithAggregatesFilter<"ForumQuestion"> | string
@@ -287,59 +290,63 @@ export type ForumQuestionCreateInput = {
   id?: string
   title: string
   body: string
-  imageUrl?: string | null
+  status?: $Enums.DoubtStatus
   isResolved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutForumQuestionsInput
   batch: Prisma.BatchCreateNestedOneWithoutForumQuestionsInput
   answers?: Prisma.ForumAnswerCreateNestedManyWithoutQuestionInput
+  images?: Prisma.ForumQuestionImageCreateNestedManyWithoutQuestionInput
 }
 
 export type ForumQuestionUncheckedCreateInput = {
   id?: string
   title: string
   body: string
-  imageUrl?: string | null
+  status?: $Enums.DoubtStatus
   isResolved?: boolean
   authorId: string
   batchId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   answers?: Prisma.ForumAnswerUncheckedCreateNestedManyWithoutQuestionInput
+  images?: Prisma.ForumQuestionImageUncheckedCreateNestedManyWithoutQuestionInput
 }
 
 export type ForumQuestionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutForumQuestionsNestedInput
   batch?: Prisma.BatchUpdateOneRequiredWithoutForumQuestionsNestedInput
   answers?: Prisma.ForumAnswerUpdateManyWithoutQuestionNestedInput
+  images?: Prisma.ForumQuestionImageUpdateManyWithoutQuestionNestedInput
 }
 
 export type ForumQuestionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   answers?: Prisma.ForumAnswerUncheckedUpdateManyWithoutQuestionNestedInput
+  images?: Prisma.ForumQuestionImageUncheckedUpdateManyWithoutQuestionNestedInput
 }
 
 export type ForumQuestionCreateManyInput = {
   id?: string
   title: string
   body: string
-  imageUrl?: string | null
+  status?: $Enums.DoubtStatus
   isResolved?: boolean
   authorId: string
   batchId: string
@@ -351,7 +358,7 @@ export type ForumQuestionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -361,7 +368,7 @@ export type ForumQuestionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -389,7 +396,7 @@ export type ForumQuestionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
-  imageUrl?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   isResolved?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   batchId?: Prisma.SortOrder
@@ -401,7 +408,7 @@ export type ForumQuestionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
-  imageUrl?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   isResolved?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   batchId?: Prisma.SortOrder
@@ -413,7 +420,7 @@ export type ForumQuestionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
-  imageUrl?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   isResolved?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   batchId?: Prisma.SortOrder
@@ -510,6 +517,24 @@ export type ForumQuestionUncheckedUpdateManyWithoutBatchNestedInput = {
   deleteMany?: Prisma.ForumQuestionScalarWhereInput | Prisma.ForumQuestionScalarWhereInput[]
 }
 
+export type EnumDoubtStatusFieldUpdateOperationsInput = {
+  set?: $Enums.DoubtStatus
+}
+
+export type ForumQuestionCreateNestedOneWithoutImagesInput = {
+  create?: Prisma.XOR<Prisma.ForumQuestionCreateWithoutImagesInput, Prisma.ForumQuestionUncheckedCreateWithoutImagesInput>
+  connectOrCreate?: Prisma.ForumQuestionCreateOrConnectWithoutImagesInput
+  connect?: Prisma.ForumQuestionWhereUniqueInput
+}
+
+export type ForumQuestionUpdateOneRequiredWithoutImagesNestedInput = {
+  create?: Prisma.XOR<Prisma.ForumQuestionCreateWithoutImagesInput, Prisma.ForumQuestionUncheckedCreateWithoutImagesInput>
+  connectOrCreate?: Prisma.ForumQuestionCreateOrConnectWithoutImagesInput
+  upsert?: Prisma.ForumQuestionUpsertWithoutImagesInput
+  connect?: Prisma.ForumQuestionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ForumQuestionUpdateToOneWithWhereWithoutImagesInput, Prisma.ForumQuestionUpdateWithoutImagesInput>, Prisma.ForumQuestionUncheckedUpdateWithoutImagesInput>
+}
+
 export type ForumQuestionCreateNestedOneWithoutAnswersInput = {
   create?: Prisma.XOR<Prisma.ForumQuestionCreateWithoutAnswersInput, Prisma.ForumQuestionUncheckedCreateWithoutAnswersInput>
   connectOrCreate?: Prisma.ForumQuestionCreateOrConnectWithoutAnswersInput
@@ -528,24 +553,26 @@ export type ForumQuestionCreateWithoutAuthorInput = {
   id?: string
   title: string
   body: string
-  imageUrl?: string | null
+  status?: $Enums.DoubtStatus
   isResolved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   batch: Prisma.BatchCreateNestedOneWithoutForumQuestionsInput
   answers?: Prisma.ForumAnswerCreateNestedManyWithoutQuestionInput
+  images?: Prisma.ForumQuestionImageCreateNestedManyWithoutQuestionInput
 }
 
 export type ForumQuestionUncheckedCreateWithoutAuthorInput = {
   id?: string
   title: string
   body: string
-  imageUrl?: string | null
+  status?: $Enums.DoubtStatus
   isResolved?: boolean
   batchId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   answers?: Prisma.ForumAnswerUncheckedCreateNestedManyWithoutQuestionInput
+  images?: Prisma.ForumQuestionImageUncheckedCreateNestedManyWithoutQuestionInput
 }
 
 export type ForumQuestionCreateOrConnectWithoutAuthorInput = {
@@ -581,7 +608,7 @@ export type ForumQuestionScalarWhereInput = {
   id?: Prisma.StringFilter<"ForumQuestion"> | string
   title?: Prisma.StringFilter<"ForumQuestion"> | string
   body?: Prisma.StringFilter<"ForumQuestion"> | string
-  imageUrl?: Prisma.StringNullableFilter<"ForumQuestion"> | string | null
+  status?: Prisma.EnumDoubtStatusFilter<"ForumQuestion"> | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFilter<"ForumQuestion"> | boolean
   authorId?: Prisma.StringFilter<"ForumQuestion"> | string
   batchId?: Prisma.StringFilter<"ForumQuestion"> | string
@@ -593,24 +620,26 @@ export type ForumQuestionCreateWithoutBatchInput = {
   id?: string
   title: string
   body: string
-  imageUrl?: string | null
+  status?: $Enums.DoubtStatus
   isResolved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutForumQuestionsInput
   answers?: Prisma.ForumAnswerCreateNestedManyWithoutQuestionInput
+  images?: Prisma.ForumQuestionImageCreateNestedManyWithoutQuestionInput
 }
 
 export type ForumQuestionUncheckedCreateWithoutBatchInput = {
   id?: string
   title: string
   body: string
-  imageUrl?: string | null
+  status?: $Enums.DoubtStatus
   isResolved?: boolean
   authorId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   answers?: Prisma.ForumAnswerUncheckedCreateNestedManyWithoutQuestionInput
+  images?: Prisma.ForumQuestionImageUncheckedCreateNestedManyWithoutQuestionInput
 }
 
 export type ForumQuestionCreateOrConnectWithoutBatchInput = {
@@ -639,28 +668,98 @@ export type ForumQuestionUpdateManyWithWhereWithoutBatchInput = {
   data: Prisma.XOR<Prisma.ForumQuestionUpdateManyMutationInput, Prisma.ForumQuestionUncheckedUpdateManyWithoutBatchInput>
 }
 
-export type ForumQuestionCreateWithoutAnswersInput = {
+export type ForumQuestionCreateWithoutImagesInput = {
   id?: string
   title: string
   body: string
-  imageUrl?: string | null
+  status?: $Enums.DoubtStatus
   isResolved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutForumQuestionsInput
   batch: Prisma.BatchCreateNestedOneWithoutForumQuestionsInput
+  answers?: Prisma.ForumAnswerCreateNestedManyWithoutQuestionInput
+}
+
+export type ForumQuestionUncheckedCreateWithoutImagesInput = {
+  id?: string
+  title: string
+  body: string
+  status?: $Enums.DoubtStatus
+  isResolved?: boolean
+  authorId: string
+  batchId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  answers?: Prisma.ForumAnswerUncheckedCreateNestedManyWithoutQuestionInput
+}
+
+export type ForumQuestionCreateOrConnectWithoutImagesInput = {
+  where: Prisma.ForumQuestionWhereUniqueInput
+  create: Prisma.XOR<Prisma.ForumQuestionCreateWithoutImagesInput, Prisma.ForumQuestionUncheckedCreateWithoutImagesInput>
+}
+
+export type ForumQuestionUpsertWithoutImagesInput = {
+  update: Prisma.XOR<Prisma.ForumQuestionUpdateWithoutImagesInput, Prisma.ForumQuestionUncheckedUpdateWithoutImagesInput>
+  create: Prisma.XOR<Prisma.ForumQuestionCreateWithoutImagesInput, Prisma.ForumQuestionUncheckedCreateWithoutImagesInput>
+  where?: Prisma.ForumQuestionWhereInput
+}
+
+export type ForumQuestionUpdateToOneWithWhereWithoutImagesInput = {
+  where?: Prisma.ForumQuestionWhereInput
+  data: Prisma.XOR<Prisma.ForumQuestionUpdateWithoutImagesInput, Prisma.ForumQuestionUncheckedUpdateWithoutImagesInput>
+}
+
+export type ForumQuestionUpdateWithoutImagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
+  isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.UserUpdateOneRequiredWithoutForumQuestionsNestedInput
+  batch?: Prisma.BatchUpdateOneRequiredWithoutForumQuestionsNestedInput
+  answers?: Prisma.ForumAnswerUpdateManyWithoutQuestionNestedInput
+}
+
+export type ForumQuestionUncheckedUpdateWithoutImagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
+  isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  batchId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  answers?: Prisma.ForumAnswerUncheckedUpdateManyWithoutQuestionNestedInput
+}
+
+export type ForumQuestionCreateWithoutAnswersInput = {
+  id?: string
+  title: string
+  body: string
+  status?: $Enums.DoubtStatus
+  isResolved?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author: Prisma.UserCreateNestedOneWithoutForumQuestionsInput
+  batch: Prisma.BatchCreateNestedOneWithoutForumQuestionsInput
+  images?: Prisma.ForumQuestionImageCreateNestedManyWithoutQuestionInput
 }
 
 export type ForumQuestionUncheckedCreateWithoutAnswersInput = {
   id?: string
   title: string
   body: string
-  imageUrl?: string | null
+  status?: $Enums.DoubtStatus
   isResolved?: boolean
   authorId: string
   batchId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  images?: Prisma.ForumQuestionImageUncheckedCreateNestedManyWithoutQuestionInput
 }
 
 export type ForumQuestionCreateOrConnectWithoutAnswersInput = {
@@ -683,31 +782,33 @@ export type ForumQuestionUpdateWithoutAnswersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutForumQuestionsNestedInput
   batch?: Prisma.BatchUpdateOneRequiredWithoutForumQuestionsNestedInput
+  images?: Prisma.ForumQuestionImageUpdateManyWithoutQuestionNestedInput
 }
 
 export type ForumQuestionUncheckedUpdateWithoutAnswersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.ForumQuestionImageUncheckedUpdateManyWithoutQuestionNestedInput
 }
 
 export type ForumQuestionCreateManyAuthorInput = {
   id?: string
   title: string
   body: string
-  imageUrl?: string | null
+  status?: $Enums.DoubtStatus
   isResolved?: boolean
   batchId: string
   createdAt?: Date | string
@@ -718,31 +819,33 @@ export type ForumQuestionUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   batch?: Prisma.BatchUpdateOneRequiredWithoutForumQuestionsNestedInput
   answers?: Prisma.ForumAnswerUpdateManyWithoutQuestionNestedInput
+  images?: Prisma.ForumQuestionImageUpdateManyWithoutQuestionNestedInput
 }
 
 export type ForumQuestionUncheckedUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   batchId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   answers?: Prisma.ForumAnswerUncheckedUpdateManyWithoutQuestionNestedInput
+  images?: Prisma.ForumQuestionImageUncheckedUpdateManyWithoutQuestionNestedInput
 }
 
 export type ForumQuestionUncheckedUpdateManyWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   batchId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -753,7 +856,7 @@ export type ForumQuestionCreateManyBatchInput = {
   id?: string
   title: string
   body: string
-  imageUrl?: string | null
+  status?: $Enums.DoubtStatus
   isResolved?: boolean
   authorId: string
   createdAt?: Date | string
@@ -764,31 +867,33 @@ export type ForumQuestionUpdateWithoutBatchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutForumQuestionsNestedInput
   answers?: Prisma.ForumAnswerUpdateManyWithoutQuestionNestedInput
+  images?: Prisma.ForumQuestionImageUpdateManyWithoutQuestionNestedInput
 }
 
 export type ForumQuestionUncheckedUpdateWithoutBatchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   answers?: Prisma.ForumAnswerUncheckedUpdateManyWithoutQuestionNestedInput
+  images?: Prisma.ForumQuestionImageUncheckedUpdateManyWithoutQuestionNestedInput
 }
 
 export type ForumQuestionUncheckedUpdateManyWithoutBatchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDoubtStatusFieldUpdateOperationsInput | $Enums.DoubtStatus
   isResolved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -802,10 +907,12 @@ export type ForumQuestionUncheckedUpdateManyWithoutBatchInput = {
 
 export type ForumQuestionCountOutputType = {
   answers: number
+  images: number
 }
 
 export type ForumQuestionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   answers?: boolean | ForumQuestionCountOutputTypeCountAnswersArgs
+  images?: boolean | ForumQuestionCountOutputTypeCountImagesArgs
 }
 
 /**
@@ -825,12 +932,19 @@ export type ForumQuestionCountOutputTypeCountAnswersArgs<ExtArgs extends runtime
   where?: Prisma.ForumAnswerWhereInput
 }
 
+/**
+ * ForumQuestionCountOutputType without action
+ */
+export type ForumQuestionCountOutputTypeCountImagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ForumQuestionImageWhereInput
+}
+
 
 export type ForumQuestionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
   body?: boolean
-  imageUrl?: boolean
+  status?: boolean
   isResolved?: boolean
   authorId?: boolean
   batchId?: boolean
@@ -839,6 +953,7 @@ export type ForumQuestionSelect<ExtArgs extends runtime.Types.Extensions.Interna
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
   answers?: boolean | Prisma.ForumQuestion$answersArgs<ExtArgs>
+  images?: boolean | Prisma.ForumQuestion$imagesArgs<ExtArgs>
   _count?: boolean | Prisma.ForumQuestionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["forumQuestion"]>
 
@@ -848,7 +963,7 @@ export type ForumQuestionSelectScalar = {
   id?: boolean
   title?: boolean
   body?: boolean
-  imageUrl?: boolean
+  status?: boolean
   isResolved?: boolean
   authorId?: boolean
   batchId?: boolean
@@ -856,11 +971,12 @@ export type ForumQuestionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ForumQuestionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "body" | "imageUrl" | "isResolved" | "authorId" | "batchId" | "createdAt" | "updatedAt", ExtArgs["result"]["forumQuestion"]>
+export type ForumQuestionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "body" | "status" | "isResolved" | "authorId" | "batchId" | "createdAt" | "updatedAt", ExtArgs["result"]["forumQuestion"]>
 export type ForumQuestionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
   answers?: boolean | Prisma.ForumQuestion$answersArgs<ExtArgs>
+  images?: boolean | Prisma.ForumQuestion$imagesArgs<ExtArgs>
   _count?: boolean | Prisma.ForumQuestionCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -870,12 +986,13 @@ export type $ForumQuestionPayload<ExtArgs extends runtime.Types.Extensions.Inter
     author: Prisma.$UserPayload<ExtArgs>
     batch: Prisma.$BatchPayload<ExtArgs>
     answers: Prisma.$ForumAnswerPayload<ExtArgs>[]
+    images: Prisma.$ForumQuestionImagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     title: string
     body: string
-    imageUrl: string | null
+    status: $Enums.DoubtStatus
     isResolved: boolean
     authorId: string
     batchId: string
@@ -1224,6 +1341,7 @@ export interface Prisma__ForumQuestionClient<T, Null = never, ExtArgs extends ru
   author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   batch<T extends Prisma.BatchDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BatchDefaultArgs<ExtArgs>>): Prisma.Prisma__BatchClient<runtime.Types.Result.GetResult<Prisma.$BatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   answers<T extends Prisma.ForumQuestion$answersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ForumQuestion$answersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ForumAnswerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  images<T extends Prisma.ForumQuestion$imagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ForumQuestion$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ForumQuestionImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1256,7 +1374,7 @@ export interface ForumQuestionFieldRefs {
   readonly id: Prisma.FieldRef<"ForumQuestion", 'String'>
   readonly title: Prisma.FieldRef<"ForumQuestion", 'String'>
   readonly body: Prisma.FieldRef<"ForumQuestion", 'String'>
-  readonly imageUrl: Prisma.FieldRef<"ForumQuestion", 'String'>
+  readonly status: Prisma.FieldRef<"ForumQuestion", 'DoubtStatus'>
   readonly isResolved: Prisma.FieldRef<"ForumQuestion", 'Boolean'>
   readonly authorId: Prisma.FieldRef<"ForumQuestion", 'String'>
   readonly batchId: Prisma.FieldRef<"ForumQuestion", 'String'>
@@ -1631,6 +1749,30 @@ export type ForumQuestion$answersArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.ForumAnswerScalarFieldEnum | Prisma.ForumAnswerScalarFieldEnum[]
+}
+
+/**
+ * ForumQuestion.images
+ */
+export type ForumQuestion$imagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ForumQuestionImage
+   */
+  select?: Prisma.ForumQuestionImageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ForumQuestionImage
+   */
+  omit?: Prisma.ForumQuestionImageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ForumQuestionImageInclude<ExtArgs> | null
+  where?: Prisma.ForumQuestionImageWhereInput
+  orderBy?: Prisma.ForumQuestionImageOrderByWithRelationInput | Prisma.ForumQuestionImageOrderByWithRelationInput[]
+  cursor?: Prisma.ForumQuestionImageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ForumQuestionImageScalarFieldEnum | Prisma.ForumQuestionImageScalarFieldEnum[]
 }
 
 /**

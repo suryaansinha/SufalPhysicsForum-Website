@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import {
   AlertCircle,
   CalendarDays,
@@ -9,8 +10,10 @@ import {
   ImagePlus,
   Loader2,
   MessageCircle,
+  Pencil,
   Plus,
   Send,
+  Trash2,
   X,
 } from 'lucide-react';
 import type { Batch } from '../../types';
@@ -18,11 +21,14 @@ import api from '../../lib/api';
 import {
   addAnswer,
   createQuestion,
+  deleteQuestion,
   fetchQuestion,
   fetchQuestions,
   resolveQuestion,
+  updateQuestion,
 } from '../../api/forum.api';
-import type { ForumAnswer, ForumPagination, ForumQuestion } from '../../api/forum.api';
+import type { ForumAnswer, ForumPagination, ForumQuestion, ForumQuestionImage } from '../../api/forum.api';
+import axios from 'axios';
 
 const PAGE_SIZE = 10;
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -84,6 +90,9 @@ export default function DoubtForum() {
   const [replyError, setReplyError] = useState<string | null>(null);
   const [resolvingId, setResolvingId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [editingQuestion, setEditingQuestion] = useState<ForumQuestion | null>(null);
+  const [deletingQuestion, setDeletingQuestion] = useState<ForumQuestion | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const paginationRef = useRef<ForumPagination | null>(null);
   const currentUser = useRef<CurrentUser | null>(getCurrentUser()).current;
@@ -178,6 +187,8 @@ export default function DoubtForum() {
       if (file) formData.append('image', file);
       try {
         const answer = await addAnswer(questionId, formData);
+        const nextStatus =
+          currentUser && isTeacherRole(currentUser.role) ? 'ANSWERED' as const : undefined;
         setThreads((prev) => {
           const thread = prev[questionId];
           if (!thread) return prev;
@@ -187,12 +198,19 @@ export default function DoubtForum() {
               ...thread,
               answers: [...(thread.answers ?? []), answer],
               _count: { answers: (thread._count?.answers ?? 0) + 1 },
+              ...(nextStatus ? { status: nextStatus } : {}),
             },
           };
         });
         setAllQuestions((prev) =>
           prev.map((q) =>
-            q.id === questionId ? { ...q, _count: { answers: (q._count?.answers ?? 0) + 1 } } : q
+            q.id === questionId
+              ? {
+                  ...q,
+                  _count: { answers: (q._count?.answers ?? 0) + 1 },
+                  ...(nextStatus ? { status: nextStatus } : {}),
+                }
+              : q
           )
         );
         return true;
@@ -203,24 +221,79 @@ export default function DoubtForum() {
         setReplyingTo(null);
       }
     },
-    []
+    [currentUser]
   );
+
+  const patchQuestion = useCallback((updated: ForumQuestion) => {
+    setAllQuestions((prev) => prev.map((q) => (q.id === updated.id ? { ...q, ...updated } : q)));
+    setThreads((prev) => {
+      const thread = prev[updated.id];
+      if (!thread) return prev;
+      return { ...prev, [updated.id]: { ...thread, ...updated, answers: thread.answers } };
+    });
+  }, []);
+
+  const handleUpdate = useCallback(
+    async (questionId: string, formData: FormData): Promise<boolean> => {
+      try {
+        const updated = await updateQuestion(questionId, formData);
+        patchQuestion(updated);
+        setEditingQuestion(null);
+        return true;
+      } catch (err) {
+        if (axios.isAxiosError(err) && err.response?.status === 409) {
+          setAllQuestions((prev) =>
+            prev.map((q) => (q.id === questionId ? { ...q, status: 'ANSWERED' } : q))
+          );
+          setEditingQuestion(null);
+          setActionError('A teacher has answered this doubt, so it can no longer be edited.');
+        }
+        return false;
+      }
+    },
+    [patchQuestion]
+  );
+
+  const handleDelete = useCallback(async (questionId: string): Promise<void> => {
+    setDeleting(true);
+    setActionError(null);
+    try {
+      await deleteQuestion(questionId);
+      setAllQuestions((prev) => prev.filter((q) => q.id !== questionId));
+      setThreads((prev) => {
+        const next = { ...prev };
+        delete next[questionId];
+        return next;
+      });
+      if (expandedId === questionId) setExpandedId(null);
+      setDeletingQuestion(null);
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 409) {
+        setAllQuestions((prev) =>
+          prev.map((q) => (q.id === questionId ? { ...q, status: 'ANSWERED' } : q))
+        );
+        setActionError('A teacher has answered this doubt, so it can no longer be deleted.');
+      } else {
+        setActionError('Failed to delete this doubt. Please try again.');
+      }
+      setDeletingQuestion(null);
+    } finally {
+      setDeleting(false);
+    }
+  }, [expandedId]);
 
   const handleResolve = useCallback(async (questionId: string) => {
     setResolvingId(questionId);
     setActionError(null);
     try {
       const updated = await resolveQuestion(questionId);
-      setThreads((prev) => ({ ...prev, [questionId]: updated }));
-      setAllQuestions((prev) =>
-        prev.map((q) => (q.id === questionId ? { ...q, isResolved: true } : q))
-      );
+      patchQuestion(updated);
     } catch {
       setActionError('Failed to mark this question as resolved.');
     } finally {
       setResolvingId(null);
     }
-  }, []);
+  }, [patchQuestion]);
 
   return (
     <div className="max-w-4xl">
@@ -356,6 +429,8 @@ export default function DoubtForum() {
               onToggle={() => handleToggleQuestion(question)}
               onReply={handleReply}
               onResolve={handleResolve}
+              onEdit={() => setEditingQuestion(question)}
+              onDelete={() => setDeletingQuestion(question)}
             />
           ))}
       </div>
@@ -380,6 +455,23 @@ export default function DoubtForum() {
           onSubmit={handleCreate}
         />
       )}
+
+      {editingQuestion && (
+        <EditQuestionModal
+          question={editingQuestion}
+          onClose={() => setEditingQuestion(null)}
+          onSubmit={(formData) => handleUpdate(editingQuestion.id, formData)}
+        />
+      )}
+
+      {deletingQuestion && (
+        <DeleteConfirmModal
+          title={deletingQuestion.title}
+          deleting={deleting}
+          onClose={() => setDeletingQuestion(null)}
+          onConfirm={() => handleDelete(deletingQuestion.id)}
+        />
+      )}
     </div>
   );
 }
@@ -397,6 +489,8 @@ interface QuestionCardProps {
   onToggle: () => void;
   onReply: (questionId: string, body: string, file: File | null) => Promise<boolean>;
   onResolve: (questionId: string) => void;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
 function QuestionCard({
@@ -412,16 +506,22 @@ function QuestionCard({
   onToggle,
   onReply,
   onResolve,
+  onEdit,
+  onDelete,
 }: QuestionCardProps) {
   const canResolve =
     !!currentUser &&
     (isTeacherRole(currentUser.role) || question.author.id === currentUser.id);
+  const canManage =
+    !!currentUser && currentUser.id === question.authorId && question.status === 'PENDING';
+  const images = question.images ?? [];
 
   return (
     <div className="bg-white/70 backdrop-blur-xl rounded-2xl border border-slate-200 dark:bg-slate-900/40 dark:border-slate-700/50 shadow-sm overflow-hidden">
+      <div className="flex items-start">
       <button
         onClick={onToggle}
-        className="w-full text-left p-5 hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-colors"
+        className="flex-1 text-left p-5 hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-colors"
       >
         <div className="flex items-start gap-4">
           <Avatar name={question.author.name} />
@@ -455,16 +555,29 @@ function QuestionCard({
           />
         </div>
       </button>
+      {canManage && (
+        <div className="pt-4 pr-4">
+          <DoubtMenu onEdit={onEdit} onDelete={onDelete} />
+        </div>
+      )}
+      </div>
 
       {expanded && (
         <div className="border-t border-slate-200 px-5 py-5 space-y-5 dark:border-slate-800">
-          {question.imageUrl && (
-            <div className="rounded-xl overflow-hidden bg-slate-100 border border-slate-200 max-h-96 dark:bg-slate-900/60 dark:border-slate-800">
-              <img
-                src={question.imageUrl}
-                alt="Question attachment"
-                className="w-full max-h-96 object-contain"
-              />
+          {images.length > 0 && (
+            <div className="space-y-3">
+              {images.map((image) => (
+                <div
+                  key={image.id}
+                  className="rounded-xl overflow-hidden bg-slate-100 border border-slate-200 max-h-96 dark:bg-slate-900/60 dark:border-slate-800"
+                >
+                  <img
+                    src={image.url}
+                    alt="Question attachment"
+                    className="w-full max-h-96 object-contain"
+                  />
+                </div>
+              ))}
             </div>
           )}
 
@@ -808,6 +921,304 @@ function CreateQuestionModal({ batchId, onClose, onSubmit }: CreateQuestionModal
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  );
+}
+
+function DoubtMenu({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    return () => document.removeEventListener('mousedown', onPointerDown);
+  }, [open]);
+
+  return (
+    <div className="relative" ref={menuRef}>
+      <button
+        type="button"
+        aria-label="Doubt actions"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((prev) => !prev);
+        }}
+        className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-800/60 transition-colors"
+      >
+        <EllipsisVerticalIcon className="w-5 h-5" />
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 mt-1 w-36 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1 z-20"
+        >
+          <button
+            type="button"
+            role="menuitem"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(false);
+              onEdit();
+            }}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <Pencil className="w-4 h-4" />
+            Edit
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(false);
+              onDelete();
+            }}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40"
+          >
+            <Trash2 className="w-4 h-4" />
+            Delete
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface EditQuestionModalProps {
+  question: ForumQuestion;
+  onClose: () => void;
+  onSubmit: (formData: FormData) => Promise<boolean>;
+}
+
+function EditQuestionModal({ question, onClose, onSubmit }: EditQuestionModalProps) {
+  const [title, setTitle] = useState(question.title);
+  const [body, setBody] = useState(question.body);
+  const [existingImages, setExistingImages] = useState<ForumQuestionImage[]>(question.images ?? []);
+  const [removedIds, setRemovedIds] = useState<string[]>([]);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [previewUrls]);
+
+  const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? []);
+    setFileError(null);
+    e.target.value = '';
+    const accepted: File[] = [];
+    for (const file of selected) {
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        setFileError('Only JPEG, PNG, or WebP images are allowed.');
+        continue;
+      }
+      accepted.push(file);
+    }
+    if (accepted.length === 0) return;
+    const urls = accepted.map((file) => URL.createObjectURL(file));
+    setNewFiles((prev) => [...prev, ...accepted]);
+    setPreviewUrls((prev) => [...prev, ...urls]);
+  };
+
+  const removeNewFile = (index: number) => {
+    URL.revokeObjectURL(previewUrls[index]);
+    setNewFiles((prev) => prev.filter((_, i) => i !== index));
+    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExisting = (id: string) => {
+    setExistingImages((prev) => prev.filter((image) => image.id !== id));
+    setRemovedIds((prev) => [...prev, id]);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || !body.trim() || submitting) return;
+    setSubmitting(true);
+    setError(null);
+    const formData = new FormData();
+    formData.append('title', title.trim());
+    formData.append('body', body.trim());
+    if (removedIds.length > 0) {
+      formData.append('removeImageIds', JSON.stringify(removedIds));
+    }
+    newFiles.forEach((file) => formData.append('images', file));
+    const ok = await onSubmit(formData);
+    if (!ok) {
+      setError('Failed to update your doubt. Please try again.');
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
+      <div className="bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto dark:bg-slate-900/80 dark:border-slate-700/50">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700/50">
+          <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Edit Doubt</h4>
+          <button onClick={onClose} className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200" aria-label="Close">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Title *</label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Question *</label>
+            <textarea
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              rows={4}
+              className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none resize-none bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2 dark:text-slate-300">Attachments</label>
+            {existingImages.length > 0 && (
+              <div className="flex flex-wrap gap-3 mb-3">
+                {existingImages.map((image) => (
+                  <div key={image.id} className="relative inline-block">
+                    <img
+                      src={image.url}
+                      alt="Existing attachment"
+                      className="h-28 w-40 object-cover rounded-xl border border-slate-200 dark:border-slate-700"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeExisting(image.id)}
+                      className="absolute -top-2 -right-2 bg-slate-800 rounded-full shadow border border-slate-700 p-0.5 text-slate-300 hover:text-white"
+                      aria-label="Remove image"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            {previewUrls.length > 0 && (
+              <div className="flex flex-wrap gap-3 mb-3">
+                {previewUrls.map((url, index) => (
+                  <div key={url} className="relative inline-block">
+                    <img
+                      src={url}
+                      alt="New attachment preview"
+                      className="h-28 w-40 object-cover rounded-xl border border-slate-200 dark:border-slate-700"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeNewFile(index)}
+                      className="absolute -top-2 -right-2 bg-slate-800 rounded-full shadow border border-slate-700 p-0.5 text-slate-300 hover:text-white"
+                      aria-label="Remove new image"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-slate-300 rounded-xl px-4 py-6 text-slate-600 hover:border-yellow-500/50 hover:text-yellow-600 cursor-pointer transition-colors dark:border-slate-700 dark:text-slate-400 dark:hover:text-yellow-300">
+              <ImagePlus className="w-6 h-6" />
+              <span className="text-sm font-medium">Add images</span>
+              <span className="text-xs text-slate-500">JPEG, PNG, or WebP · up to 5MB each</span>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                multiple
+                className="hidden"
+                onChange={handleFiles}
+              />
+            </label>
+            {fileError && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{fileError}</p>}
+          </div>
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-sm text-red-600 dark:text-red-300">
+              {error}
+            </div>
+          )}
+          <div className="flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-xl hover:bg-slate-200/80 transition-colors dark:text-slate-300 dark:bg-slate-800/60 dark:hover:bg-slate-700/60"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-slate-950 bg-yellow-400 rounded-xl hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20 disabled:opacity-50"
+            >
+              {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
+              {submitting ? 'Saving...' : 'Save Changes'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function DeleteConfirmModal({
+  title,
+  deleting,
+  onClose,
+  onConfirm,
+}: {
+  title: string;
+  deleting: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
+      <div className="bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl w-full max-w-md dark:bg-slate-900/80 dark:border-slate-700/50">
+        <div className="px-6 py-5">
+          <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Delete this doubt?</h4>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+            "{title}" and its images will be permanently removed. This cannot be undone.
+          </p>
+        </div>
+        <div className="flex justify-end gap-3 px-6 pb-5">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={deleting}
+            className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-xl hover:bg-slate-200/80 transition-colors disabled:opacity-50 dark:text-slate-300 dark:bg-slate-800/60 dark:hover:bg-slate-700/60"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={deleting}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-xl hover:bg-red-500 transition-colors disabled:opacity-50"
+          >
+            {deleting && <Loader2 className="w-4 h-4 animate-spin" />}
+            {deleting ? 'Deleting...' : 'Delete'}
+          </button>
+        </div>
       </div>
     </div>
   );

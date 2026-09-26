@@ -238,6 +238,23 @@ export type FloatWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
 }
 
+export type EnumDoubtStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.DoubtStatus | Prisma.EnumDoubtStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DoubtStatus[]
+  notIn?: $Enums.DoubtStatus[]
+  not?: Prisma.NestedEnumDoubtStatusFilter<$PrismaModel> | $Enums.DoubtStatus
+}
+
+export type EnumDoubtStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DoubtStatus | Prisma.EnumDoubtStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DoubtStatus[]
+  notIn?: $Enums.DoubtStatus[]
+  not?: Prisma.NestedEnumDoubtStatusWithAggregatesFilter<$PrismaModel> | $Enums.DoubtStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDoubtStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDoubtStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[]
@@ -466,6 +483,23 @@ export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatFilter<$PrismaModel>
   _min?: Prisma.NestedFloatFilter<$PrismaModel>
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type NestedEnumDoubtStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.DoubtStatus | Prisma.EnumDoubtStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DoubtStatus[]
+  notIn?: $Enums.DoubtStatus[]
+  not?: Prisma.NestedEnumDoubtStatusFilter<$PrismaModel> | $Enums.DoubtStatus
+}
+
+export type NestedEnumDoubtStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DoubtStatus | Prisma.EnumDoubtStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DoubtStatus[]
+  notIn?: $Enums.DoubtStatus[]
+  not?: Prisma.NestedEnumDoubtStatusWithAggregatesFilter<$PrismaModel> | $Enums.DoubtStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDoubtStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDoubtStatusFilter<$PrismaModel>
 }
 
 

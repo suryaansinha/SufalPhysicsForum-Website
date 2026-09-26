@@ -27,3 +27,11 @@ export const AttendanceStatus = {
 } as const
 
 export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
+
+
+export const DoubtStatus = {
+  PENDING: 'PENDING',
+  ANSWERED: 'ANSWERED'
+} as const
+
+export type DoubtStatus = (typeof DoubtStatus)[keyof typeof DoubtStatus]

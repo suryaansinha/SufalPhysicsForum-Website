@@ -409,6 +409,7 @@ export const ModelName = {
   Testimonial: 'Testimonial',
   FeePayment: 'FeePayment',
   ForumQuestion: 'ForumQuestion',
+  ForumQuestionImage: 'ForumQuestionImage',
   ForumAnswer: 'ForumAnswer'
 } as const
 
@@ -425,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "institute" | "user" | "refreshToken" | "batch" | "enrollment" | "attendance" | "liveClass" | "studyMaterial" | "homework" | "testimonial" | "feePayment" | "forumQuestion" | "forumAnswer"
+    modelProps: "institute" | "user" | "refreshToken" | "batch" | "enrollment" | "attendance" | "liveClass" | "studyMaterial" | "homework" | "testimonial" | "feePayment" | "forumQuestion" | "forumQuestionImage" | "forumAnswer"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1221,6 +1222,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ForumQuestionImage: {
+      payload: Prisma.$ForumQuestionImagePayload<ExtArgs>
+      fields: Prisma.ForumQuestionImageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ForumQuestionImageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ForumQuestionImagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ForumQuestionImageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ForumQuestionImagePayload>
+        }
+        findFirst: {
+          args: Prisma.ForumQuestionImageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ForumQuestionImagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ForumQuestionImageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ForumQuestionImagePayload>
+        }
+        findMany: {
+          args: Prisma.ForumQuestionImageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ForumQuestionImagePayload>[]
+        }
+        create: {
+          args: Prisma.ForumQuestionImageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ForumQuestionImagePayload>
+        }
+        createMany: {
+          args: Prisma.ForumQuestionImageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.ForumQuestionImageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ForumQuestionImagePayload>
+        }
+        update: {
+          args: Prisma.ForumQuestionImageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ForumQuestionImagePayload>
+        }
+        deleteMany: {
+          args: Prisma.ForumQuestionImageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ForumQuestionImageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.ForumQuestionImageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ForumQuestionImagePayload>
+        }
+        aggregate: {
+          args: Prisma.ForumQuestionImageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateForumQuestionImage>
+        }
+        groupBy: {
+          args: Prisma.ForumQuestionImageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ForumQuestionImageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ForumQuestionImageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ForumQuestionImageCountAggregateOutputType> | number
+        }
+      }
+    }
     ForumAnswer: {
       payload: Prisma.$ForumAnswerPayload<ExtArgs>
       fields: Prisma.ForumAnswerFieldRefs
@@ -1493,7 +1560,7 @@ export const ForumQuestionScalarFieldEnum = {
   id: 'id',
   title: 'title',
   body: 'body',
-  imageUrl: 'imageUrl',
+  status: 'status',
   isResolved: 'isResolved',
   authorId: 'authorId',
   batchId: 'batchId',
@@ -1502,6 +1569,17 @@ export const ForumQuestionScalarFieldEnum = {
 } as const
 
 export type ForumQuestionScalarFieldEnum = (typeof ForumQuestionScalarFieldEnum)[keyof typeof ForumQuestionScalarFieldEnum]
+
+
+export const ForumQuestionImageScalarFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  url: 'url',
+  publicId: 'publicId',
+  createdAt: 'createdAt'
+} as const
+
+export type ForumQuestionImageScalarFieldEnum = (typeof ForumQuestionImageScalarFieldEnum)[keyof typeof ForumQuestionImageScalarFieldEnum]
 
 
 export const ForumAnswerScalarFieldEnum = {
@@ -1669,12 +1747,21 @@ export const ForumQuestionOrderByRelevanceFieldEnum = {
   id: 'id',
   title: 'title',
   body: 'body',
-  imageUrl: 'imageUrl',
   authorId: 'authorId',
   batchId: 'batchId'
 } as const
 
 export type ForumQuestionOrderByRelevanceFieldEnum = (typeof ForumQuestionOrderByRelevanceFieldEnum)[keyof typeof ForumQuestionOrderByRelevanceFieldEnum]
+
+
+export const ForumQuestionImageOrderByRelevanceFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  url: 'url',
+  publicId: 'publicId'
+} as const
+
+export type ForumQuestionImageOrderByRelevanceFieldEnum = (typeof ForumQuestionImageOrderByRelevanceFieldEnum)[keyof typeof ForumQuestionImageOrderByRelevanceFieldEnum]
 
 
 export const ForumAnswerOrderByRelevanceFieldEnum = {
@@ -1740,6 +1827,13 @@ export type EnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'DoubtStatus'
+ */
+export type EnumDoubtStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DoubtStatus'>
     
 
 /**
@@ -1905,6 +1999,7 @@ export type GlobalOmitConfig = {
   testimonial?: Prisma.TestimonialOmit
   feePayment?: Prisma.FeePaymentOmit
   forumQuestion?: Prisma.ForumQuestionOmit
+  forumQuestionImage?: Prisma.ForumQuestionImageOmit
   forumAnswer?: Prisma.ForumAnswerOmit
 }
 
