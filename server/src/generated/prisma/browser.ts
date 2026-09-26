@@ -78,6 +78,11 @@ export type FeePayment = Prisma.FeePaymentModel
  */
 export type ForumQuestion = Prisma.ForumQuestionModel
 /**
+ * Model ForumQuestionImage
+ * 
+ */
+export type ForumQuestionImage = Prisma.ForumQuestionImageModel
+/**
  * Model ForumAnswer
  * 
  */

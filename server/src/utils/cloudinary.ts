@@ -9,6 +9,7 @@ cloudinary.config({
 
 export interface CloudinaryUploadResult {
   url: string;
+  publicId: string;
 }
 
 function isCloudinaryConfigured(): boolean {
@@ -36,12 +37,39 @@ export function uploadImageToCloudinary(fileBuffer: Buffer, folder: string): Pro
         if (error || !result) {
           reject(error || new Error('Image upload failed'));
         } else {
-          resolve({ url: result.secure_url });
+            resolve({ url: result.secure_url, publicId: result.public_id });
         }
       }
     );
     uploadStream.end(fileBuffer);
   });
+}
+
+export async function deleteImageFromCloudinary(publicId: string): Promise<void> {
+  if (!publicId || !isCloudinaryConfigured()) {
+    return;
+  }
+
+  try {
+    await cloudinary.uploader.destroy(publicId);
+  } catch (error) {
+    console.error('Cloudinary destroy failed:', publicId, error);
+  }
+}
+
+export function extractCloudinaryPublicId(url: string): string {
+  try {
+    const parsed = new URL(url);
+    const marker = '/upload/';
+    const idx = parsed.pathname.indexOf(marker);
+    if (idx === -1) return '';
+    let rest = parsed.pathname.slice(idx + marker.length);
+    rest = rest.replace(/^v\d+\//, '');
+    rest = rest.replace(/\.[^/.]+$/, '');
+    return decodeURIComponent(rest);
+  } catch {
+    return '';
+  }
 }
 
 export { cloudinary };

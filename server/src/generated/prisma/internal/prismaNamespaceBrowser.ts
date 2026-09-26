@@ -63,6 +63,7 @@ export const ModelName = {
   Testimonial: 'Testimonial',
   FeePayment: 'FeePayment',
   ForumQuestion: 'ForumQuestion',
+  ForumQuestionImage: 'ForumQuestionImage',
   ForumAnswer: 'ForumAnswer'
 } as const
 
@@ -249,7 +250,7 @@ export const ForumQuestionScalarFieldEnum = {
   id: 'id',
   title: 'title',
   body: 'body',
-  imageUrl: 'imageUrl',
+  status: 'status',
   isResolved: 'isResolved',
   authorId: 'authorId',
   batchId: 'batchId',
@@ -258,6 +259,17 @@ export const ForumQuestionScalarFieldEnum = {
 } as const
 
 export type ForumQuestionScalarFieldEnum = (typeof ForumQuestionScalarFieldEnum)[keyof typeof ForumQuestionScalarFieldEnum]
+
+
+export const ForumQuestionImageScalarFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  url: 'url',
+  publicId: 'publicId',
+  createdAt: 'createdAt'
+} as const
+
+export type ForumQuestionImageScalarFieldEnum = (typeof ForumQuestionImageScalarFieldEnum)[keyof typeof ForumQuestionImageScalarFieldEnum]
 
 
 export const ForumAnswerScalarFieldEnum = {
@@ -425,12 +437,21 @@ export const ForumQuestionOrderByRelevanceFieldEnum = {
   id: 'id',
   title: 'title',
   body: 'body',
-  imageUrl: 'imageUrl',
   authorId: 'authorId',
   batchId: 'batchId'
 } as const
 
 export type ForumQuestionOrderByRelevanceFieldEnum = (typeof ForumQuestionOrderByRelevanceFieldEnum)[keyof typeof ForumQuestionOrderByRelevanceFieldEnum]
+
+
+export const ForumQuestionImageOrderByRelevanceFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  url: 'url',
+  publicId: 'publicId'
+} as const
+
+export type ForumQuestionImageOrderByRelevanceFieldEnum = (typeof ForumQuestionImageOrderByRelevanceFieldEnum)[keyof typeof ForumQuestionImageOrderByRelevanceFieldEnum]
 
 
 export const ForumAnswerOrderByRelevanceFieldEnum = {
