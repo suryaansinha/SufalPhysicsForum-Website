@@ -3,11 +3,13 @@ import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import {
   AlertCircle,
   CalendarDays,
+  Camera,
   CheckCircle2,
   ChevronDown,
   GraduationCap,
   HelpCircle,
   ImagePlus,
+  Images,
   Loader2,
   MessageCircle,
   Pencil,
@@ -772,6 +774,84 @@ function ReplyBox({ submitting, error, onSubmit }: ReplyBoxProps) {
   );
 }
 
+function AttachmentDropzone({ onFile }: { onFile: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    return () => document.removeEventListener('mousedown', onPointerDown);
+  }, [open]);
+
+  return (
+    <div className="relative" ref={menuRef}>
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="w-full flex flex-col items-center justify-center gap-2 border-2 border-dashed border-slate-300 rounded-xl px-4 py-6 text-slate-600 hover:border-yellow-500/50 hover:text-yellow-600 cursor-pointer transition-colors dark:border-slate-700 dark:text-slate-400 dark:hover:text-yellow-300"
+      >
+        <ImagePlus className="w-6 h-6" />
+        <span className="text-sm font-medium">Click to upload an image</span>
+        <span className="text-xs text-slate-500">JPEG, PNG, or WebP · up to 5MB</span>
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1 z-20"
+        >
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              cameraInputRef.current?.click();
+            }}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <Camera className="w-4 h-4" />
+            Capture Image
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              fileInputRef.current?.click();
+            }}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <Images className="w-4 h-4" />
+            Choose from Files
+          </button>
+        </div>
+      )}
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        hidden
+        onChange={onFile}
+      />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        hidden
+        onChange={onFile}
+      />
+    </div>
+  );
+}
+
 interface CreateQuestionModalProps {
   batchId: string | null;
   onClose: () => void;
@@ -795,16 +875,11 @@ function CreateQuestionModal({ batchId, onClose, onSubmit }: CreateQuestionModal
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0] || null;
+    e.target.value = '';
     setFileError(null);
-    if (!selected) {
-      setFile(null);
-      setPreviewUrl(null);
-      return;
-    }
+    if (!selected) return;
     if (!ALLOWED_IMAGE_TYPES.includes(selected.type)) {
       setFileError('Only JPEG, PNG, or WebP images are allowed.');
-      setFile(null);
-      setPreviewUrl(null);
       return;
     }
     if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -884,17 +959,7 @@ function CreateQuestionModal({ batchId, onClose, onSubmit }: CreateQuestionModal
                 </button>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-slate-300 rounded-xl px-4 py-6 text-slate-600 hover:border-yellow-500/50 hover:text-yellow-600 cursor-pointer transition-colors dark:border-slate-700 dark:text-slate-400 dark:hover:text-yellow-300">
-                <ImagePlus className="w-6 h-6" />
-                <span className="text-sm font-medium">Click to upload an image</span>
-                <span className="text-xs text-slate-500">JPEG, PNG, or WebP · up to 5MB</span>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  className="hidden"
-                  onChange={handleFile}
-                />
-              </label>
+              <AttachmentDropzone onFile={handleFile} />
             )}
             {fileError && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{fileError}</p>}
           </div>
