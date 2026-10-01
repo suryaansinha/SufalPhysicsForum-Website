@@ -42,7 +42,7 @@ No schema change. Continue using `User.name String`.
 
 **Body:** `{ name: string }`
 
-**Validation:** `name.trim()` required; length 2–80 inclusive; otherwise 400 `{ success: false, message: '...' }`.
+**Validation:** `name.trim()` required; length 2–80 inclusive; otherwise 400 `{ success: false, message: 'Name must be between 2 and 80 characters' }`.
 
 **Write:** update `User.name` where `id === req.user.userId`. Do not accept other fields.
 
