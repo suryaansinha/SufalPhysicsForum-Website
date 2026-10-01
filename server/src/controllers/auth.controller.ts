@@ -396,3 +396,35 @@ export async function me(req: Request, res: Response): Promise<void> {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
+const NAME_MIN = 2;
+const NAME_MAX = 80;
+
+export async function updateMe(req: Request, res: Response): Promise<void> {
+  try {
+    if (!req.user) {
+      res.status(401).json({ success: false, message: 'Authentication required' });
+      return;
+    }
+
+    const rawName = typeof req.body?.name === 'string' ? req.body.name.trim() : '';
+    if (rawName.length < NAME_MIN || rawName.length > NAME_MAX) {
+      res.status(400).json({
+        success: false,
+        message: 'Name must be between 2 and 80 characters',
+      });
+      return;
+    }
+
+    const user = await prisma.user.update({
+      where: { id: req.user.userId },
+      data: { name: rawName },
+      select: { id: true, name: true, email: true, role: true },
+    });
+
+    res.json({ success: true, data: user });
+  } catch (error) {
+    console.error('Update me error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}

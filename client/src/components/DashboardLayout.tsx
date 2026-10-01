@@ -7,7 +7,7 @@ import Header from './Header';
 export default function DashboardLayout() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const userName = localStorage.getItem('userName') || 'User';
+  const [userName, setUserName] = useState(() => localStorage.getItem('userName') || 'User');
   const canManageSettings = isTeacherRole(getCurrentUserRole());
 
   const handleLogout = () => {
@@ -17,6 +17,10 @@ export default function DashboardLayout() {
     navigate('/login');
   };
 
+  const handleNameUpdated = (name: string) => {
+    setUserName(name);
+  };
+
   return (
     <div className="flex h-screen overflow-hidden text-slate-900 dark:text-slate-100">
       <Sidebar
@@ -24,6 +28,7 @@ export default function DashboardLayout() {
         onClose={() => setSidebarOpen(false)}
         userName={userName}
         canManageSettings={canManageSettings}
+        onNameUpdated={handleNameUpdated}
       />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-100/70 dark:bg-transparent">
         <Header onMenuClick={() => setSidebarOpen(true)} onLogout={handleLogout} />
