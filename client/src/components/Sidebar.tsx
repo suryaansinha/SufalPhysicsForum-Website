@@ -13,6 +13,7 @@ import {
   Loader2,
   X,
   CheckCircle2,
+  ChevronDown,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import axios from 'axios';
@@ -62,8 +63,16 @@ const EXAM_OPTIONS: { value: TargetExam | ''; label: string }[] = [
   { value: 'OTHERS', label: 'Others' },
 ];
 
-const selectClass =
-  'w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100';
+const profileLabelClass =
+  'block text-sm font-medium text-slate-800 mb-1 dark:text-slate-200';
+
+const profileFieldClass =
+  'w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm outline-none bg-white text-slate-900 placeholder-slate-400 ' +
+  'transition-[border-color,box-shadow,background-color] duration-150 ease-out motion-reduce:transition-none ' +
+  'hover:border-slate-400 hover:bg-slate-50 ' +
+  'focus-visible:border-yellow-400 focus-visible:shadow-[0_0_0_3px_rgba(245,184,0,0.25)] ' +
+  'dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 ' +
+  'dark:hover:border-[#3b4a66] dark:hover:bg-[#111b30]';
 
 interface SidebarProps {
   open: boolean;
@@ -304,47 +313,53 @@ function EditProfileModal({
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Name</label>
+            <label className={profileLabelClass}>Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoFocus
               maxLength={80}
-              className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
+              className={profileFieldClass}
             />
           </div>
           {isStudent && (
             <>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Class</label>
-                <select
-                  value={classLevel}
-                  onChange={(e) => setClassLevel(e.target.value as ClassLevel | '')}
-                  className={selectClass}
-                >
-                  {CLASS_OPTIONS.map((option) => (
-                    <option key={option.value || 'not-set'} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                <label className={profileLabelClass}>Class</label>
+                <div className="relative">
+                  <select
+                    value={classLevel}
+                    onChange={(e) => setClassLevel(e.target.value as ClassLevel | '')}
+                    className={`${profileFieldClass} appearance-none pr-10 ${classLevel === '' ? 'text-slate-400 dark:text-slate-400' : ''}`}
+                  >
+                    {CLASS_OPTIONS.map((option) => (
+                      <option key={option.value || 'not-set'} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+                </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">
+                <label className={profileLabelClass}>
                   Target exam
                 </label>
-                <select
-                  value={targetExam}
-                  onChange={(e) => setTargetExam(e.target.value as TargetExam | '')}
-                  className={selectClass}
-                >
-                  {EXAM_OPTIONS.map((option) => (
-                    <option key={option.value || 'not-set'} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select
+                    value={targetExam}
+                    onChange={(e) => setTargetExam(e.target.value as TargetExam | '')}
+                    className={`${profileFieldClass} appearance-none pr-10 ${targetExam === '' ? 'text-slate-400 dark:text-slate-400' : ''}`}
+                  >
+                    {EXAM_OPTIONS.map((option) => (
+                      <option key={option.value || 'not-set'} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+                </div>
               </div>
             </>
           )}
