@@ -4,7 +4,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { prisma } from '../lib/prisma';
 import { hashPassword, comparePassword } from '../utils/password';
 import { generateTokenPair, verifyRefreshToken, generateAccessToken } from '../utils/jwt';
-import { Role } from '../generated/prisma/client.js';
+import { ClassLevel, Role, TargetExam } from '../generated/prisma/client.js';
 import { databaseUnavailableMessage } from '../lib/http-error';
 import { logFullError } from '../lib/error-log';
 import { normalizeEmail } from '../utils/email';
@@ -79,12 +79,7 @@ export async function registerInstitute(req: Request, res: Response): Promise<vo
     res.status(201).json({
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      user: toAuthProfile(user),
       institute: {
         id: institute.id,
         name: institute.name,
@@ -170,10 +165,7 @@ export async function login(req: Request, res: Response): Promise<void> {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+        ...toAuthProfile(user),
         phone: user.phone,
         isActive: user.isActive,
       },
@@ -286,10 +278,7 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+        ...toAuthProfile(user),
         phone: user.phone,
         isActive: user.isActive,
       },
@@ -375,12 +364,12 @@ export async function me(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    const profile = toAuthProfile(user);
     res.json({
+      success: true,
+      data: profile,
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+        ...profile,
         phone: user.phone,
         isActive: user.isActive,
         createdAt: user.createdAt,
@@ -399,6 +388,38 @@ export async function me(req: Request, res: Response): Promise<void> {
 
 const NAME_MIN = 2;
 const NAME_MAX = 80;
+const CLASS_LEVELS = new Set<string>(Object.values(ClassLevel));
+const TARGET_EXAMS = new Set<string>(Object.values(TargetExam));
+
+type AuthProfile = {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+  classLevel: ClassLevel | null;
+  targetExam: TargetExam | null;
+};
+
+function toAuthProfile(user: AuthProfile): AuthProfile {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    classLevel: user.classLevel,
+    targetExam: user.targetExam,
+  };
+}
+
+function parseNullableEnum(
+  value: unknown,
+  allowed: Set<string>,
+  field: string
+): { ok: true; value: string | null } | { ok: false; message: string } {
+  if (value === null) return { ok: true, value: null };
+  if (typeof value === 'string' && allowed.has(value)) return { ok: true, value };
+  return { ok: false, message: `Invalid ${field}` };
+}
 
 export async function updateMe(req: Request, res: Response): Promise<void> {
   try {
@@ -416,13 +437,45 @@ export async function updateMe(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    const data: {
+      name: string;
+      classLevel?: ClassLevel | null;
+      targetExam?: TargetExam | null;
+    } = { name: rawName };
+
+    if (req.user.role === Role.STUDENT) {
+      if (Object.prototype.hasOwnProperty.call(req.body ?? {}, 'classLevel')) {
+        const parsed = parseNullableEnum(req.body.classLevel, CLASS_LEVELS, 'classLevel');
+        if (!parsed.ok) {
+          res.status(400).json({ success: false, message: parsed.message });
+          return;
+        }
+        data.classLevel = parsed.value as ClassLevel | null;
+      }
+      if (Object.prototype.hasOwnProperty.call(req.body ?? {}, 'targetExam')) {
+        const parsed = parseNullableEnum(req.body.targetExam, TARGET_EXAMS, 'targetExam');
+        if (!parsed.ok) {
+          res.status(400).json({ success: false, message: parsed.message });
+          return;
+        }
+        data.targetExam = parsed.value as TargetExam | null;
+      }
+    }
+
     const user = await prisma.user.update({
       where: { id: req.user.userId },
-      data: { name: rawName },
-      select: { id: true, name: true, email: true, role: true },
+      data,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        classLevel: true,
+        targetExam: true,
+      },
     });
 
-    res.json({ success: true, data: user });
+    res.json({ success: true, data: toAuthProfile(user) });
   } catch (error) {
     console.error('Update me error:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });

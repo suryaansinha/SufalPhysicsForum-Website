@@ -32,6 +32,8 @@ export type UserMinAggregateOutputType = {
   passwordHash: string | null
   role: $Enums.Role | null
   phone: string | null
+  classLevel: $Enums.ClassLevel | null
+  targetExam: $Enums.TargetExam | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -45,6 +47,8 @@ export type UserMaxAggregateOutputType = {
   passwordHash: string | null
   role: $Enums.Role | null
   phone: string | null
+  classLevel: $Enums.ClassLevel | null
+  targetExam: $Enums.TargetExam | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -58,6 +62,8 @@ export type UserCountAggregateOutputType = {
   passwordHash: number
   role: number
   phone: number
+  classLevel: number
+  targetExam: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -73,6 +79,8 @@ export type UserMinAggregateInputType = {
   passwordHash?: true
   role?: true
   phone?: true
+  classLevel?: true
+  targetExam?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -86,6 +94,8 @@ export type UserMaxAggregateInputType = {
   passwordHash?: true
   role?: true
   phone?: true
+  classLevel?: true
+  targetExam?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -99,6 +109,8 @@ export type UserCountAggregateInputType = {
   passwordHash?: true
   role?: true
   phone?: true
+  classLevel?: true
+  targetExam?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -185,6 +197,8 @@ export type UserGroupByOutputType = {
   passwordHash: string
   role: $Enums.Role
   phone: string | null
+  classLevel: $Enums.ClassLevel | null
+  targetExam: $Enums.TargetExam | null
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -219,6 +233,8 @@ export type UserWhereInput = {
   passwordHash?: Prisma.StringFilter<"User"> | string
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   phone?: Prisma.StringNullableFilter<"User"> | string | null
+  classLevel?: Prisma.EnumClassLevelNullableFilter<"User"> | $Enums.ClassLevel | null
+  targetExam?: Prisma.EnumTargetExamNullableFilter<"User"> | $Enums.TargetExam | null
   isActive?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -239,6 +255,8 @@ export type UserOrderByWithRelationInput = {
   passwordHash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  classLevel?: Prisma.SortOrderInput | Prisma.SortOrder
+  targetExam?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -264,6 +282,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   passwordHash?: Prisma.StringFilter<"User"> | string
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   phone?: Prisma.StringNullableFilter<"User"> | string | null
+  classLevel?: Prisma.EnumClassLevelNullableFilter<"User"> | $Enums.ClassLevel | null
+  targetExam?: Prisma.EnumTargetExamNullableFilter<"User"> | $Enums.TargetExam | null
   isActive?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -284,6 +304,8 @@ export type UserOrderByWithAggregationInput = {
   passwordHash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  classLevel?: Prisma.SortOrderInput | Prisma.SortOrder
+  targetExam?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -303,6 +325,8 @@ export type UserScalarWhereWithAggregatesInput = {
   passwordHash?: Prisma.StringWithAggregatesFilter<"User"> | string
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  classLevel?: Prisma.EnumClassLevelNullableWithAggregatesFilter<"User"> | $Enums.ClassLevel | null
+  targetExam?: Prisma.EnumTargetExamNullableWithAggregatesFilter<"User"> | $Enums.TargetExam | null
   isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -315,6 +339,8 @@ export type UserCreateInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -335,6 +361,8 @@ export type UserUncheckedCreateInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -353,6 +381,8 @@ export type UserUpdateInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -373,6 +403,8 @@ export type UserUncheckedUpdateInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -392,6 +424,8 @@ export type UserCreateManyInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -404,6 +438,8 @@ export type UserUpdateManyMutationInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -417,6 +453,8 @@ export type UserUncheckedUpdateManyInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -451,6 +489,8 @@ export type UserCountOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  classLevel?: Prisma.SortOrder
+  targetExam?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -464,6 +504,8 @@ export type UserMaxOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  classLevel?: Prisma.SortOrder
+  targetExam?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -477,6 +519,8 @@ export type UserMinOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  classLevel?: Prisma.SortOrder
+  targetExam?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -531,6 +575,14 @@ export type UserUncheckedUpdateManyWithoutInstituteNestedInput = {
 
 export type EnumRoleFieldUpdateOperationsInput = {
   set?: $Enums.Role
+}
+
+export type NullableEnumClassLevelFieldUpdateOperationsInput = {
+  set?: $Enums.ClassLevel | null
+}
+
+export type NullableEnumTargetExamFieldUpdateOperationsInput = {
+  set?: $Enums.TargetExam | null
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -628,6 +680,8 @@ export type UserCreateWithoutInstituteInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -646,6 +700,8 @@ export type UserUncheckedCreateWithoutInstituteInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -694,6 +750,8 @@ export type UserScalarWhereInput = {
   passwordHash?: Prisma.StringFilter<"User"> | string
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   phone?: Prisma.StringNullableFilter<"User"> | string | null
+  classLevel?: Prisma.EnumClassLevelNullableFilter<"User"> | $Enums.ClassLevel | null
+  targetExam?: Prisma.EnumTargetExamNullableFilter<"User"> | $Enums.TargetExam | null
   isActive?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -706,6 +764,8 @@ export type UserCreateWithoutRefreshTokensInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -725,6 +785,8 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -758,6 +820,8 @@ export type UserUpdateWithoutRefreshTokensInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -777,6 +841,8 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -794,6 +860,8 @@ export type UserCreateWithoutEnrollmentsInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -813,6 +881,8 @@ export type UserUncheckedCreateWithoutEnrollmentsInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -846,6 +916,8 @@ export type UserUpdateWithoutEnrollmentsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -865,6 +937,8 @@ export type UserUncheckedUpdateWithoutEnrollmentsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -882,6 +956,8 @@ export type UserCreateWithoutAttendancesInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -901,6 +977,8 @@ export type UserUncheckedCreateWithoutAttendancesInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -934,6 +1012,8 @@ export type UserUpdateWithoutAttendancesInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -953,6 +1033,8 @@ export type UserUncheckedUpdateWithoutAttendancesInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -970,6 +1052,8 @@ export type UserCreateWithoutFeePaymentsInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -989,6 +1073,8 @@ export type UserUncheckedCreateWithoutFeePaymentsInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1022,6 +1108,8 @@ export type UserUpdateWithoutFeePaymentsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1041,6 +1129,8 @@ export type UserUncheckedUpdateWithoutFeePaymentsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1058,6 +1148,8 @@ export type UserCreateWithoutForumQuestionsInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1077,6 +1169,8 @@ export type UserUncheckedCreateWithoutForumQuestionsInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1110,6 +1204,8 @@ export type UserUpdateWithoutForumQuestionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1129,6 +1225,8 @@ export type UserUncheckedUpdateWithoutForumQuestionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1146,6 +1244,8 @@ export type UserCreateWithoutForumAnswersInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1165,6 +1265,8 @@ export type UserUncheckedCreateWithoutForumAnswersInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1198,6 +1300,8 @@ export type UserUpdateWithoutForumAnswersInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1217,6 +1321,8 @@ export type UserUncheckedUpdateWithoutForumAnswersInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1234,6 +1340,8 @@ export type UserCreateManyInstituteInput = {
   passwordHash: string
   role?: $Enums.Role
   phone?: string | null
+  classLevel?: $Enums.ClassLevel | null
+  targetExam?: $Enums.TargetExam | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1246,6 +1354,8 @@ export type UserUpdateWithoutInstituteInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1264,6 +1374,8 @@ export type UserUncheckedUpdateWithoutInstituteInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1282,6 +1394,8 @@ export type UserUncheckedUpdateManyWithoutInstituteInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classLevel?: Prisma.NullableEnumClassLevelFieldUpdateOperationsInput | $Enums.ClassLevel | null
+  targetExam?: Prisma.NullableEnumTargetExamFieldUpdateOperationsInput | $Enums.TargetExam | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1371,6 +1485,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   passwordHash?: boolean
   role?: boolean
   phone?: boolean
+  classLevel?: boolean
+  targetExam?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1394,12 +1510,14 @@ export type UserSelectScalar = {
   passwordHash?: boolean
   role?: boolean
   phone?: boolean
+  classLevel?: boolean
+  targetExam?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "instituteId" | "name" | "email" | "passwordHash" | "role" | "phone" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "instituteId" | "name" | "email" | "passwordHash" | "role" | "phone" | "classLevel" | "targetExam" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   institute?: boolean | Prisma.InstituteDefaultArgs<ExtArgs>
   enrollments?: boolean | Prisma.User$enrollmentsArgs<ExtArgs>
@@ -1430,6 +1548,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     passwordHash: string
     role: $Enums.Role
     phone: string | null
+    classLevel: $Enums.ClassLevel | null
+    targetExam: $Enums.TargetExam | null
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -1816,6 +1936,8 @@ export interface UserFieldRefs {
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly phone: Prisma.FieldRef<"User", 'String'>
+  readonly classLevel: Prisma.FieldRef<"User", 'ClassLevel'>
+  readonly targetExam: Prisma.FieldRef<"User", 'TargetExam'>
   readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>

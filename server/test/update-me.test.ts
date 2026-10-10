@@ -53,3 +53,27 @@ test('updateMe rejects a missing name', async () => {
   );
   assert.equal(res.result.statusCode, 400);
 });
+
+test('updateMe rejects an invalid classLevel', async () => {
+  const res = response();
+  await updateMe(
+    {
+      user: { userId: 'user-1', role: Role.STUDENT, instituteId: 'inst-1' },
+      body: { name: 'Ada Lovelace', classLevel: '13' },
+    } as never,
+    res as never
+  );
+  assert.equal(res.result.statusCode, 400);
+});
+
+test('updateMe rejects an invalid targetExam', async () => {
+  const res = response();
+  await updateMe(
+    {
+      user: { userId: 'user-1', role: Role.STUDENT, instituteId: 'inst-1' },
+      body: { name: 'Ada Lovelace', targetExam: 'SAT' },
+    } as never,
+    res as never
+  );
+  assert.equal(res.result.statusCode, 400);
+});

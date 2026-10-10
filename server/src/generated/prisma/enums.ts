@@ -35,3 +35,24 @@ export const DoubtStatus = {
 } as const
 
 export type DoubtStatus = (typeof DoubtStatus)[keyof typeof DoubtStatus]
+
+
+export const ClassLevel = {
+  CLASS_9: 'CLASS_9',
+  CLASS_10: 'CLASS_10',
+  CLASS_11: 'CLASS_11',
+  CLASS_12: 'CLASS_12',
+  DROPPER: 'DROPPER'
+} as const
+
+export type ClassLevel = (typeof ClassLevel)[keyof typeof ClassLevel]
+
+
+export const TargetExam = {
+  JEE: 'JEE',
+  NEET: 'NEET',
+  BOARDS: 'BOARDS',
+  OTHERS: 'OTHERS'
+} as const
+
+export type TargetExam = (typeof TargetExam)[keyof typeof TargetExam]

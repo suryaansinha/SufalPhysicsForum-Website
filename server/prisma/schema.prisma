@@ -28,6 +28,21 @@ enum DoubtStatus {
   ANSWERED
 }
 
+enum ClassLevel {
+  CLASS_9
+  CLASS_10
+  CLASS_11
+  CLASS_12
+  DROPPER
+}
+
+enum TargetExam {
+  JEE
+  NEET
+  BOARDS
+  OTHERS
+}
+
 model Institute {
   id               String   @id @default(cuid())
   name             String
@@ -55,9 +70,11 @@ model User {
   name         String
   email        String
   passwordHash String
-  role         Role     @default(TEACHER)
+  role         Role         @default(TEACHER)
   phone        String?
-  isActive     Boolean  @default(true)
+  classLevel   ClassLevel?
+  targetExam   TargetExam?
+  isActive     Boolean      @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -12,11 +12,18 @@ import {
   Pencil,
   Loader2,
   X,
+  CheckCircle2,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import axios from 'axios';
 import { getCurrentUserRole } from '../lib/auth';
-import { updateMyName } from '../api/auth.api';
+import {
+  getMyProfile,
+  updateMyProfile,
+  type AuthProfile,
+  type ClassLevel,
+  type TargetExam,
+} from '../api/auth.api';
 
 interface SidebarLink {
   to: string;
@@ -38,6 +45,26 @@ const sidebarLinks: SidebarLink[] = [
   { to: '/dashboard/settings', icon: SettingsIcon, label: 'Settings', adminOnly: true },
 ];
 
+const CLASS_OPTIONS: { value: ClassLevel | ''; label: string }[] = [
+  { value: '', label: 'Not set' },
+  { value: 'CLASS_9', label: '9' },
+  { value: 'CLASS_10', label: '10' },
+  { value: 'CLASS_11', label: '11' },
+  { value: 'CLASS_12', label: '12' },
+  { value: 'DROPPER', label: 'Dropper' },
+];
+
+const EXAM_OPTIONS: { value: TargetExam | ''; label: string }[] = [
+  { value: '', label: 'Not set' },
+  { value: 'JEE', label: 'JEE' },
+  { value: 'NEET', label: 'NEET' },
+  { value: 'BOARDS', label: 'Boards' },
+  { value: 'OTHERS', label: 'Others' },
+];
+
+const selectClass =
+  'w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100';
+
 interface SidebarProps {
   open: boolean;
   onClose: () => void;
@@ -46,15 +73,14 @@ interface SidebarProps {
   onNameUpdated: (name: string) => void;
 }
 
-function persistUserName(name: string): void {
-  localStorage.setItem('userName', name);
+function persistProfile(profile: AuthProfile): void {
+  localStorage.setItem('userName', profile.name);
   try {
     const raw = localStorage.getItem('user');
-    if (!raw) return;
-    const parsed = JSON.parse(raw) as { name?: string };
-    localStorage.setItem('user', JSON.stringify({ ...parsed, name }));
+    const parsed = raw ? (JSON.parse(raw) as Record<string, unknown>) : {};
+    localStorage.setItem('user', JSON.stringify({ ...parsed, ...profile }));
   } catch {
-    // ignore malformed local storage
+    localStorage.setItem('user', JSON.stringify(profile));
   }
 }
 
@@ -66,7 +92,14 @@ export default function Sidebar({
   onNameUpdated,
 }: SidebarProps) {
   const userRole = getCurrentUserRole();
-  const [showEditName, setShowEditName] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 3000);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   const visibleLinks = sidebarLinks.filter((link) => {
     if (link.adminOnly && !canManageSettings) return false;
@@ -120,61 +153,136 @@ export default function Sidebar({
             </span>
             <button
               type="button"
-              onClick={() => setShowEditName(true)}
+              onClick={() => setShowEditProfile(true)}
               className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-800/60 transition-colors shrink-0"
-              aria-label="Edit name"
+              aria-label="Edit profile"
             >
               <Pencil className="w-4 h-4" />
             </button>
           </div>
         </div>
       </aside>
-      {showEditName && (
-        <EditNameModal
+      {showEditProfile && (
+        <EditProfileModal
           currentName={userName}
-          onClose={() => setShowEditName(false)}
-          onSaved={(name) => {
-            persistUserName(name);
-            onNameUpdated(name);
-            setShowEditName(false);
+          onClose={() => setShowEditProfile(false)}
+          onSaved={(profile) => {
+            persistProfile(profile);
+            onNameUpdated(profile.name);
+            setShowEditProfile(false);
+            setToast('Profile updated');
           }}
         />
+      )}
+      {toast && (
+        <div className="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg px-4 py-3 shadow-lg border backdrop-blur-xl bg-emerald-500/10 border-emerald-500/30">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">{toast}</span>
+        </div>
       )}
     </>
   );
 }
 
-function EditNameModal({
+function readStoredProfile(currentName: string): AuthProfile {
+  try {
+    const raw = localStorage.getItem('user');
+    if (!raw) {
+      return {
+        id: '',
+        name: currentName,
+        email: '',
+        role: getCurrentUserRole() || '',
+        classLevel: null,
+        targetExam: null,
+      };
+    }
+    const parsed = JSON.parse(raw) as Partial<AuthProfile>;
+    return {
+      id: parsed.id || '',
+      name: parsed.name || currentName,
+      email: parsed.email || '',
+      role: parsed.role || getCurrentUserRole() || '',
+      classLevel: parsed.classLevel ?? null,
+      targetExam: parsed.targetExam ?? null,
+    };
+  } catch {
+    return {
+      id: '',
+      name: currentName,
+      email: '',
+      role: getCurrentUserRole() || '',
+      classLevel: null,
+      targetExam: null,
+    };
+  }
+}
+
+function EditProfileModal({
   currentName,
   onClose,
   onSaved,
 }: {
   currentName: string;
   onClose: () => void;
-  onSaved: (name: string) => void;
+  onSaved: (profile: AuthProfile) => void;
 }) {
-  const [name, setName] = useState(currentName);
+  const stored = readStoredProfile(currentName);
+  const [name, setName] = useState(stored.name || currentName);
+  const [classLevel, setClassLevel] = useState<ClassLevel | ''>(stored.classLevel ?? '');
+  const [targetExam, setTargetExam] = useState<TargetExam | ''>(stored.targetExam ?? '');
+  const [role, setRole] = useState(stored.role);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const isStudent = role === 'STUDENT';
+  const trimmedName = name.trim();
+  const nameValid = trimmedName.length >= 2 && trimmedName.length <= 80;
+
+  useEffect(() => {
+    let cancelled = false;
+    getMyProfile()
+      .then((profile) => {
+        if (cancelled) return;
+        setName(profile.name);
+        setClassLevel(profile.classLevel ?? '');
+        setTargetExam(profile.targetExam ?? '');
+        setRole(profile.role);
+      })
+      .catch(() => {
+        // keep localStorage prefill if the profile fetch fails
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmed = name.trim();
-    if (trimmed.length < 2 || trimmed.length > 80) {
+    if (!nameValid) {
       setError('Name must be between 2 and 80 characters');
       return;
     }
     setSaving(true);
     setError(null);
     try {
-      const updated = await updateMyName(trimmed);
-      onSaved(updated.name);
+      const payload: {
+        name: string;
+        classLevel?: ClassLevel | null;
+        targetExam?: TargetExam | null;
+      } = { name: trimmedName };
+      if (isStudent) {
+        payload.classLevel = classLevel === '' ? null : classLevel;
+        payload.targetExam = targetExam === '' ? null : targetExam;
+      }
+      const updated = await updateMyProfile(payload);
+      onSaved(updated);
     } catch (err) {
       if (axios.isAxiosError(err) && err.response?.status === 400) {
         const message = (err.response.data as { message?: string } | undefined)?.message;
         setError(message || 'Name must be between 2 and 80 characters');
       } else {
-        setError('Could not update name');
+        setError('Could not update profile');
       }
       setSaving(false);
     }
@@ -182,9 +290,9 @@ function EditNameModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
-      <div className="bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl w-full max-w-sm dark:bg-slate-900/80 dark:border-slate-700/50">
+      <div className="bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl w-full max-w-sm max-h-[90vh] overflow-y-auto dark:bg-slate-900/80 dark:border-slate-700/50">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700/50">
-          <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Edit name</h4>
+          <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Edit profile</h4>
           <button
             type="button"
             onClick={onClose}
@@ -206,6 +314,40 @@ function EditNameModal({
               className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
             />
           </div>
+          {isStudent && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Class</label>
+                <select
+                  value={classLevel}
+                  onChange={(e) => setClassLevel(e.target.value as ClassLevel | '')}
+                  className={selectClass}
+                >
+                  {CLASS_OPTIONS.map((option) => (
+                    <option key={option.value || 'not-set'} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">
+                  Target exam
+                </label>
+                <select
+                  value={targetExam}
+                  onChange={(e) => setTargetExam(e.target.value as TargetExam | '')}
+                  className={selectClass}
+                >
+                  {EXAM_OPTIONS.map((option) => (
+                    <option key={option.value || 'not-set'} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          )}
           {error && (
             <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-sm text-red-600 dark:text-red-300">
               {error}
@@ -221,7 +363,7 @@ function EditNameModal({
             </button>
             <button
               type="submit"
-              disabled={saving}
+              disabled={saving || !nameValid}
               className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-slate-950 bg-yellow-400 rounded-xl hover:bg-yellow-300 transition-colors disabled:opacity-50"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}

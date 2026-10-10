@@ -117,6 +117,20 @@ export type EnumRoleFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
 }
 
+export type EnumClassLevelNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClassLevel | Prisma.EnumClassLevelFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ClassLevel[] | null
+  notIn?: $Enums.ClassLevel[] | null
+  not?: Prisma.NestedEnumClassLevelNullableFilter<$PrismaModel> | $Enums.ClassLevel | null
+}
+
+export type EnumTargetExamNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.TargetExam | Prisma.EnumTargetExamFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TargetExam[] | null
+  notIn?: $Enums.TargetExam[] | null
+  not?: Prisma.NestedEnumTargetExamNullableFilter<$PrismaModel> | $Enums.TargetExam | null
+}
+
 export type BoolFilter<$PrismaModel = never> = {
   equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
   not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
@@ -130,6 +144,26 @@ export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumRoleFilter<$PrismaModel>
   _max?: Prisma.NestedEnumRoleFilter<$PrismaModel>
+}
+
+export type EnumClassLevelNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClassLevel | Prisma.EnumClassLevelFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ClassLevel[] | null
+  notIn?: $Enums.ClassLevel[] | null
+  not?: Prisma.NestedEnumClassLevelNullableWithAggregatesFilter<$PrismaModel> | $Enums.ClassLevel | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClassLevelNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClassLevelNullableFilter<$PrismaModel>
+}
+
+export type EnumTargetExamNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TargetExam | Prisma.EnumTargetExamFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TargetExam[] | null
+  notIn?: $Enums.TargetExam[] | null
+  not?: Prisma.NestedEnumTargetExamNullableWithAggregatesFilter<$PrismaModel> | $Enums.TargetExam | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTargetExamNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTargetExamNullableFilter<$PrismaModel>
 }
 
 export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -375,6 +409,20 @@ export type NestedEnumRoleFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
 }
 
+export type NestedEnumClassLevelNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClassLevel | Prisma.EnumClassLevelFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ClassLevel[] | null
+  notIn?: $Enums.ClassLevel[] | null
+  not?: Prisma.NestedEnumClassLevelNullableFilter<$PrismaModel> | $Enums.ClassLevel | null
+}
+
+export type NestedEnumTargetExamNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.TargetExam | Prisma.EnumTargetExamFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TargetExam[] | null
+  notIn?: $Enums.TargetExam[] | null
+  not?: Prisma.NestedEnumTargetExamNullableFilter<$PrismaModel> | $Enums.TargetExam | null
+}
+
 export type NestedBoolFilter<$PrismaModel = never> = {
   equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
   not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
@@ -388,6 +436,26 @@ export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumRoleFilter<$PrismaModel>
   _max?: Prisma.NestedEnumRoleFilter<$PrismaModel>
+}
+
+export type NestedEnumClassLevelNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClassLevel | Prisma.EnumClassLevelFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ClassLevel[] | null
+  notIn?: $Enums.ClassLevel[] | null
+  not?: Prisma.NestedEnumClassLevelNullableWithAggregatesFilter<$PrismaModel> | $Enums.ClassLevel | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClassLevelNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClassLevelNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumTargetExamNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TargetExam | Prisma.EnumTargetExamFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TargetExam[] | null
+  notIn?: $Enums.TargetExam[] | null
+  not?: Prisma.NestedEnumTargetExamNullableWithAggregatesFilter<$PrismaModel> | $Enums.TargetExam | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTargetExamNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTargetExamNullableFilter<$PrismaModel>
 }
 
 export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {

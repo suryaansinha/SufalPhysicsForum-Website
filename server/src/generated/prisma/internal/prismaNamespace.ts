@@ -1420,6 +1420,8 @@ export const UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   role: 'role',
   phone: 'phone',
+  classLevel: 'classLevel',
+  targetExam: 'targetExam',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1799,6 +1801,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'Role'
  */
 export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+    
+
+
+/**
+ * Reference to a field of type 'ClassLevel'
+ */
+export type EnumClassLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClassLevel'>
+    
+
+
+/**
+ * Reference to a field of type 'TargetExam'
+ */
+export type EnumTargetExamFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TargetExam'>
     
 
 
