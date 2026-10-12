@@ -3,24 +3,33 @@ import { ArrowRight } from 'lucide-react';
 import FeaturesBento from '../../components/landing/FeaturesBento';
 import StatsStrip from '../../components/landing/StatsStrip';
 import Testimonials from '../../components/landing/Testimonials';
+import HeroAnimatedGradient from '../../components/landing/HeroAnimatedGradient';
+
+const HERO_OVERLAY_OPACITY = 0.2;
 
 export default function HomePage() {
   return (
     <div className="bg-transparent">
-      <section className="relative isolate overflow-hidden">
+      <section className="relative z-0 isolate overflow-hidden">
+        <HeroAnimatedGradient />
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 h-full w-full bg-[radial-gradient(#475569_1px,transparent_1px)] [background-size:24px_24px] opacity-100 [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none"
-        ></div>
+          className="absolute inset-0 z-[1] pointer-events-none"
+          style={{
+            opacity: HERO_OVERLAY_OPACITY,
+            backgroundImage:
+              'linear-gradient(#02061766, #02061766), linear-gradient(to right, #020617e6 0%, #02061766 42%, #02061700 78%)',
+          }}
+        />
         <div
           aria-hidden="true"
-          className="absolute top-[-10%] left-[20%] -z-20 h-[400px] w-[500px] rounded-full bg-blue-600/30 blur-[150px] pointer-events-none"
-        ></div>
+          className="absolute inset-0 z-[1] h-full w-full bg-[radial-gradient(#64748b_2px,transparent_2px)] [background-size:32px_32px] opacity-50 [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none"
+        />
         <div
           aria-hidden="true"
-          className="absolute top-[10%] right-[20%] -z-20 h-[300px] w-[400px] rounded-full bg-yellow-500/20 blur-[150px] pointer-events-none"
-        ></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+          className="absolute inset-x-0 bottom-0 z-[1] h-[120px] pointer-events-none bg-gradient-to-b from-transparent to-[#020617]"
+        />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-100 leading-tight">
