@@ -1,4 +1,4 @@
-import{i as e,r as t}from"./index-BiF5nzb5.js";var n=e(t(),1),r=`https://open.spotify.com`,i=/open\.spotify\.com\/(\w+)\/(\w+)/i,a=`https://open.spotify.com/embed-podcast/iframe-api/v1`,o=`SpotifyIframeApi`,s=`onSpotifyIframeApiReady`;function c(e,t={}){return`
+import{i as e,r as t}from"./index-B9qneiih.js";var n=e(t(),1),r=`https://open.spotify.com`,i=/open\.spotify\.com\/(\w+)\/(\w+)/i,a=`https://open.spotify.com/embed-podcast/iframe-api/v1`,o=`SpotifyIframeApi`,s=`onSpotifyIframeApiReady`;function c(e,t={}){return`
     <style>
       :host {
         display: inline-block;

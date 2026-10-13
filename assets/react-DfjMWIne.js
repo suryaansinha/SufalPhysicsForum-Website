@@ -1,4 +1,4 @@
-import{i as e,r as t}from"./index-BiF5nzb5.js";import{n}from"./hls-C9eSMht7.js";import{n as r,t as i}from"./dist-CUBJ5iX9.js";var a=e(t(),1),o=(e=>class extends e{static shadowRootOptions={...e.shadowRootOptions};static getTemplateHTML=(t,n={})=>{let{src:r,...i}=t;return`
+import{i as e,r as t}from"./index-B9qneiih.js";import{n}from"./hls-C9eSMht7.js";import{n as r,t as i}from"./dist-CUBJ5iX9.js";var a=e(t(),1),o=(e=>class extends e{static shadowRootOptions={...e.shadowRootOptions};static getTemplateHTML=(t,n={})=>{let{src:r,...i}=t;return`
         <script type="application/json" id="config">
           ${JSON.stringify(n.config||{})}
         <\/script>

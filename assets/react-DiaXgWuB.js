@@ -1,4 +1,4 @@
-import{i as e,n as t,r as n}from"./index-BiF5nzb5.js";var r=e(n(),1),i=`abort.canplay.canplaythrough.durationchange.emptied.encrypted.ended.error.loadeddata.loadedmetadata.loadstart.pause.play.playing.progress.ratechange.seeked.seeking.stalled.suspend.timeupdate.volumechange.waiting.waitingforkey.resize.enterpictureinpicture.leavepictureinpicture.webkitbeginfullscreen.webkitendfullscreen.webkitpresentationmodechanged`.split(`.`),a=globalThis.document?.createElement(`template`);a&&(a.innerHTML=`
+import{i as e,n as t,r as n}from"./index-B9qneiih.js";var r=e(n(),1),i=`abort.canplay.canplaythrough.durationchange.emptied.encrypted.ended.error.loadeddata.loadedmetadata.loadstart.pause.play.playing.progress.ratechange.seeked.seeking.stalled.suspend.timeupdate.volumechange.waiting.waitingforkey.resize.enterpictureinpicture.leavepictureinpicture.webkitbeginfullscreen.webkitendfullscreen.webkitpresentationmodechanged`.split(`.`),a=globalThis.document?.createElement(`template`);a&&(a.innerHTML=`
     <style>
       :host {
         display: inline-block;
