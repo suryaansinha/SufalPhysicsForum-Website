@@ -4,6 +4,7 @@ import FeaturesBento from '../../components/landing/FeaturesBento';
 import StatsStrip from '../../components/landing/StatsStrip';
 import Testimonials from '../../components/landing/Testimonials';
 import HeroAnimatedGradient from '../../components/landing/HeroAnimatedGradient';
+import CtaPixelCanvas from '../../components/landing/CtaPixelCanvas';
 
 const HERO_OVERLAY_OPACITY = 0.2;
 
@@ -75,8 +76,9 @@ export default function HomePage() {
       <StatsStrip />
       <Testimonials />
 
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="relative z-0 isolate overflow-hidden py-24">
+        <CtaPixelCanvas />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-slate-100 mb-8">Ready to Start Your Journey?</h2>
           <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
             Join hundreds of successful students who have transformed their physics learning experience with us.
