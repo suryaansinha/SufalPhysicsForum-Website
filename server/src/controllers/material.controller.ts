@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { cloudinary } from '../utils/cloudinary';
+import { findAccessibleBatch } from '../utils/batch-access';
 
 function uploadToCloudinary(buffer: Buffer, folder: string): Promise<{ url: string; type: string }> {
   return new Promise((resolve, reject) => {
@@ -36,9 +37,7 @@ export async function uploadMaterial(req: Request, res: Response): Promise<void>
       return;
     }
 
-    const batch = await prisma.batch.findFirst({
-      where: { id: batchId, instituteId },
-    });
+    const batch = await findAccessibleBatch(batchId, req.user!);
 
     if (!batch) {
       res.status(404).json({ success: false, message: 'Batch not found' });
@@ -77,12 +76,9 @@ export async function uploadMaterial(req: Request, res: Response): Promise<void>
 
 export async function listMaterials(req: Request, res: Response): Promise<void> {
   try {
-    const instituteId = req.user!.instituteId;
     const batchId = req.params.batchId as string;
 
-    const batch = await prisma.batch.findFirst({
-      where: { id: batchId, instituteId },
-    });
+    const batch = await findAccessibleBatch(batchId, req.user!);
 
     if (!batch) {
       res.status(404).json({ success: false, message: 'Batch not found' });

@@ -38,7 +38,7 @@ interface SidebarLink {
 const sidebarLinks: SidebarLink[] = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/dashboard/batches', icon: BookOpen, label: 'Batches' },
-  { to: '/dashboard/students', icon: Users, label: 'Students' },
+  { to: '/dashboard/students', icon: Users, label: 'Students', teacherOnly: true },
   { to: '/dashboard/attendance', icon: ClipboardCheck, label: 'Attendance', teacherOnly: true },
   { to: '/dashboard/my-attendance', icon: CalendarCheck, label: 'My Attendance', studentOnly: true },
   { to: '/dashboard/fees', icon: IndianRupee, label: 'Fees' },

@@ -13,6 +13,6 @@ router.use(authenticate);
 
 router.get('/my-records', authorizeRoles(Role.STUDENT), getMyAttendanceRecords);
 router.post('/bulk', authorizeRoles(Role.TEACHER, Role.SUPER_ADMIN), markBulkAttendance);
-router.get('/:batchId/:date', getAttendanceByBatchAndDate);
+router.get('/:batchId/:date', authorizeRoles(Role.TEACHER, Role.SUPER_ADMIN), getAttendanceByBatchAndDate);
 
 export default router;

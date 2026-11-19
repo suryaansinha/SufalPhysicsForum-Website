@@ -13,6 +13,7 @@ import { probeMysqlDbStatus, probeMysqlSelect1 } from './lib/mysql-diag';
 import { probeMariadbCreateConnection } from './lib/mariadb-conn-diag';
 import { probeMariadbBarePoolGetConnection, probeMariadbPoolGetConnection } from './lib/mysql-pool-diag';
 import { buildMysqlDatabaseUrl } from './lib/mysql-url';
+import { assertJwtSecretsConfigured } from './utils/jwt';
 import authRoutes from './routes/auth.routes';
 import batchRoutes from './routes/batch.routes';
 import studentRoutes from './routes/student.routes';
@@ -249,6 +250,8 @@ async function runStartupProbes(): Promise<void> {
     logFullError(error, 'startup prisma mysql query probe');
   }
 }
+
+assertJwtSecretsConfigured();
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

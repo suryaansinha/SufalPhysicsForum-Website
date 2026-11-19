@@ -44,13 +44,15 @@ import GlassBackground from './components/GlassBackground';
 
 function DashboardHome() {
   const [counts, setCounts] = useState<{ batches: number; students: number } | null>(null);
+  const canViewStudentCount = isTeacherRole(getCurrentUserRole());
 
   useEffect(() => {
     let active = true;
-    Promise.all([fetchBatches(), api.get('/students')])
-      .then(([batches, studentsRes]) => {
+    fetchBatches()
+      .then(async (batches) => {
+        const studentsRes = canViewStudentCount ? await api.get('/students') : null;
         if (active) {
-          const studentList = studentsRes.data?.data as unknown[] | undefined;
+          const studentList = studentsRes?.data?.data as unknown[] | undefined;
           setCounts({ batches: batches.length, students: studentList?.length ?? 0 });
         }
       })
@@ -60,7 +62,7 @@ function DashboardHome() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [canViewStudentCount]);
 
   return (
     <div>
@@ -73,12 +75,14 @@ function DashboardHome() {
           href="/dashboard/batches"
           color="indigo"
         />
-        <StatCard
-          label="Total Students"
-          value={counts ? String(counts.students) : '--'}
-          href="/dashboard/students"
-          color="emerald"
-        />
+        {canViewStudentCount && (
+          <StatCard
+            label="Total Students"
+            value={counts ? String(counts.students) : '--'}
+            href="/dashboard/students"
+            color="emerald"
+          />
+        )}
       </div>
     </div>
   );
@@ -128,7 +132,14 @@ export default function App() {
           <Route index element={<DashboardHome />} />
           <Route path="batches" element={<BatchesPage />} />
           <Route path="batches/:batchId" element={<BatchDetailsPage />} />
-          <Route path="students" element={<Students />} />
+          <Route
+            path="students"
+            element={
+              <RequireTeacherRole>
+                <Students />
+              </RequireTeacherRole>
+            }
+          />
           <Route
             path="attendance"
             element={

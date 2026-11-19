@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import crypto from 'crypto';
 import { prisma } from '../lib/prisma';
 import { getLiveClassAccess } from '../utils/live-class-access';
+import { findAccessibleBatch } from '../utils/batch-access';
 
 export async function createLiveClass(req: Request, res: Response): Promise<void> {
   try {
@@ -47,12 +48,9 @@ export async function createLiveClass(req: Request, res: Response): Promise<void
 
 export async function listLiveClasses(req: Request, res: Response): Promise<void> {
   try {
-    const instituteId = req.user!.instituteId;
     const batchId = req.params.batchId as string;
 
-    const batch = await prisma.batch.findFirst({
-      where: { id: batchId, instituteId },
-    });
+    const batch = await findAccessibleBatch(batchId, req.user!);
 
     if (!batch) {
       res.status(404).json({ success: false, message: 'Batch not found' });
