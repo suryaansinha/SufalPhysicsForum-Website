@@ -212,6 +212,7 @@ export type ForumAnswerOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   question?: Prisma.ForumQuestionOrderByWithRelationInput
   author?: Prisma.UserOrderByWithRelationInput
+  _relevance?: Prisma.ForumAnswerOrderByRelevanceInput
 }
 
 export type ForumAnswerWhereUniqueInput = Prisma.AtLeast<{
@@ -331,6 +332,12 @@ export type ForumAnswerListRelationFilter = {
 
 export type ForumAnswerOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ForumAnswerOrderByRelevanceInput = {
+  fields: Prisma.ForumAnswerOrderByRelevanceFieldEnum | Prisma.ForumAnswerOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ForumAnswerCountOrderByAggregateInput = {
@@ -634,29 +641,7 @@ export type ForumAnswerSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["forumAnswer"]>
 
-export type ForumAnswerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  body?: boolean
-  imageUrl?: boolean
-  questionId?: boolean
-  authorId?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  question?: boolean | Prisma.ForumQuestionDefaultArgs<ExtArgs>
-  author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["forumAnswer"]>
 
-export type ForumAnswerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  body?: boolean
-  imageUrl?: boolean
-  questionId?: boolean
-  authorId?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  question?: boolean | Prisma.ForumQuestionDefaultArgs<ExtArgs>
-  author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["forumAnswer"]>
 
 export type ForumAnswerSelectScalar = {
   id?: boolean
@@ -670,14 +655,6 @@ export type ForumAnswerSelectScalar = {
 
 export type ForumAnswerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "body" | "imageUrl" | "questionId" | "authorId" | "createdAt" | "updatedAt", ExtArgs["result"]["forumAnswer"]>
 export type ForumAnswerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  question?: boolean | Prisma.ForumQuestionDefaultArgs<ExtArgs>
-  author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type ForumAnswerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  question?: boolean | Prisma.ForumQuestionDefaultArgs<ExtArgs>
-  author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type ForumAnswerIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   question?: boolean | Prisma.ForumQuestionDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -814,30 +791,6 @@ export interface ForumAnswerDelegate<ExtArgs extends runtime.Types.Extensions.In
   createMany<T extends ForumAnswerCreateManyArgs>(args?: Prisma.SelectSubset<T, ForumAnswerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many ForumAnswers and returns the data saved in the database.
-   * @param {ForumAnswerCreateManyAndReturnArgs} args - Arguments to create many ForumAnswers.
-   * @example
-   * // Create many ForumAnswers
-   * const forumAnswer = await prisma.forumAnswer.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many ForumAnswers and only return the `id`
-   * const forumAnswerWithIdOnly = await prisma.forumAnswer.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends ForumAnswerCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, ForumAnswerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ForumAnswerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a ForumAnswer.
    * @param {ForumAnswerDeleteArgs} args - Arguments to delete one ForumAnswer.
    * @example
@@ -900,36 +853,6 @@ export interface ForumAnswerDelegate<ExtArgs extends runtime.Types.Extensions.In
    * 
    */
   updateMany<T extends ForumAnswerUpdateManyArgs>(args: Prisma.SelectSubset<T, ForumAnswerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more ForumAnswers and returns the data updated in the database.
-   * @param {ForumAnswerUpdateManyAndReturnArgs} args - Arguments to update many ForumAnswers.
-   * @example
-   * // Update many ForumAnswers
-   * const forumAnswer = await prisma.forumAnswer.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more ForumAnswers and only return the `id`
-   * const forumAnswerWithIdOnly = await prisma.forumAnswer.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends ForumAnswerUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, ForumAnswerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ForumAnswerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one ForumAnswer.
@@ -1366,29 +1289,6 @@ export type ForumAnswerCreateManyArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
- * ForumAnswer createManyAndReturn
- */
-export type ForumAnswerCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ForumAnswer
-   */
-  select?: Prisma.ForumAnswerSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the ForumAnswer
-   */
-  omit?: Prisma.ForumAnswerOmit<ExtArgs> | null
-  /**
-   * The data used to create many ForumAnswers.
-   */
-  data: Prisma.ForumAnswerCreateManyInput | Prisma.ForumAnswerCreateManyInput[]
-  skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ForumAnswerIncludeCreateManyAndReturn<ExtArgs> | null
-}
-
-/**
  * ForumAnswer update
  */
 export type ForumAnswerUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1430,36 +1330,6 @@ export type ForumAnswerUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many ForumAnswers to update.
    */
   limit?: number
-}
-
-/**
- * ForumAnswer updateManyAndReturn
- */
-export type ForumAnswerUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ForumAnswer
-   */
-  select?: Prisma.ForumAnswerSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the ForumAnswer
-   */
-  omit?: Prisma.ForumAnswerOmit<ExtArgs> | null
-  /**
-   * The data used to update ForumAnswers.
-   */
-  data: Prisma.XOR<Prisma.ForumAnswerUpdateManyMutationInput, Prisma.ForumAnswerUncheckedUpdateManyInput>
-  /**
-   * Filter which ForumAnswers to update
-   */
-  where?: Prisma.ForumAnswerWhereInput
-  /**
-   * Limit how many ForumAnswers to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ForumAnswerIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

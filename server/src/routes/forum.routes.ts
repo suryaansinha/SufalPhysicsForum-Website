@@ -1,11 +1,13 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import { authenticate } from '../middlewares/auth.middleware';
-import { uploadSingleImage } from '../middlewares/upload.middleware';
+import { uploadQuestionImages, uploadSingleImage } from '../middlewares/upload.middleware';
 import {
   createQuestion,
   getQuestion,
   getQuestions,
+  updateDoubt,
+  deleteDoubt,
   addAnswer,
   resolveQuestion,
 } from '../controllers/forum.controller';
@@ -17,6 +19,8 @@ router.use(authenticate);
 router.post('/questions', uploadSingleImage, createQuestion);
 router.get('/questions', getQuestions);
 router.get('/questions/:id', getQuestion);
+router.put('/questions/:id', uploadQuestionImages, updateDoubt);
+router.delete('/questions/:id', deleteDoubt);
 router.post('/questions/:id/answers', uploadSingleImage, addAnswer);
 router.patch('/questions/:id/resolve', resolveQuestion);
 

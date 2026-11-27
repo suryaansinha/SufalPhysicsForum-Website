@@ -228,6 +228,7 @@ export type StudyMaterialOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   batch?: Prisma.BatchOrderByWithRelationInput
+  _relevance?: Prisma.StudyMaterialOrderByRelevanceInput
 }
 
 export type StudyMaterialWhereUniqueInput = Prisma.AtLeast<{
@@ -367,6 +368,12 @@ export type StudyMaterialListRelationFilter = {
 
 export type StudyMaterialOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type StudyMaterialOrderByRelevanceInput = {
+  fields: Prisma.StudyMaterialOrderByRelevanceFieldEnum | Prisma.StudyMaterialOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type StudyMaterialCountOrderByAggregateInput = {
@@ -569,31 +576,7 @@ export type StudyMaterialSelect<ExtArgs extends runtime.Types.Extensions.Interna
   batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["studyMaterial"]>
 
-export type StudyMaterialSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  batchId?: boolean
-  title?: boolean
-  description?: boolean
-  fileUrl?: boolean
-  fileType?: boolean
-  category?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["studyMaterial"]>
 
-export type StudyMaterialSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  batchId?: boolean
-  title?: boolean
-  description?: boolean
-  fileUrl?: boolean
-  fileType?: boolean
-  category?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["studyMaterial"]>
 
 export type StudyMaterialSelectScalar = {
   id?: boolean
@@ -609,12 +592,6 @@ export type StudyMaterialSelectScalar = {
 
 export type StudyMaterialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "batchId" | "title" | "description" | "fileUrl" | "fileType" | "category" | "createdAt" | "updatedAt", ExtArgs["result"]["studyMaterial"]>
 export type StudyMaterialInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}
-export type StudyMaterialIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}
-export type StudyMaterialIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
 }
 
@@ -751,30 +728,6 @@ export interface StudyMaterialDelegate<ExtArgs extends runtime.Types.Extensions.
   createMany<T extends StudyMaterialCreateManyArgs>(args?: Prisma.SelectSubset<T, StudyMaterialCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many StudyMaterials and returns the data saved in the database.
-   * @param {StudyMaterialCreateManyAndReturnArgs} args - Arguments to create many StudyMaterials.
-   * @example
-   * // Create many StudyMaterials
-   * const studyMaterial = await prisma.studyMaterial.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many StudyMaterials and only return the `id`
-   * const studyMaterialWithIdOnly = await prisma.studyMaterial.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends StudyMaterialCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, StudyMaterialCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudyMaterialPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a StudyMaterial.
    * @param {StudyMaterialDeleteArgs} args - Arguments to delete one StudyMaterial.
    * @example
@@ -837,36 +790,6 @@ export interface StudyMaterialDelegate<ExtArgs extends runtime.Types.Extensions.
    * 
    */
   updateMany<T extends StudyMaterialUpdateManyArgs>(args: Prisma.SelectSubset<T, StudyMaterialUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more StudyMaterials and returns the data updated in the database.
-   * @param {StudyMaterialUpdateManyAndReturnArgs} args - Arguments to update many StudyMaterials.
-   * @example
-   * // Update many StudyMaterials
-   * const studyMaterial = await prisma.studyMaterial.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more StudyMaterials and only return the `id`
-   * const studyMaterialWithIdOnly = await prisma.studyMaterial.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends StudyMaterialUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, StudyMaterialUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudyMaterialPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one StudyMaterial.
@@ -1304,29 +1227,6 @@ export type StudyMaterialCreateManyArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
- * StudyMaterial createManyAndReturn
- */
-export type StudyMaterialCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the StudyMaterial
-   */
-  select?: Prisma.StudyMaterialSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the StudyMaterial
-   */
-  omit?: Prisma.StudyMaterialOmit<ExtArgs> | null
-  /**
-   * The data used to create many StudyMaterials.
-   */
-  data: Prisma.StudyMaterialCreateManyInput | Prisma.StudyMaterialCreateManyInput[]
-  skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.StudyMaterialIncludeCreateManyAndReturn<ExtArgs> | null
-}
-
-/**
  * StudyMaterial update
  */
 export type StudyMaterialUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1368,36 +1268,6 @@ export type StudyMaterialUpdateManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many StudyMaterials to update.
    */
   limit?: number
-}
-
-/**
- * StudyMaterial updateManyAndReturn
- */
-export type StudyMaterialUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the StudyMaterial
-   */
-  select?: Prisma.StudyMaterialSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the StudyMaterial
-   */
-  omit?: Prisma.StudyMaterialOmit<ExtArgs> | null
-  /**
-   * The data used to update StudyMaterials.
-   */
-  data: Prisma.XOR<Prisma.StudyMaterialUpdateManyMutationInput, Prisma.StudyMaterialUncheckedUpdateManyInput>
-  /**
-   * Filter which StudyMaterials to update
-   */
-  where?: Prisma.StudyMaterialWhereInput
-  /**
-   * Limit how many StudyMaterials to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.StudyMaterialIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

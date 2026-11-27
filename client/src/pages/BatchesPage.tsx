@@ -119,13 +119,15 @@ export default function BatchesPage() {
           <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Batches</h3>
           <p className="text-sm text-slate-500 mt-1">Manage your class batches</p>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-yellow-400 text-slate-950 text-sm font-medium rounded-lg hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20"
-        >
-          <Plus className="w-4 h-4" />
-          Create Batch
-        </button>
+        {canManageBatches && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-yellow-400 text-slate-950 text-sm font-medium rounded-lg hover:bg-yellow-300 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-yellow-500/20"
+          >
+            <Plus className="w-4 h-4" />
+            Create Batch
+          </button>
+        )}
       </div>
 
       {successMsg && (
@@ -140,7 +142,7 @@ export default function BatchesPage() {
         </div>
       )}
 
-      {showForm && (
+      {canManageBatches && showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm">
           <div className="bg-white/95 backdrop-blur-xl border border-slate-200 rounded-xl shadow-xl w-full max-w-lg mx-4 p-6 dark:bg-slate-900/80 dark:border-slate-700/50">
             <div className="flex items-center justify-between mb-4">
@@ -249,7 +251,9 @@ export default function BatchesPage() {
       {batches.length === 0 ? (
         <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-slate-200 p-12 text-center dark:bg-slate-900/40 dark:border-slate-700/50">
           <BookOpenPlaceholder />
-          <p className="text-slate-500 mt-4">No batches found. Create your first batch to get started.</p>
+          <p className="text-slate-500 mt-4">
+            {canManageBatches ? 'No batches found. Create your first batch to get started.' : 'You are not enrolled in any batches yet.'}
+          </p>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

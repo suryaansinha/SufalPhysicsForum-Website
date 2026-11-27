@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import crypto from 'crypto';
 import { prisma } from '../lib/prisma';
+import { getLiveClassAccess } from '../utils/live-class-access';
+import { findAccessibleBatch } from '../utils/batch-access';
 
 export async function createLiveClass(req: Request, res: Response): Promise<void> {
   try {
@@ -46,12 +48,9 @@ export async function createLiveClass(req: Request, res: Response): Promise<void
 
 export async function listLiveClasses(req: Request, res: Response): Promise<void> {
   try {
-    const instituteId = req.user!.instituteId;
     const batchId = req.params.batchId as string;
 
-    const batch = await prisma.batch.findFirst({
-      where: { id: batchId, instituteId },
-    });
+    const batch = await findAccessibleBatch(batchId, req.user!);
 
     if (!batch) {
       res.status(404).json({ success: false, message: 'Batch not found' });
@@ -72,20 +71,25 @@ export async function listLiveClasses(req: Request, res: Response): Promise<void
 
 export async function getLiveClass(req: Request, res: Response): Promise<void> {
   try {
-    const instituteId = req.user!.instituteId;
     const id = req.params.id as string;
 
-    const liveClass = await prisma.liveClass.findUnique({
-      where: { id },
-      include: { batch: { select: { id: true, instituteId: true, name: true } } },
-    });
+    const access = await getLiveClassAccess(req.user!.userId, id);
+    if (access.status === 'unauthenticated') {
+      res.status(401).json({ success: false, message: 'Authentication required' });
+      return;
+    }
 
-    if (!liveClass || liveClass.batch.instituteId !== instituteId) {
+    if (access.status === 'not-found') {
       res.status(404).json({ success: false, message: 'Live class not found' });
       return;
     }
 
-    res.json({ success: true, data: liveClass });
+    if (access.status === 'forbidden') {
+      res.status(403).json({ success: false, message: 'You are not enrolled in this live class' });
+      return;
+    }
+
+    res.json({ success: true, data: access.liveClass });
   } catch (error) {
     console.error('Get live class error:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });

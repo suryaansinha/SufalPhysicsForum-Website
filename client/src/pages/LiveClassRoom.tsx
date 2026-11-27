@@ -1,35 +1,107 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { JitsiMeeting } from '@jitsi/react-sdk';
+import { JaaSMeeting } from '@jitsi/react-sdk';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import api from '../lib/api';
 import type { LiveClass, ApiResponse } from '../types';
+
+type LiveClassAndTokenResult =
+  | { ok: true; liveClass: LiveClass; token: string }
+  | { ok: false; error: string };
+
+type MeetingApi = Pick<typeof api, 'get' | 'post'>;
+
+/** Fetches the class before requesting its short-lived, authenticated JaaS token. */
+export async function getLiveClassAndJaasToken(
+  liveClassId: string,
+  apiClient: MeetingApi = api,
+): Promise<LiveClassAndTokenResult> {
+  let liveClassResponse;
+  try {
+    liveClassResponse = await apiClient.get<ApiResponse<LiveClass>>(`/live-classes/${liveClassId}`);
+  } catch {
+    return { ok: false, error: 'Failed to load live class' };
+  }
+
+  if (!liveClassResponse.data.success || !liveClassResponse.data.data) {
+    return { ok: false, error: 'Live class not found' };
+  }
+
+  const liveClass = liveClassResponse.data.data;
+  try {
+    const tokenResponse = await apiClient.post<{ success: boolean; token?: string }>('/meetings/jaas-token', {
+      liveClassId: liveClass.id,
+    });
+    if (!tokenResponse.data.success || !tokenResponse.data.token) {
+      return { ok: false, error: 'Failed to join live class' };
+    }
+    return { ok: true, liveClass, token: tokenResponse.data.token };
+  } catch {
+    return { ok: false, error: 'Failed to join live class' };
+  }
+}
+
+export function getJaasMeetingProps(liveClass: LiveClass, token: string) {
+  return {
+    appId: 'vpaas-magic-cookie-b8f09e7827fb477c8fe12086fe39caea',
+    roomName: liveClass.jitsiRoomName,
+    jwt: token,
+    configOverwrite: {
+      prejoinPageEnabled: false,
+      startWithAudioMuted: false,
+      startWithVideoMuted: false,
+    },
+    interfaceConfigOverwrite: {
+      SHOW_JITSI_WATERMARK: false,
+      SHOW_WATERMARK_FOR_GUESTS: false,
+      TOOLBAR_BUTTONS: [
+        'microphone', 'camera', 'desktop', 'fullscreen', 'fodeviceselection', 'hangup', 'chat', 'raisehand', 'tileview', 'settings',
+      ],
+    },
+  };
+}
 
 export default function LiveClassRoom() {
   const { batchId, liveClassId } = useParams<{ batchId: string; liveClassId: string }>();
   const navigate = useNavigate();
   const [liveClass, setLiveClass] = useState<LiveClass | null>(null);
+  const [jaasToken, setJaasToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!liveClassId) return;
+    setLiveClass(null);
+    setJaasToken(null);
+    setError(null);
+    setLoading(true);
 
-    api
-      .get<ApiResponse<LiveClass>>(`/live-classes/${liveClassId}`)
-      .then((res) => {
-        if (res.data.success && res.data.data) {
-          setLiveClass(res.data.data);
-        } else {
-          setError('Live class not found');
+    if (!liveClassId) {
+      setError('Live class not found');
+      setLoading(false);
+      return;
+    }
+    const requestedLiveClassId = liveClassId;
+
+    let cancelled = false;
+
+    async function loadLiveClassAndToken() {
+      const result = await getLiveClassAndJaasToken(requestedLiveClassId);
+      if (!cancelled) {
+        if (!result.ok) setError(result.error);
+        else {
+          setLiveClass(result.liveClass);
+          setJaasToken(result.token);
         }
-      })
-      .catch(() => setError('Failed to load live class'))
-      .finally(() => setLoading(false));
-  }, [liveClassId]);
+        setLoading(false);
+      }
+    }
 
-  const userName = localStorage.getItem('userName') || 'User';
-  const userEmail = localStorage.getItem('userEmail') || '';
+    loadLiveClassAndToken();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [liveClassId]);
 
   if (loading) {
     return (
@@ -42,7 +114,7 @@ export default function LiveClassRoom() {
     );
   }
 
-  if (error || !liveClass) {
+  if (error || !liveClass || !jaasToken) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-950">
         <div className="text-center">
@@ -82,34 +154,8 @@ export default function LiveClassRoom() {
       </div>
 
       <div className="flex-1">
-        <JitsiMeeting
-          domain="meet.jit.si"
-          roomName={liveClass.jitsiRoomName}
-          configOverwrite={{
-            prejoinPageEnabled: false,
-            startWithAudioMuted: false,
-            startWithVideoMuted: false,
-          }}
-          interfaceConfigOverwrite={{
-            SHOW_JITSI_WATERMARK: false,
-            SHOW_WATERMARK_FOR_GUESTS: false,
-            TOOLBAR_BUTTONS: [
-              'microphone',
-              'camera',
-              'desktop',
-              'fullscreen',
-              'fodeviceselection',
-              'hangup',
-              'chat',
-              'raisehand',
-              'tileview',
-              'settings',
-            ],
-          }}
-          userInfo={{
-            displayName: userName,
-            email: userEmail,
-          }}
+        <JaaSMeeting
+          {...getJaasMeetingProps(liveClass, jaasToken)}
           getIFrameRef={(iframeRef) => {
             iframeRef.style.height = '100%';
             iframeRef.style.width = '100%';

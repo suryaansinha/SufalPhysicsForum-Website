@@ -1,10 +1,12 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider      = "prisma-client"
+  output        = "../src/generated/prisma"
+  engineType    = "client"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "debian-openssl-1.1.x"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
 }
 
 enum Role {
@@ -19,6 +21,26 @@ enum AttendanceStatus {
   ABSENT
   LATE
   EXCUSED
+}
+
+enum DoubtStatus {
+  PENDING
+  ANSWERED
+}
+
+enum ClassLevel {
+  CLASS_9
+  CLASS_10
+  CLASS_11
+  CLASS_12
+  DROPPER
+}
+
+enum TargetExam {
+  JEE
+  NEET
+  BOARDS
+  OTHERS
 }
 
 model Institute {
@@ -48,9 +70,11 @@ model User {
   name         String
   email        String
   passwordHash String
-  role         Role     @default(TEACHER)
+  role         Role         @default(TEACHER)
   phone        String?
-  isActive     Boolean  @default(true)
+  classLevel   ClassLevel?
+  targetExam   TargetExam?
+  isActive     Boolean      @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -211,22 +235,35 @@ model FeePayment {
 }
 
 model ForumQuestion {
-  id         String   @id @default(cuid())
+  id         String      @id @default(cuid())
   title      String
-  body       String   @db.Text
-  imageUrl   String?
-  isResolved Boolean  @default(false)
+  body       String      @db.Text
+  status     DoubtStatus @default(PENDING)
+  isResolved Boolean     @default(false)
   authorId   String
   batchId    String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
-  author  User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  batch   Batch         @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  author  User                 @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  batch   Batch                @relation(fields: [batchId], references: [id], onDelete: Cascade)
   answers ForumAnswer[]
+  images  ForumQuestionImage[]
 
   @@index([batchId])
   @@index([authorId])
+}
+
+model ForumQuestionImage {
+  id         String   @id @default(cuid())
+  questionId String
+  url        String   @db.VarChar(512)
+  publicId   String
+  createdAt  DateTime @default(now())
+
+  question ForumQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
 }
 
 model ForumAnswer {

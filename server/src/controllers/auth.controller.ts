@@ -4,7 +4,10 @@ import { OAuth2Client } from 'google-auth-library';
 import { prisma } from '../lib/prisma';
 import { hashPassword, comparePassword } from '../utils/password';
 import { generateTokenPair, verifyRefreshToken, generateAccessToken } from '../utils/jwt';
-import { Role } from '../generated/prisma/client.js';
+import { ClassLevel, Role, TargetExam } from '../generated/prisma/client.js';
+import { databaseUnavailableMessage } from '../lib/http-error';
+import { logFullError } from '../lib/error-log';
+import { normalizeEmail } from '../utils/email';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
@@ -25,6 +28,7 @@ export async function registerInstitute(req: Request, res: Response): Promise<vo
       return;
     }
 
+    const normalizedEmail = normalizeEmail(String(email));
     const slug = generateSlug(instituteName);
 
     const existingInstitute = await prisma.institute.findUnique({ where: { slug } });
@@ -40,7 +44,7 @@ export async function registerInstitute(req: Request, res: Response): Promise<vo
         name: instituteName,
         slug,
         phone: phone || null,
-        email,
+        email: normalizedEmail,
       },
     });
 
@@ -48,7 +52,7 @@ export async function registerInstitute(req: Request, res: Response): Promise<vo
       data: {
         instituteId: institute.id,
         name: teacherName,
-        email,
+        email: normalizedEmail,
         passwordHash,
         role: Role.TEACHER,
         phone: phone || null,
@@ -75,12 +79,7 @@ export async function registerInstitute(req: Request, res: Response): Promise<vo
     res.status(201).json({
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      user: toAuthProfile(user),
       institute: {
         id: institute.id,
         name: institute.name,
@@ -89,7 +88,9 @@ export async function registerInstitute(req: Request, res: Response): Promise<vo
     });
   } catch (error) {
     console.error('Register error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({
+      message: databaseUnavailableMessage(error) || 'Internal server error',
+    });
   }
 }
 
@@ -102,6 +103,7 @@ export async function login(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    const normalizedEmail = normalizeEmail(String(email));
     let user;
 
     if (instituteSlug) {
@@ -111,12 +113,12 @@ export async function login(req: Request, res: Response): Promise<void> {
         return;
       }
       user = await prisma.user.findUnique({
-        where: { email_instituteId: { email, instituteId: institute.id } },
+        where: { email_instituteId: { email: normalizedEmail, instituteId: institute.id } },
         include: { institute: true },
       });
     } else {
       user = await prisma.user.findFirst({
-        where: { email },
+        where: { email: normalizedEmail },
         include: { institute: true },
       });
     }
@@ -131,7 +133,12 @@ export async function login(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const isPasswordValid = await comparePassword(password, user.passwordHash);
+    if (!user.institute) {
+      res.status(500).json({ message: 'User is not linked to an institute' });
+      return;
+    }
+
+    const isPasswordValid = await comparePassword(password, user.passwordHash || '');
     if (!isPasswordValid) {
       res.status(401).json({ message: 'Invalid email or password' });
       return;
@@ -158,10 +165,7 @@ export async function login(req: Request, res: Response): Promise<void> {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+        ...toAuthProfile(user),
         phone: user.phone,
         isActive: user.isActive,
       },
@@ -172,8 +176,10 @@ export async function login(req: Request, res: Response): Promise<void> {
       },
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    logFullError(error, 'auth.login');
+    res.status(500).json({
+      message: databaseUnavailableMessage(error) || 'Internal server error',
+    });
   }
 }
 
@@ -212,8 +218,9 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    const normalizedEmail = normalizeEmail(email);
     let user = await prisma.user.findFirst({
-      where: { email },
+      where: { email: normalizedEmail },
       include: { institute: true },
     });
 
@@ -235,8 +242,8 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
       user = await prisma.user.create({
         data: {
           instituteId: institute.id,
-          name: googleName?.trim() || email.split('@')[0],
-          email,
+          name: googleName?.trim() || normalizedEmail.split('@')[0],
+          email: normalizedEmail,
           passwordHash,
           role: Role.STUDENT,
           isActive: true,
@@ -271,10 +278,7 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+        ...toAuthProfile(user),
         phone: user.phone,
         isActive: user.isActive,
       },
@@ -286,7 +290,9 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
     });
   } catch (error) {
     console.error('Google login error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({
+      message: databaseUnavailableMessage(error) || 'Internal server error',
+    });
   }
 }
 
@@ -358,12 +364,12 @@ export async function me(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    const profile = toAuthProfile(user);
     res.json({
+      success: true,
+      data: profile,
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+        ...profile,
         phone: user.phone,
         isActive: user.isActive,
         createdAt: user.createdAt,
@@ -377,5 +383,101 @@ export async function me(req: Request, res: Response): Promise<void> {
   } catch (error) {
     console.error('Me error:', error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+const NAME_MIN = 2;
+const NAME_MAX = 80;
+const CLASS_LEVELS = new Set<string>(Object.values(ClassLevel));
+const TARGET_EXAMS = new Set<string>(Object.values(TargetExam));
+
+type AuthProfile = {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+  classLevel: ClassLevel | null;
+  targetExam: TargetExam | null;
+};
+
+function toAuthProfile(user: AuthProfile): AuthProfile {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    classLevel: user.classLevel,
+    targetExam: user.targetExam,
+  };
+}
+
+function parseNullableEnum(
+  value: unknown,
+  allowed: Set<string>,
+  field: string
+): { ok: true; value: string | null } | { ok: false; message: string } {
+  if (value === null) return { ok: true, value: null };
+  if (typeof value === 'string' && allowed.has(value)) return { ok: true, value };
+  return { ok: false, message: `Invalid ${field}` };
+}
+
+export async function updateMe(req: Request, res: Response): Promise<void> {
+  try {
+    if (!req.user) {
+      res.status(401).json({ success: false, message: 'Authentication required' });
+      return;
+    }
+
+    const rawName = typeof req.body?.name === 'string' ? req.body.name.trim() : '';
+    if (rawName.length < NAME_MIN || rawName.length > NAME_MAX) {
+      res.status(400).json({
+        success: false,
+        message: 'Name must be between 2 and 80 characters',
+      });
+      return;
+    }
+
+    const data: {
+      name: string;
+      classLevel?: ClassLevel | null;
+      targetExam?: TargetExam | null;
+    } = { name: rawName };
+
+    if (req.user.role === Role.STUDENT) {
+      if (Object.prototype.hasOwnProperty.call(req.body ?? {}, 'classLevel')) {
+        const parsed = parseNullableEnum(req.body.classLevel, CLASS_LEVELS, 'classLevel');
+        if (!parsed.ok) {
+          res.status(400).json({ success: false, message: parsed.message });
+          return;
+        }
+        data.classLevel = parsed.value as ClassLevel | null;
+      }
+      if (Object.prototype.hasOwnProperty.call(req.body ?? {}, 'targetExam')) {
+        const parsed = parseNullableEnum(req.body.targetExam, TARGET_EXAMS, 'targetExam');
+        if (!parsed.ok) {
+          res.status(400).json({ success: false, message: parsed.message });
+          return;
+        }
+        data.targetExam = parsed.value as TargetExam | null;
+      }
+    }
+
+    const user = await prisma.user.update({
+      where: { id: req.user.userId },
+      data,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        classLevel: true,
+        targetExam: true,
+      },
+    });
+
+    res.json({ success: true, data: toAuthProfile(user) });
+  } catch (error) {
+    console.error('Update me error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 }

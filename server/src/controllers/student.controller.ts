@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { hashPassword } from '../utils/password';
+import { normalizeEmail } from '../utils/email';
 import { Prisma, Role } from '../generated/prisma/client.js';
 
 const PASSWORD_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
@@ -57,8 +58,9 @@ export async function createStudent(req: Request, res: Response): Promise<void> 
       return;
     }
 
+    const normalizedEmail = normalizeEmail(String(email));
     const existingUser = await prisma.user.findUnique({
-      where: { email_instituteId: { email, instituteId } },
+      where: { email_instituteId: { email: normalizedEmail, instituteId } },
     });
 
     if (existingUser) {
@@ -73,7 +75,7 @@ export async function createStudent(req: Request, res: Response): Promise<void> 
       data: {
         instituteId,
         name,
-        email,
+        email: normalizedEmail,
         passwordHash,
         role: Role.STUDENT,
         phone: phone || null,

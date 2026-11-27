@@ -270,6 +270,7 @@ export type InstituteOrderByWithRelationInput = {
   batches?: Prisma.BatchOrderByRelationAggregateInput
   attendance?: Prisma.AttendanceOrderByRelationAggregateInput
   testimonials?: Prisma.TestimonialOrderByRelationAggregateInput
+  _relevance?: Prisma.InstituteOrderByRelevanceInput
 }
 
 export type InstituteWhereUniqueInput = Prisma.AtLeast<{
@@ -459,6 +460,12 @@ export type InstituteUncheckedUpdateManyInput = {
   youtubeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type InstituteOrderByRelevanceInput = {
+  fields: Prisma.InstituteOrderByRelevanceFieldEnum | Prisma.InstituteOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type InstituteCountOrderByAggregateInput = {
@@ -1029,37 +1036,7 @@ export type InstituteSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   _count?: boolean | Prisma.InstituteCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["institute"]>
 
-export type InstituteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
-  slug?: boolean
-  phone?: boolean
-  email?: boolean
-  logoUrl?: boolean
-  aboutDescription?: boolean
-  experienceText?: boolean
-  whatsappNumber?: boolean
-  blogUrl?: boolean
-  youtubeUrl?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["institute"]>
 
-export type InstituteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
-  slug?: boolean
-  phone?: boolean
-  email?: boolean
-  logoUrl?: boolean
-  aboutDescription?: boolean
-  experienceText?: boolean
-  whatsappNumber?: boolean
-  blogUrl?: boolean
-  youtubeUrl?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["institute"]>
 
 export type InstituteSelectScalar = {
   id?: boolean
@@ -1085,8 +1062,6 @@ export type InstituteInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   testimonials?: boolean | Prisma.Institute$testimonialsArgs<ExtArgs>
   _count?: boolean | Prisma.InstituteCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type InstituteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type InstituteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $InstitutePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Institute"
@@ -1228,30 +1203,6 @@ export interface InstituteDelegate<ExtArgs extends runtime.Types.Extensions.Inte
   createMany<T extends InstituteCreateManyArgs>(args?: Prisma.SelectSubset<T, InstituteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many Institutes and returns the data saved in the database.
-   * @param {InstituteCreateManyAndReturnArgs} args - Arguments to create many Institutes.
-   * @example
-   * // Create many Institutes
-   * const institute = await prisma.institute.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many Institutes and only return the `id`
-   * const instituteWithIdOnly = await prisma.institute.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends InstituteCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, InstituteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InstitutePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a Institute.
    * @param {InstituteDeleteArgs} args - Arguments to delete one Institute.
    * @example
@@ -1314,36 +1265,6 @@ export interface InstituteDelegate<ExtArgs extends runtime.Types.Extensions.Inte
    * 
    */
   updateMany<T extends InstituteUpdateManyArgs>(args: Prisma.SelectSubset<T, InstituteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more Institutes and returns the data updated in the database.
-   * @param {InstituteUpdateManyAndReturnArgs} args - Arguments to update many Institutes.
-   * @example
-   * // Update many Institutes
-   * const institute = await prisma.institute.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more Institutes and only return the `id`
-   * const instituteWithIdOnly = await prisma.institute.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends InstituteUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, InstituteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InstitutePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one Institute.
@@ -1788,25 +1709,6 @@ export type InstituteCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Int
 }
 
 /**
- * Institute createManyAndReturn
- */
-export type InstituteCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Institute
-   */
-  select?: Prisma.InstituteSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Institute
-   */
-  omit?: Prisma.InstituteOmit<ExtArgs> | null
-  /**
-   * The data used to create many Institutes.
-   */
-  data: Prisma.InstituteCreateManyInput | Prisma.InstituteCreateManyInput[]
-  skipDuplicates?: boolean
-}
-
-/**
  * Institute update
  */
 export type InstituteUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1836,32 +1738,6 @@ export type InstituteUpdateArgs<ExtArgs extends runtime.Types.Extensions.Interna
  * Institute updateMany
  */
 export type InstituteUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The data used to update Institutes.
-   */
-  data: Prisma.XOR<Prisma.InstituteUpdateManyMutationInput, Prisma.InstituteUncheckedUpdateManyInput>
-  /**
-   * Filter which Institutes to update
-   */
-  where?: Prisma.InstituteWhereInput
-  /**
-   * Limit how many Institutes to update.
-   */
-  limit?: number
-}
-
-/**
- * Institute updateManyAndReturn
- */
-export type InstituteUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Institute
-   */
-  select?: Prisma.InstituteSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Institute
-   */
-  omit?: Prisma.InstituteOmit<ExtArgs> | null
   /**
    * The data used to update Institutes.
    */

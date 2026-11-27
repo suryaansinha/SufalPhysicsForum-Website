@@ -12,6 +12,9 @@ export interface Institute {
   youtubeUrl?: string | null;
 }
 
+export type ClassLevel = 'CLASS_9' | 'CLASS_10' | 'CLASS_11' | 'CLASS_12' | 'DROPPER';
+export type TargetExam = 'JEE' | 'NEET' | 'BOARDS' | 'OTHERS';
+
 export interface User {
   id: string;
   name: string;
@@ -20,6 +23,8 @@ export interface User {
   phone: string | null;
   isActive: boolean;
   createdAt: string;
+  classLevel?: ClassLevel | null;
+  targetExam?: TargetExam | null;
 }
 
 export interface Batch {

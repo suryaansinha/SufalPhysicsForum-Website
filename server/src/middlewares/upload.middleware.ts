@@ -26,7 +26,7 @@ export const upload = multer({
   },
 });
 
-export const uploadSingleImage = multer({
+const imageUpload = multer({
   storage,
   limits: {
     fileSize: 5 * 1024 * 1024,
@@ -38,4 +38,8 @@ export const uploadSingleImage = multer({
       cb(new Error('Only JPEG, PNG, and WebP images are allowed'));
     }
   },
-}).single('image');
+});
+
+export const uploadSingleImage = imageUpload.single('image');
+
+export const uploadQuestionImages = imageUpload.array('images', 5);

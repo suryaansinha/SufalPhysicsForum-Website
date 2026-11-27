@@ -219,6 +219,7 @@ export type HomeworkOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   batch?: Prisma.BatchOrderByWithRelationInput
+  _relevance?: Prisma.HomeworkOrderByRelevanceInput
 }
 
 export type HomeworkWhereUniqueInput = Prisma.AtLeast<{
@@ -348,6 +349,12 @@ export type HomeworkListRelationFilter = {
 
 export type HomeworkOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type HomeworkOrderByRelevanceInput = {
+  fields: Prisma.HomeworkOrderByRelevanceFieldEnum | Prisma.HomeworkOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type HomeworkCountOrderByAggregateInput = {
@@ -539,29 +546,7 @@ export type HomeworkSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["homework"]>
 
-export type HomeworkSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  batchId?: boolean
-  title?: boolean
-  description?: boolean
-  dueDate?: boolean
-  fileUrl?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["homework"]>
 
-export type HomeworkSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  batchId?: boolean
-  title?: boolean
-  description?: boolean
-  dueDate?: boolean
-  fileUrl?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["homework"]>
 
 export type HomeworkSelectScalar = {
   id?: boolean
@@ -576,12 +561,6 @@ export type HomeworkSelectScalar = {
 
 export type HomeworkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "batchId" | "title" | "description" | "dueDate" | "fileUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["homework"]>
 export type HomeworkInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}
-export type HomeworkIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}
-export type HomeworkIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
 }
 
@@ -717,30 +696,6 @@ export interface HomeworkDelegate<ExtArgs extends runtime.Types.Extensions.Inter
   createMany<T extends HomeworkCreateManyArgs>(args?: Prisma.SelectSubset<T, HomeworkCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many Homework and returns the data saved in the database.
-   * @param {HomeworkCreateManyAndReturnArgs} args - Arguments to create many Homework.
-   * @example
-   * // Create many Homework
-   * const homework = await prisma.homework.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many Homework and only return the `id`
-   * const homeworkWithIdOnly = await prisma.homework.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends HomeworkCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, HomeworkCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HomeworkPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a Homework.
    * @param {HomeworkDeleteArgs} args - Arguments to delete one Homework.
    * @example
@@ -803,36 +758,6 @@ export interface HomeworkDelegate<ExtArgs extends runtime.Types.Extensions.Inter
    * 
    */
   updateMany<T extends HomeworkUpdateManyArgs>(args: Prisma.SelectSubset<T, HomeworkUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more Homework and returns the data updated in the database.
-   * @param {HomeworkUpdateManyAndReturnArgs} args - Arguments to update many Homework.
-   * @example
-   * // Update many Homework
-   * const homework = await prisma.homework.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more Homework and only return the `id`
-   * const homeworkWithIdOnly = await prisma.homework.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends HomeworkUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, HomeworkUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HomeworkPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one Homework.
@@ -1269,29 +1194,6 @@ export type HomeworkCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
- * Homework createManyAndReturn
- */
-export type HomeworkCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Homework
-   */
-  select?: Prisma.HomeworkSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Homework
-   */
-  omit?: Prisma.HomeworkOmit<ExtArgs> | null
-  /**
-   * The data used to create many Homework.
-   */
-  data: Prisma.HomeworkCreateManyInput | Prisma.HomeworkCreateManyInput[]
-  skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.HomeworkIncludeCreateManyAndReturn<ExtArgs> | null
-}
-
-/**
  * Homework update
  */
 export type HomeworkUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1333,36 +1235,6 @@ export type HomeworkUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Homework to update.
    */
   limit?: number
-}
-
-/**
- * Homework updateManyAndReturn
- */
-export type HomeworkUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Homework
-   */
-  select?: Prisma.HomeworkSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Homework
-   */
-  omit?: Prisma.HomeworkOmit<ExtArgs> | null
-  /**
-   * The data used to update Homework.
-   */
-  data: Prisma.XOR<Prisma.HomeworkUpdateManyMutationInput, Prisma.HomeworkUncheckedUpdateManyInput>
-  /**
-   * Filter which Homework to update
-   */
-  where?: Prisma.HomeworkWhereInput
-  /**
-   * Limit how many Homework to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.HomeworkIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

@@ -4,12 +4,17 @@ import { Role } from '../generated/prisma/client.js';
 
 export async function listBatches(req: Request, res: Response): Promise<void> {
   try {
-    const instituteId = req.user!.instituteId;
+    const user = req.user!;
+    const studentId = user.role === Role.STUDENT ? user.userId : undefined;
 
     const batches = await prisma.batch.findMany({
-      where: { instituteId },
+      where: {
+        instituteId: user.instituteId,
+        ...(studentId ? { enrollments: { some: { studentId } } } : {}),
+      },
       include: {
         enrollments: {
+          ...(studentId ? { where: { studentId } } : {}),
           include: {
             student: {
               select: { id: true, name: true, email: true },
@@ -68,13 +73,19 @@ export async function createBatch(req: Request, res: Response): Promise<void> {
 
 export async function getBatch(req: Request, res: Response): Promise<void> {
   try {
-    const instituteId = req.user!.instituteId;
+    const user = req.user!;
+    const studentId = user.role === Role.STUDENT ? user.userId : undefined;
     const id = req.params.id as string;
 
     const batch = await prisma.batch.findFirst({
-      where: { id, instituteId },
+      where: {
+        id,
+        instituteId: user.instituteId,
+        ...(studentId ? { enrollments: { some: { studentId } } } : {}),
+      },
       include: {
         enrollments: {
+          ...(studentId ? { where: { studentId } } : {}),
           include: {
             student: {
               select: { id: true, name: true, email: true, phone: true },

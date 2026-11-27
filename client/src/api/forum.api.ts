@@ -1,8 +1,15 @@
 import api from '../lib/api';
 
+export type DoubtStatus = 'PENDING' | 'ANSWERED';
+
 export interface ForumAuthor {
   id: string;
   name: string;
+}
+
+export interface ForumQuestionImage {
+  id: string;
+  url: string;
 }
 
 export interface ForumAnswer {
@@ -20,13 +27,14 @@ export interface ForumQuestion {
   id: string;
   title: string;
   body: string;
-  imageUrl: string | null;
+  status: DoubtStatus;
   isResolved: boolean;
   authorId: string;
   batchId: string;
   createdAt: string;
   updatedAt: string;
   author: ForumAuthor;
+  images: ForumQuestionImage[];
   _count: { answers: number };
   answers?: ForumAnswer[];
 }
@@ -68,6 +76,18 @@ export async function createQuestion(formData: FormData): Promise<ForumQuestion>
   const { data } = await api.post<ApiEnvelope<ForumQuestion>>('/forum/questions', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
+  return data.data;
+}
+
+export async function updateQuestion(questionId: string, formData: FormData): Promise<ForumQuestion> {
+  const { data } = await api.put<ApiEnvelope<ForumQuestion>>(`/forum/questions/${questionId}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return data.data;
+}
+
+export async function deleteQuestion(questionId: string): Promise<{ id: string }> {
+  const { data } = await api.delete<ApiEnvelope<{ id: string }>>(`/forum/questions/${questionId}`);
   return data.data;
 }
 

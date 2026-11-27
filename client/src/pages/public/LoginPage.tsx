@@ -14,8 +14,8 @@ interface LoginResponse {
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('teacher@sufal.com'); // Pre-filled for MVP testing
-  const [password, setPassword] = useState('Password123!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);

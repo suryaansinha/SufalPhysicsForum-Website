@@ -1,6 +1,19 @@
 import 'dotenv/config';
+import './prisma-env';
+import path from 'path';
+import { execFile } from 'child_process';
+import { promisify } from 'util';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import { logFullError } from './lib/error-log';
+import { jsonSafe } from './lib/json-safe';
+import { probeConfiguredDatabaseTcp } from './lib/tcp-diag';
+import { prisma } from './lib/prisma';
+import { probeMysqlDbStatus, probeMysqlSelect1 } from './lib/mysql-diag';
+import { probeMariadbCreateConnection } from './lib/mariadb-conn-diag';
+import { probeMariadbBarePoolGetConnection, probeMariadbPoolGetConnection } from './lib/mysql-pool-diag';
+import { buildMysqlDatabaseUrl } from './lib/mysql-url';
+import { assertJwtSecretsConfigured } from './utils/jwt';
 import authRoutes from './routes/auth.routes';
 import batchRoutes from './routes/batch.routes';
 import studentRoutes from './routes/student.routes';
@@ -12,9 +25,11 @@ import publicRoutes from './routes/public.routes';
 import feeRoutes from './routes/fee.routes';
 import forumRoutes from './routes/forum.routes';
 import instituteRoutes from './routes/institute.routes';
+import jaasMeetingRoutes from './routes/jaas-meeting.routes';
 
 const app = express();
 const PORT: number = Number(process.env.PORT) || 5000;
+const clientDistPath = path.resolve(__dirname, '../public');
 
 const allowedOrigins: string[] = [
   'http://localhost:5173',
@@ -29,12 +44,118 @@ app.use(
   })
 );
 
-app.get('/', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', service: 'sufal-physics-forum-api' });
+app.use(express.static(clientDistPath));
+
+app.get('/api/diag/mysql', async (_req: Request, res: Response) => {
+  try {
+    const result = await probeMysqlSelect1();
+    console.log('GET /api/diag/mysql', {
+      ok: result.ok,
+      present: result.present,
+      missing: result.missing,
+      host: result.host,
+      port: result.port,
+      database: result.database,
+      user: result.user,
+      error: result.error,
+      code: result.code,
+    });
+    res.status(result.ok ? 200 : 503).json(result);
+  } catch (error) {
+    logFullError(error, 'diag.mysql route');
+    res.status(500).json({
+      ok: false,
+      message: error instanceof Error ? error.message : 'MySQL probe failed',
+    });
+  }
+});
+
+async function handleMariadbConnDiag(_req: Request, res: Response): Promise<void> {
+  try {
+    const result = await probeMariadbCreateConnection();
+    const payload = jsonSafe(result);
+    console.log('GET /api/diag/mariadb-raw', payload);
+    res.status(result.ok ? 200 : 503).json(payload);
+  } catch (error) {
+    logFullError(error, 'diag.mariadb-raw route');
+    res.status(500).json({
+      ok: false,
+      message: error instanceof Error ? error.message : 'mariadb createConnection probe failed',
+    });
+  }
+}
+
+app.get('/api/diag/mariadb-raw', handleMariadbConnDiag);
+app.get('/api/diag/mariadb-conn', handleMariadbConnDiag);
+
+app.get('/api/diag/pool', async (_req: Request, res: Response) => {
+  try {
+    const result = jsonSafe(await probeMariadbPoolGetConnection());
+    console.log('GET /api/diag/pool', result);
+    res.status(result.ok ? 200 : 503).json(result);
+  } catch (error) {
+    logFullError(error, 'diag.pool route');
+    res.status(500).json({
+      ok: false,
+      message: error instanceof Error ? error.message : 'Pool probe failed',
+    });
+  }
+});
+
+app.get('/api/diag/pool-bare', async (_req: Request, res: Response) => {
+  try {
+    const result = jsonSafe(await probeMariadbBarePoolGetConnection());
+    console.log('GET /api/diag/pool-bare', result);
+    res.status(result.ok ? 200 : 503).json(result);
+  } catch (error) {
+    logFullError(error, 'diag.pool-bare route');
+    res.status(500).json({
+      ok: false,
+      message: error instanceof Error ? error.message : 'Bare pool probe failed',
+    });
+  }
+});
+
+app.get('/api/diag/db-status', async (_req: Request, res: Response) => {
+  try {
+    const result = await probeMysqlDbStatus();
+    console.log('GET /api/diag/db-status', result);
+    res.status(result.ok ? 200 : 503).json(result);
+  } catch (error) {
+    logFullError(error, 'diag.db-status route');
+    res.status(500).json({
+      ok: false,
+      message: error instanceof Error ? error.message : 'DB status probe failed',
+    });
+  }
+});
+
+app.get('/api/diag/tcp', async (_req: Request, res: Response) => {
+  try {
+    const result = await probeConfiguredDatabaseTcp();
+    if (!result) {
+      res.status(500).json({
+        ok: false,
+        message: 'Set DB_HOST (and optional DB_PORT, default 3306)',
+      });
+      return;
+    }
+    res.status(result.ok ? 200 : 503).json(result);
+  } catch (error) {
+    logFullError(error, 'diag.tcp route');
+    res.status(500).json({
+      ok: false,
+      message: error instanceof Error ? error.message : 'TCP probe failed',
+    });
+  }
 });
 
 app.get('/api/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    service: 'sufal-physics-forum-api',
+    timestamp: new Date().toISOString(),
+  });
 });
 
 app.use('/api/v1/auth', authRoutes);
@@ -48,7 +169,93 @@ app.use('/api/v1/public', publicRoutes);
 app.use('/api/v1/fees', feeRoutes);
 app.use('/api/v1/forum', forumRoutes);
 app.use('/api/v1/institute', instituteRoutes);
+app.use('/api/v1/meetings', jaasMeetingRoutes);
+
+app.get('*', (req: Request, res: Response) => {
+  if (req.path.startsWith('/api')) {
+    res.status(404).json({ error: 'Not found' });
+    return;
+  }
+  res.sendFile(path.join(clientDistPath, 'index.html'));
+});
+
+const execFileAsync = promisify(execFile);
+
+async function applyMigrations(): Promise<void> {
+  const databaseUrl = buildMysqlDatabaseUrl();
+  if (!databaseUrl) {
+    console.warn('DB_HOST/DB_USER/DB_PASSWORD/DB_NAME are not set; skipping prisma migrate deploy');
+    return;
+  }
+
+  const prismaBin = path.resolve(__dirname, '../node_modules/.bin/prisma');
+  const schemaPath = path.resolve(__dirname, '../prisma/schema.prisma');
+
+  try {
+    const { stdout, stderr } = await execFileAsync(
+      prismaBin,
+      ['migrate', 'deploy', '--schema', schemaPath],
+      {
+        cwd: path.resolve(__dirname, '..'),
+        env: {
+          ...process.env,
+          DATABASE_URL: databaseUrl,
+        },
+      }
+    );
+    if (stdout) console.log(stdout.trim());
+    if (stderr) console.error(stderr.trim());
+  } catch (error) {
+    console.error('prisma migrate deploy failed:', error);
+  }
+}
+
+async function runStartupProbes(): Promise<void> {
+  try {
+    const mysqlDiag = await probeMysqlSelect1();
+    console.log('Startup MySQL probe:', {
+      ok: mysqlDiag.ok,
+      present: mysqlDiag.present,
+      missing: mysqlDiag.missing,
+      host: mysqlDiag.host,
+      port: mysqlDiag.port,
+      database: mysqlDiag.database,
+      user: mysqlDiag.user,
+      error: mysqlDiag.error,
+      code: mysqlDiag.code,
+    });
+  } catch (error) {
+    logFullError(error, 'startup mysql probe');
+  }
+
+  await applyMigrations();
+
+  try {
+    const institute = await prisma.institute.findFirst({
+      select: { id: true, slug: true },
+    });
+    console.log('Startup Prisma+MySQL query probe:', {
+      ok: true,
+      found: Boolean(institute),
+      instituteId: institute?.id,
+      slug: institute?.slug,
+    });
+  } catch (error) {
+    const err = error as Error & { code?: string };
+    console.error('Startup Prisma+MySQL query probe:', {
+      ok: false,
+      error: err.message,
+      code: err.code,
+    });
+    logFullError(error, 'startup prisma mysql query probe');
+  }
+}
+
+assertJwtSecretsConfigured();
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  runStartupProbes().catch((error) => {
+    console.error('Startup probes failed:', error);
+  });
 });

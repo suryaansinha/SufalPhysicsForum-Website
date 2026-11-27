@@ -7,9 +7,9 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get('/', listStudents);
+router.get('/', authorizeRoles(Role.TEACHER, Role.SUPER_ADMIN), listStudents);
 router.post('/', authorizeRoles(Role.TEACHER, Role.SUPER_ADMIN), createStudent);
-router.get('/:id', getStudent);
+router.get('/:id', authorizeRoles(Role.TEACHER, Role.SUPER_ADMIN), getStudent);
 router.delete('/:id', authorizeRoles(Role.TEACHER, Role.SUPER_ADMIN), deleteStudent);
 
 export default router;

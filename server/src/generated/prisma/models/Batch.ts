@@ -294,6 +294,7 @@ export type BatchOrderByWithRelationInput = {
   homework?: Prisma.HomeworkOrderByRelationAggregateInput
   feePayments?: Prisma.FeePaymentOrderByRelationAggregateInput
   forumQuestions?: Prisma.ForumQuestionOrderByRelationAggregateInput
+  _relevance?: Prisma.BatchOrderByRelevanceInput
 }
 
 export type BatchWhereUniqueInput = Prisma.AtLeast<{
@@ -490,6 +491,12 @@ export type BatchListRelationFilter = {
 
 export type BatchOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type BatchOrderByRelevanceInput = {
+  fields: Prisma.BatchOrderByRelevanceFieldEnum | Prisma.BatchOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type BatchCountOrderByAggregateInput = {
@@ -1624,35 +1631,7 @@ export type BatchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   _count?: boolean | Prisma.BatchCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["batch"]>
 
-export type BatchSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  instituteId?: boolean
-  name?: boolean
-  gradeLevel?: boolean
-  grade?: boolean
-  targetExam?: boolean
-  subject?: boolean
-  timing?: boolean
-  feeAmount?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  institute?: boolean | Prisma.InstituteDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["batch"]>
 
-export type BatchSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  instituteId?: boolean
-  name?: boolean
-  gradeLevel?: boolean
-  grade?: boolean
-  targetExam?: boolean
-  subject?: boolean
-  timing?: boolean
-  feeAmount?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  institute?: boolean | Prisma.InstituteDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["batch"]>
 
 export type BatchSelectScalar = {
   id?: boolean
@@ -1679,12 +1658,6 @@ export type BatchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   feePayments?: boolean | Prisma.Batch$feePaymentsArgs<ExtArgs>
   forumQuestions?: boolean | Prisma.Batch$forumQuestionsArgs<ExtArgs>
   _count?: boolean | Prisma.BatchCountOutputTypeDefaultArgs<ExtArgs>
-}
-export type BatchIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  institute?: boolean | Prisma.InstituteDefaultArgs<ExtArgs>
-}
-export type BatchIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  institute?: boolean | Prisma.InstituteDefaultArgs<ExtArgs>
 }
 
 export type $BatchPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1829,30 +1802,6 @@ export interface BatchDelegate<ExtArgs extends runtime.Types.Extensions.Internal
   createMany<T extends BatchCreateManyArgs>(args?: Prisma.SelectSubset<T, BatchCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many Batches and returns the data saved in the database.
-   * @param {BatchCreateManyAndReturnArgs} args - Arguments to create many Batches.
-   * @example
-   * // Create many Batches
-   * const batch = await prisma.batch.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many Batches and only return the `id`
-   * const batchWithIdOnly = await prisma.batch.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends BatchCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, BatchCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BatchPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a Batch.
    * @param {BatchDeleteArgs} args - Arguments to delete one Batch.
    * @example
@@ -1915,36 +1864,6 @@ export interface BatchDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * 
    */
   updateMany<T extends BatchUpdateManyArgs>(args: Prisma.SelectSubset<T, BatchUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more Batches and returns the data updated in the database.
-   * @param {BatchUpdateManyAndReturnArgs} args - Arguments to update many Batches.
-   * @example
-   * // Update many Batches
-   * const batch = await prisma.batch.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more Batches and only return the `id`
-   * const batchWithIdOnly = await prisma.batch.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends BatchUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, BatchUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BatchPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one Batch.
@@ -2391,29 +2310,6 @@ export type BatchCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
 }
 
 /**
- * Batch createManyAndReturn
- */
-export type BatchCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Batch
-   */
-  select?: Prisma.BatchSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Batch
-   */
-  omit?: Prisma.BatchOmit<ExtArgs> | null
-  /**
-   * The data used to create many Batches.
-   */
-  data: Prisma.BatchCreateManyInput | Prisma.BatchCreateManyInput[]
-  skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.BatchIncludeCreateManyAndReturn<ExtArgs> | null
-}
-
-/**
  * Batch update
  */
 export type BatchUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2455,36 +2351,6 @@ export type BatchUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Batches to update.
    */
   limit?: number
-}
-
-/**
- * Batch updateManyAndReturn
- */
-export type BatchUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Batch
-   */
-  select?: Prisma.BatchSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Batch
-   */
-  omit?: Prisma.BatchOmit<ExtArgs> | null
-  /**
-   * The data used to update Batches.
-   */
-  data: Prisma.XOR<Prisma.BatchUpdateManyMutationInput, Prisma.BatchUncheckedUpdateManyInput>
-  /**
-   * Filter which Batches to update
-   */
-  where?: Prisma.BatchWhereInput
-  /**
-   * Limit how many Batches to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.BatchIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

@@ -271,6 +271,7 @@ export type LiveClassOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   batch?: Prisma.BatchOrderByWithRelationInput
+  _relevance?: Prisma.LiveClassOrderByRelevanceInput
 }
 
 export type LiveClassWhereUniqueInput = Prisma.AtLeast<{
@@ -422,6 +423,12 @@ export type LiveClassListRelationFilter = {
 
 export type LiveClassOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type LiveClassOrderByRelevanceInput = {
+  fields: Prisma.LiveClassOrderByRelevanceFieldEnum | Prisma.LiveClassOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type LiveClassCountOrderByAggregateInput = {
@@ -651,33 +658,7 @@ export type LiveClassSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["liveClass"]>
 
-export type LiveClassSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  batchId?: boolean
-  title?: boolean
-  agenda?: boolean
-  scheduledFor?: boolean
-  durationMins?: boolean
-  jitsiRoomName?: boolean
-  status?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["liveClass"]>
 
-export type LiveClassSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  batchId?: boolean
-  title?: boolean
-  agenda?: boolean
-  scheduledFor?: boolean
-  durationMins?: boolean
-  jitsiRoomName?: boolean
-  status?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["liveClass"]>
 
 export type LiveClassSelectScalar = {
   id?: boolean
@@ -694,12 +675,6 @@ export type LiveClassSelectScalar = {
 
 export type LiveClassOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "batchId" | "title" | "agenda" | "scheduledFor" | "durationMins" | "jitsiRoomName" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["liveClass"]>
 export type LiveClassInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}
-export type LiveClassIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
-}
-export type LiveClassIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   batch?: boolean | Prisma.BatchDefaultArgs<ExtArgs>
 }
 
@@ -837,30 +812,6 @@ export interface LiveClassDelegate<ExtArgs extends runtime.Types.Extensions.Inte
   createMany<T extends LiveClassCreateManyArgs>(args?: Prisma.SelectSubset<T, LiveClassCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many LiveClasses and returns the data saved in the database.
-   * @param {LiveClassCreateManyAndReturnArgs} args - Arguments to create many LiveClasses.
-   * @example
-   * // Create many LiveClasses
-   * const liveClass = await prisma.liveClass.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many LiveClasses and only return the `id`
-   * const liveClassWithIdOnly = await prisma.liveClass.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends LiveClassCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, LiveClassCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LiveClassPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a LiveClass.
    * @param {LiveClassDeleteArgs} args - Arguments to delete one LiveClass.
    * @example
@@ -923,36 +874,6 @@ export interface LiveClassDelegate<ExtArgs extends runtime.Types.Extensions.Inte
    * 
    */
   updateMany<T extends LiveClassUpdateManyArgs>(args: Prisma.SelectSubset<T, LiveClassUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more LiveClasses and returns the data updated in the database.
-   * @param {LiveClassUpdateManyAndReturnArgs} args - Arguments to update many LiveClasses.
-   * @example
-   * // Update many LiveClasses
-   * const liveClass = await prisma.liveClass.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more LiveClasses and only return the `id`
-   * const liveClassWithIdOnly = await prisma.liveClass.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends LiveClassUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, LiveClassUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LiveClassPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one LiveClass.
@@ -1391,29 +1312,6 @@ export type LiveClassCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Int
 }
 
 /**
- * LiveClass createManyAndReturn
- */
-export type LiveClassCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the LiveClass
-   */
-  select?: Prisma.LiveClassSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the LiveClass
-   */
-  omit?: Prisma.LiveClassOmit<ExtArgs> | null
-  /**
-   * The data used to create many LiveClasses.
-   */
-  data: Prisma.LiveClassCreateManyInput | Prisma.LiveClassCreateManyInput[]
-  skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.LiveClassIncludeCreateManyAndReturn<ExtArgs> | null
-}
-
-/**
  * LiveClass update
  */
 export type LiveClassUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1455,36 +1353,6 @@ export type LiveClassUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many LiveClasses to update.
    */
   limit?: number
-}
-
-/**
- * LiveClass updateManyAndReturn
- */
-export type LiveClassUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the LiveClass
-   */
-  select?: Prisma.LiveClassSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the LiveClass
-   */
-  omit?: Prisma.LiveClassOmit<ExtArgs> | null
-  /**
-   * The data used to update LiveClasses.
-   */
-  data: Prisma.XOR<Prisma.LiveClassUpdateManyMutationInput, Prisma.LiveClassUncheckedUpdateManyInput>
-  /**
-   * Filter which LiveClasses to update
-   */
-  where?: Prisma.LiveClassWhereInput
-  /**
-   * Limit how many LiveClasses to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.LiveClassIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

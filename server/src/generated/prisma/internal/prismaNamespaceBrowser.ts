@@ -63,6 +63,7 @@ export const ModelName = {
   Testimonial: 'Testimonial',
   FeePayment: 'FeePayment',
   ForumQuestion: 'ForumQuestion',
+  ForumQuestionImage: 'ForumQuestionImage',
   ForumAnswer: 'ForumAnswer'
 } as const
 
@@ -109,6 +110,8 @@ export const UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   role: 'role',
   phone: 'phone',
+  classLevel: 'classLevel',
+  targetExam: 'targetExam',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -249,7 +252,7 @@ export const ForumQuestionScalarFieldEnum = {
   id: 'id',
   title: 'title',
   body: 'body',
-  imageUrl: 'imageUrl',
+  status: 'status',
   isResolved: 'isResolved',
   authorId: 'authorId',
   batchId: 'batchId',
@@ -258,6 +261,17 @@ export const ForumQuestionScalarFieldEnum = {
 } as const
 
 export type ForumQuestionScalarFieldEnum = (typeof ForumQuestionScalarFieldEnum)[keyof typeof ForumQuestionScalarFieldEnum]
+
+
+export const ForumQuestionImageScalarFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  url: 'url',
+  publicId: 'publicId',
+  createdAt: 'createdAt'
+} as const
+
+export type ForumQuestionImageScalarFieldEnum = (typeof ForumQuestionImageScalarFieldEnum)[keyof typeof ForumQuestionImageScalarFieldEnum]
 
 
 export const ForumAnswerScalarFieldEnum = {
@@ -281,18 +295,174 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
-} as const
-
-export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
-
-
 export const NullsOrder = {
   first: 'first',
   last: 'last'
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const InstituteOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  phone: 'phone',
+  email: 'email',
+  logoUrl: 'logoUrl',
+  aboutDescription: 'aboutDescription',
+  experienceText: 'experienceText',
+  whatsappNumber: 'whatsappNumber',
+  blogUrl: 'blogUrl',
+  youtubeUrl: 'youtubeUrl'
+} as const
+
+export type InstituteOrderByRelevanceFieldEnum = (typeof InstituteOrderByRelevanceFieldEnum)[keyof typeof InstituteOrderByRelevanceFieldEnum]
+
+
+export const UserOrderByRelevanceFieldEnum = {
+  id: 'id',
+  instituteId: 'instituteId',
+  name: 'name',
+  email: 'email',
+  passwordHash: 'passwordHash',
+  phone: 'phone'
+} as const
+
+export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
+
+
+export const RefreshTokenOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  token: 'token'
+} as const
+
+export type RefreshTokenOrderByRelevanceFieldEnum = (typeof RefreshTokenOrderByRelevanceFieldEnum)[keyof typeof RefreshTokenOrderByRelevanceFieldEnum]
+
+
+export const BatchOrderByRelevanceFieldEnum = {
+  id: 'id',
+  instituteId: 'instituteId',
+  name: 'name',
+  gradeLevel: 'gradeLevel',
+  grade: 'grade',
+  targetExam: 'targetExam',
+  subject: 'subject',
+  timing: 'timing'
+} as const
+
+export type BatchOrderByRelevanceFieldEnum = (typeof BatchOrderByRelevanceFieldEnum)[keyof typeof BatchOrderByRelevanceFieldEnum]
+
+
+export const EnrollmentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  batchId: 'batchId'
+} as const
+
+export type EnrollmentOrderByRelevanceFieldEnum = (typeof EnrollmentOrderByRelevanceFieldEnum)[keyof typeof EnrollmentOrderByRelevanceFieldEnum]
+
+
+export const AttendanceOrderByRelevanceFieldEnum = {
+  id: 'id',
+  instituteId: 'instituteId',
+  batchId: 'batchId',
+  studentId: 'studentId'
+} as const
+
+export type AttendanceOrderByRelevanceFieldEnum = (typeof AttendanceOrderByRelevanceFieldEnum)[keyof typeof AttendanceOrderByRelevanceFieldEnum]
+
+
+export const LiveClassOrderByRelevanceFieldEnum = {
+  id: 'id',
+  batchId: 'batchId',
+  title: 'title',
+  agenda: 'agenda',
+  jitsiRoomName: 'jitsiRoomName',
+  status: 'status'
+} as const
+
+export type LiveClassOrderByRelevanceFieldEnum = (typeof LiveClassOrderByRelevanceFieldEnum)[keyof typeof LiveClassOrderByRelevanceFieldEnum]
+
+
+export const StudyMaterialOrderByRelevanceFieldEnum = {
+  id: 'id',
+  batchId: 'batchId',
+  title: 'title',
+  description: 'description',
+  fileUrl: 'fileUrl',
+  fileType: 'fileType',
+  category: 'category'
+} as const
+
+export type StudyMaterialOrderByRelevanceFieldEnum = (typeof StudyMaterialOrderByRelevanceFieldEnum)[keyof typeof StudyMaterialOrderByRelevanceFieldEnum]
+
+
+export const HomeworkOrderByRelevanceFieldEnum = {
+  id: 'id',
+  batchId: 'batchId',
+  title: 'title',
+  description: 'description',
+  fileUrl: 'fileUrl'
+} as const
+
+export type HomeworkOrderByRelevanceFieldEnum = (typeof HomeworkOrderByRelevanceFieldEnum)[keyof typeof HomeworkOrderByRelevanceFieldEnum]
+
+
+export const TestimonialOrderByRelevanceFieldEnum = {
+  id: 'id',
+  instituteId: 'instituteId',
+  studentName: 'studentName',
+  examCleared: 'examCleared',
+  content: 'content'
+} as const
+
+export type TestimonialOrderByRelevanceFieldEnum = (typeof TestimonialOrderByRelevanceFieldEnum)[keyof typeof TestimonialOrderByRelevanceFieldEnum]
+
+
+export const FeePaymentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  batchId: 'batchId',
+  paymentMethod: 'paymentMethod',
+  transactionId: 'transactionId',
+  monthFor: 'monthFor',
+  status: 'status',
+  remarks: 'remarks'
+} as const
+
+export type FeePaymentOrderByRelevanceFieldEnum = (typeof FeePaymentOrderByRelevanceFieldEnum)[keyof typeof FeePaymentOrderByRelevanceFieldEnum]
+
+
+export const ForumQuestionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  title: 'title',
+  body: 'body',
+  authorId: 'authorId',
+  batchId: 'batchId'
+} as const
+
+export type ForumQuestionOrderByRelevanceFieldEnum = (typeof ForumQuestionOrderByRelevanceFieldEnum)[keyof typeof ForumQuestionOrderByRelevanceFieldEnum]
+
+
+export const ForumQuestionImageOrderByRelevanceFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  url: 'url',
+  publicId: 'publicId'
+} as const
+
+export type ForumQuestionImageOrderByRelevanceFieldEnum = (typeof ForumQuestionImageOrderByRelevanceFieldEnum)[keyof typeof ForumQuestionImageOrderByRelevanceFieldEnum]
+
+
+export const ForumAnswerOrderByRelevanceFieldEnum = {
+  id: 'id',
+  body: 'body',
+  imageUrl: 'imageUrl',
+  questionId: 'questionId',
+  authorId: 'authorId'
+} as const
+
+export type ForumAnswerOrderByRelevanceFieldEnum = (typeof ForumAnswerOrderByRelevanceFieldEnum)[keyof typeof ForumAnswerOrderByRelevanceFieldEnum]
 
